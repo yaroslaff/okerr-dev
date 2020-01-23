@@ -1,0 +1,171 @@
+{% extends "okerrui/base.html" %}
+{% load classname %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+<p>
+
+
+<b>{% trans 'Keys for project' %} <a href="{% url 'okerr:pi' project.get_textid %}">{{project.name}}</a></b>
+
+<a href="{% url 'okerr:project' project.get_textid %}"><img src="{% static 'wrench.png' %}"></a>
+<a href="{% url 'okerr:exportkeyval' project.get_textid ppath  %}"><span title="{% trans 'Export key-value subtree, processed format, as seen for okerr-client. Useful for debugging' %}"><img src="{% static 'page.png' %}"></span></a>
+<a href="{% url 'okerr:exportkeyval_raw' project.get_textid ppath  %}"><span title="{% trans 'Export key-value subtree, raw format, without resolving @include. Useful for backups' %}"><img src="{% static 'page_copy.png' %}"></span></a>
+{% if textable %}
+<a href="{% url 'okerr:keystext' project.id ppath %}"><span title="{% trans 'Edit as text' %}"><img src="{% static 'page_white_edit.png' %}"></span></a>
+{% endif %}
+
+{% if admin and not path  %}
+    <script>
+        function confirmupdate(){
+            r = confirm('Update vendor keys?\nEvery key will be overwritten except:\nconf\nmylib\nservers')
+            if (r == true){
+                sendpost('{% url 'okerr:updatevkeys' project.id %}', {}, updatenotifications_fn())
+            }
+        }
+    </script>
+    <button onclick="confirmupdate()">update vendor keys</button>
+
+    <script>
+        function confirmreset(){
+            r = confirm('Reset keys?\nEVERY key will be overwritten')
+            if (r == true){
+                sendpost('{% url 'okerr:resetkeys' project.id %}', {}, updatenotifications_fn())
+            }
+        }
+    </script>
+    <button onclick="confirmreset()">reset ALL keys</button>
+
+
+{% endif %}
+
+<p>
+PATH: (<a href="{% url 'okerr:keys' project.id '' %}">root</a>) {% for pelem in path %}<a href="{% url 'okerr:keys' project.id pelem.1 %}">{{pelem.0}}</a>:{% endfor %}
+
+
+{# list keys #}
+
+<table border=0>
+{% for tk in keysubtree %}
+    {% if tk.isdir %}
+        <tr>
+        <td>
+        <a href="{% url 'okerr:keys' project.id tk.fullname %}"><img 
+        src="{% static 'folder.png' %}"></a>
+        </td>
+        <td>
+        <a href="{% url 'okerr:keys' project.get_textid tk.fullname %}">{{tk.name}}</a>
+        </td>
+        <td>
+        </td>
+        <td>
+            {% if not tk.nchildren %}
+            <form method=post>
+            {% csrf_token %}
+            <input type=hidden name=cmd value='delkey'>
+            <input type=hidden name=path value='{{tk.path}}'>
+            <input type=hidden name=name value='{{tk.name}}'>
+            <input type='image' src="{% static 'cancel.png' %}" alt='submit'>
+            </form>
+            {% endif %}
+        </td>
+        </tr>
+    {% endif %}
+{% endfor %}
+
+{% for tk in keysubtree %}
+    {% if not tk.isdir %}
+        <tr>
+        <td></td>
+        {% if tk.link %}
+        <td>
+        <a href="{% url 'okerr:keys' project.get_textid tk.link %}">{{tk.name}}</a>
+        </td>
+        {% else %}
+        <td>{{tk.name}}</td>
+        {% endif %}
+        <td>{{tk.value}}</td>
+        <td>
+            <form method=post>
+            {% csrf_token %}
+            <input type=hidden name=cmd value='delkey'>
+            <input type=hidden name=path value='{{tk.path}}'>
+            <input type=hidden name=name value='{{tk.name}}'>
+            <input type='image' src="{% static 'cancel.png' %}" alt='submit'>
+            </form>
+          
+        </td>
+        </tr>
+    {% endif %}
+{% endfor %}
+</table>
+
+
+<hr>
+
+{# form to add new key #}
+
+<table border=0>
+
+<tr class=title><td colspan=3>{% trans 'Add key' %}
+
+<tr>
+<td>
+<span title="{% trans 'Add new key = value. For @include directive, write full directive as key name (and empty value)' %}">
+<img src="{% static 'key.png' %}">
+</span>
+<td>
+<form method=post>
+{% csrf_token %}
+<input type=hidden name=cmd value='addkey'>
+<input type=text name=key>
+<input type=text name=value>
+</td>
+<td>
+<input type=submit value='add key'>
+</form>
+</tr>
+
+<tr class=title><td colspan=3>{% trans 'Add folder' %}
+
+
+<tr>
+<td>
+<span title="{% trans 'Create new folder' %}">
+<img src="{% static 'folder.png' %}">
+</span>
+<td>
+
+<form method=post>
+{% csrf_token %}
+<input type=hidden name=cmd value="addfolder">
+<input type=text name="name">
+</td><td>
+<input type=submit value="add folder">
+</form>
+
+</td>
+</tr>
+
+<tr class=title><td colspan=3>{% trans 'Import subtree' %}
+
+<tr>
+<td>
+<span title="{% trans 'Load subtree and append it here (overwriting old keys if exists). Subtree must be in JSON, exported in raw format (on top of this page)' %}">
+<img src="{% static 'page_copy.png' %}">
+</span>
+<form method=post>
+{% csrf_token %}
+<td>
+<input type=hidden name=cmd value='importkeys'>
+<textarea name='json' cols=40>
+</textarea>
+</td>
+<td>
+<input type=submit value='import'>
+</tr>
+</form>
+</table>
+
+{% endblock %}
+

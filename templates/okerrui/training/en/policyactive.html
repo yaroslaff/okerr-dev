@@ -1,0 +1,15 @@
+<p>
+<i>Policy</i> is set of rules which are common for many indicators (which uses this policy). Each indicator uses one policy. Initially, each project has policy 'Default' (period 1 hour) and 'Daily' (period 1 day).
+</p>
+
+<p>
+Create policy 'test:active' at  <a href="{% url 'okerr:project' project.get_textid %}">project page</a>. Configure it this way:
+<ul>
+    <li>Period: once in 2 hours (2h)
+    <li>Retry schedule: 5 minutes (5m)
+    <li>No recovery retry schedule (empty line)
+    <li>Disable 'autocreate', disable accept updates via HTTP and SMTP
+</ul>
+Create any active indicator (which executed by okerr server, like Ping or HTTP status code) and name starting with 'test:' and assign policy 'test:active' to this indicator.
+</p>
+

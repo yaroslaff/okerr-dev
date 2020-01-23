@@ -1,0 +1,9 @@
+Okerr registration information
+
+Thanks for registration on Okerr!
+Your username is: {{username}}
+Your auto-generated password is: {{password}}
+Please change password after first sign-in.
+Log in page: {{loginurl}}
+Thank you!
+

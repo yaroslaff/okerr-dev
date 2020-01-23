@@ -1,0 +1,15 @@
+<html>
+<head>
+    {% include 'mail-css.html' %}
+</head>
+<h1>okerr summary</h1>
+for: {{username}}<br>
+remark: {{remark}}<br>
+host: {{hostname}}<br>
+
+{% include "summary-1project-email.html" %}
+
+{% include "alert-ad.html" %}
+{% include "bulkmail.html" %}
+
+</html>

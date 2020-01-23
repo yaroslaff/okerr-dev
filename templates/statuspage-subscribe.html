@@ -1,0 +1,10 @@
+{% load i18n %}
+<html>
+<h1><font color="#666666">{% trans 'Subscribe to status page' %} {{sp.title}}</font></h1>
+{% trans 'generated on' %} {{hostname}} at {% now "d M Y H:i:s" %}
+<p>
+{% trans 'Please confirm subscription to status page' %} {{sp.title}}: <a href="{{base_url}}{% url 'okerr:statussubscribe' project.get_textid sp.addr datecode email code %}">{% trans 'Confirm' %}</a>.
+<p>
+{% trans 'After confirmation you will get email notifications after new blog post at address' %}: <a href="{{prefix}}{% url 'okerr:status' project.get_textid sp.addr %}">{{prefix}}{% url 'okerr:status' project.get_textid sp.addr %}</a>
+</html>
+

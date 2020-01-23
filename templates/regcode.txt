@@ -1,0 +1,7 @@
+Okerr registration code
+
+Thanks for registration in Okerr!
+Your verification code is: {{code}}, please enter it at {{vlink}}.
+
+{{vlink}}?email={{email}}&code={{code}}
+

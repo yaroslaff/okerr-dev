@@ -1,0 +1,46 @@
+{% load static %}
+
+<script>
+function changeproject(){
+
+    var chs = document.getElementById("chproject_select") 
+    var selected = chs.options[chs.selectedIndex].value;
+    var chf = document.getElementById("chproject_form") 
+
+    document.getElementById("textid2").value = selected;
+    chf.submit()
+}
+</script>
+<form id="chproject_form" action="{% url 'okerr:chproject' %}" method=post>
+    {% csrf_token %}
+    <input type=hidden name="textid1" value="{{project.get_textid}}">
+    <input type=hidden id="textid2" name="textid2" value="">
+    <input type=hidden name="path" value="{{request.path}}">   
+</form>
+
+
+&nbsp;
+
+{% if prefix %}
+<b>{{prefix}}</b>
+{% endif %}
+
+<span>
+<select id=chproject_select onchange="changeproject();">
+    {% for pt in user.profile.projects_tuples %}
+        {% if pt.0 == project.id %}
+            <option selected value="{{pt.1}}">{{pt.2}}</option>
+        {% else %}
+            <option value="{{pt.1}}">{{pt.2}}</option>
+        {% endif %}
+    {% endfor %}
+</select>
+</span>
+
+(<acronym title="textid(s): {% for tid in project.projecttextid_set.all %}{{tid}} {%endfor%}">{{project.get_textid}}</acronym>)&nbsp;
+<span title="indicators"><a href="{% url 'okerr:pi' project.get_textid %}"><img src="{% static 'iflags/OK.png' %}"></a></span>
+<span title="scripts and servers"><a href="{% url 'okerr:servers' project.get_textid %}"><img src="{% static 'computer.png' %}"></a></span>
+<span title="project settings"><a href="{% url 'okerr:project' project.get_textid %}"><img src="{% static 'wrench.png' %}"></a></span>
+<span title="project as JSON structure"><a href={% url 'okerr:pjson' project.get_textid %}><img src="{% static 'page.png' %}"></a></span>
+<span title="project logs"><a href={% url 'okerr:project_log' project.get_textid '' %}><img src="{% static 'text_columns.png' %}"></a></span>
+

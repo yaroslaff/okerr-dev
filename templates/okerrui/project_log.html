@@ -1,0 +1,43 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    
+
+{% with project=project prefix="project log" %}
+    {% include 'okerrui/projectlinks.html' %}
+{% endwith %}
+
+
+<br>
+<div style="float:left">
+Filter: 
+{% for codename, count in stats.items %}
+    <a href="{% url 'okerr:project_log' project.get_textid codename %}">{{codename}}</a><span class='dull'>: {{count}}</span> &nbsp
+{% endfor %}<br>
+{{count}}/{{totalcount}} records of class '{{codelist}}' 
+</div>
+<div style="float:left">
+<form method="post">{% csrf_token %}<input type='submit' name="logreverse" value="reverse order"></form>
+</div>
+<br>
+
+<div class="logcont">
+    <table class="log">
+    {% for l in log %}
+        <tr>
+            <td>{{ l.created|date:"d/m/Y H:i:s" }}            
+            <td>            
+            {% if l.indicator %}
+                <a href="{% url 'okerr:ilocator' project.get_textid l.indicator.name %}">{{l.indicator.name}}</a>
+            {% elif l.deadname %}
+                {{ l.deadname }}
+            {% endif %}
+            <td>{{l.message}}
+        </tr>
+    {% endfor %}
+    </table>
+</div> <!-- logcont --!>
+
+{% endblock %}

@@ -1,0 +1,10 @@
+[Unit]
+Description=okerr SMTP daemon
+After=syslog.target
+
+[Service]
+Type=simple
+ExecStart=%VENV%/bin/python %OKERR%/smtpserver.py --stderr
+
+[Install]
+WantedBy=multi-user.target

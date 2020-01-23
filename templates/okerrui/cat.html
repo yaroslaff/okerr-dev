@@ -1,0 +1,35 @@
+{% load static %}
+
+<html>
+    <head>
+        <meta http-equiv="refresh" content="60">
+        <title>{{role}} cat "{{name}}"</title>
+        <link rel="icon" type="image/png" href="https://okerr.com/okerr-favicon.png" />
+    </head>
+    <body>
+        <div align=center>
+            <div style="width: 50%; text-align: left;">
+                <h1>{{role}} cat is alive!</h1>
+
+                <img src="{% static image %}" align=right>
+                <p>
+                me: {{name}} (ext: {{ip}})<br>
+                IP from auth NS ({{nsname}}): {{nsip}}<br>
+                {% if nsip != ip %}
+                    You are here by old (cached) DNS record.<br> 
+                {% endif %}
+                
+                time: {{hhmm}}<br>
+                role: {{role}}<br>
+                status={{status}}<br>
+                </p>
+                <p>
+                Will switch status in ~<i>{{left}}</i> minutes<br>
+                </p>
+                <p>
+                Just do nothing, keep this page open, wait a little and you will see page from next live server with highest priority. 
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

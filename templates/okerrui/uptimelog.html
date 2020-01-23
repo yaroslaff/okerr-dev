@@ -1,0 +1,21 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+{% load age %}
+
+{% block title%}{{i.name}}{%endblock%}
+
+{% block content %}
+{% trans 'Uptime log for' %} <a href="{% url 'okerr:ilocator' i.project.get_textid i.name %}">{{i.name}}</a>
+
+<table class="humantable">
+{% for s in changes %}
+    <tr>
+        <td>{{s.created}}</td>
+        <td>{{s.old}} ({{s.duration}}) > {{s.new}}</td>
+    </tr>
+{% endfor %}
+
+</table>
+{% endblock %}
+

@@ -1,0 +1,21 @@
+{% extends "okerrui/base.html" %}
+{% load classname %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+<p>
+
+<b>{% trans 'Keys for project' %} <a href="{% url 'okerr:setvpid' project.id %}">{{project.name}}</a></b>
+<p>
+PATH: (<a href="{% url 'okerr:keys' project.id '' %}">root</a>) {% for pelem in path %}<a href="{% url 'okerr:keys' project.id pelem.1 %}">{{pelem.0}}</a>:{% endfor %}
+<p>
+
+<form method=post>
+{% csrf_token %}
+<textarea name='text' cols=80 rows=20>{{text}}</textarea>
+<br>
+<input type=submit value="{% trans 'Save' %}">
+</form>
+
+{% endblock %}
+

@@ -1,0 +1,19 @@
+[Unit]
+Description=okerr web UI
+PartOf=okerr.service
+After=okerr.service
+
+[Service]
+Type=simple
+User=okerr
+Group=www-data
+ExecStart=%VENV%/bin/uwsgi /etc/okerr/uwsgi.ini
+ExecStop=%VENV%/bin/uwsgi --stop %varrun%/okerr-ui.pid
+ExecReload=%VENV%/bin/uwsgi --reload %varrun%/okerr-ui.pid
+StandardOutput=journal
+RuntimeDirectory=okerr
+RuntimeDirectoryMode=0755
+
+[Install]
+WantedBy=okerr.service
+

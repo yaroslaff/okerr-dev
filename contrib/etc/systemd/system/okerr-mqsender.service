@@ -1,0 +1,13 @@
+[Unit]
+Description=okerr process
+After=syslog.target
+PartOf=okerr.service
+After=okerr.service
+
+[Service]
+Type=simple
+ExecStart=%VENV%/bin/python %OKERR%/mqsender.py
+EnvironmentFile=/etc/okerr/env/mqsender
+
+[Install]
+WantedBy=okerr.service

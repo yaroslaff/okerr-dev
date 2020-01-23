@@ -1,0 +1,200 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+{% load markup_tags %}
+
+{% block content %}
+
+
+{% with project=project %}
+    {% include 'okerrui/projectlinks.html' %}
+{% endwith %}
+
+    
+    <b>{% trans "Status Page" %}:</b> {{sp.addr}}<br>
+   
+   
+    <div class='smalledit'>
+    <h2>{% trans 'Properties' %}</h2>
+    <form action="{% url 'okerr:statuspage' project.get_textid sp.addr %}" method="post">
+    <table>
+        <tr>
+            <td>{% trans 'Address' %}</td>
+            <td><input type=text name="addr" value="{{ sp.addr }}"></td>
+            <td><a href="https://cp.okerr.com{% url 'okerr:status' project.get_textid sp.addr %}">https://cp.okerr.com{% url 'okerr:status' project.get_textid sp.addr %}</a></td>
+        </tr>
+
+        <tr>
+            <td>{% trans 'Title' %}
+            <td><input type=text name="title" value="{{ sp.title }}">
+            <td><i>{% trans 'status page title' %}</i></td>
+        </tr>
+
+
+         <tr>
+            <td>{% trans 'Public' %}
+            <td>
+            {% if sp.public %}
+                <input type="checkbox" name="public" value="1" checked>
+            {% else %}
+                <input type="checkbox" name="public" value="1">
+            {% endif %}
+            </td>
+        </tr>
+
+
+         <tr>
+            <td>{% trans 'User can subscribe' %}
+            <td>
+            {% if sp.can_subscribe %}
+                <input type="checkbox" name="can_subscribe" value="1" checked>
+            {% else %}
+                <input type="checkbox" name="can_subscribe" value="1">
+            {% endif %}
+            {{nsubscribers}} {% trans 'subscriber(s)' %} (max: {{maxsubscribers}})
+            </td>
+        </tr>
+
+
+        <tr>
+            <td>{% trans 'Description' %}
+            <td colspan=2><textarea name="desc" cols=80>{{ sp.desc }}</textarea></td>
+        </tr>
+
+
+    </table>
+
+        {% csrf_token %}
+
+        <input type="hidden" name="statuspage_edit" value="1" />
+        
+        <button class='massButton' name='apply' value='1'>{% trans 'Apply' %}</button>
+        <button class='massButton' name='delete' value='1' onclick="return confirm('Are you sure?')">{% trans 'Delete' %}</button>
+
+
+    </form>
+    
+    <tr>
+        <td colspan=2><h2>{% trans 'Indicators' %}</h2></td>
+    </tr>
+    
+    {% for chapter, silist in chapters.items %}
+        {% if chapter %}
+            <h3>{{chapter}}</h3>
+        {% else %}
+            <h3>{% trans 'No chapter' %}</h3>
+        {% endif %}
+    
+        {% for si in silist %}
+        <tr>
+        <td colspan=2>
+            <details>
+                <summary><b>{{si.title}}</b> ({{si.indicator.name}})</summary>
+                    <form action="{% url 'okerr:statuspage' project.get_textid sp.addr %}" method="post">
+                    {% csrf_token %}
+                    <table>
+                    <tr>
+                        <td>{% trans 'Indicator' %}:</td>
+                        <td><a href="{% url 'okerr:ilocator' sp.project.get_textid si.indicator.name %}">{{ si.indicator.name }}</a></td>
+                        <input type=hidden name=indicator value="{{si.indicator.name}}"> 
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Title' %}:</td>
+                        <td><input type=text name=title value="{{ si.title }}"></td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Chapter' %}:</td>
+                        <td>
+                        <input type="text" name="chapter" autocomplete="off" list="chapters_list" placeholder="{% trans 'New chapter name' %}" value="{{si.chapter}}">
+                        <datalist id="chapters_list">
+                        {% for chapter in chapters.keys %}
+                          <option value="{{chapter}}">
+                        {% endfor %}
+                        </datalist>
+                        
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Weight' %}:</td>
+                        <td><input type=text name=weight value="{{ si.weight }}"></td>
+                    </tr>
+
+                    <tr>
+                        <td>{% trans 'Details' %}:</td>
+                        <td>                        
+                        {% if si.details %}
+                            <input type="checkbox" name="details" value="1" checked>
+                        {% else %}
+                            <input type="checkbox" name="details" value="1">
+                        {% endif %}
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>{% trans 'Desc' %}:</td>
+                        <td><textarea name=desc cols=40>{{ si.desc }}</textarea></td>
+                    </tr>  
+                    </table>
+                    <button class='massButton' name='chsi' value='1'>{% trans 'Change' %}</button>
+                    <button class='massButton' name='delsi' value='1' onclick="return confirm('Are you sure?')">{% trans 'Delete' %}</button>
+                    </form>
+            </details>
+        </td>
+        </form>
+        </tr>
+        {% endfor %}
+    
+    {% endfor %} <!-- chapters -->
+    
+    <br>
+    <form action="{% url 'okerr:statuspage' project.get_textid sp.addr %}" method="post">
+        {% csrf_token %}
+        {% trans 'Add indicator' %}:
+        <select name="newindicator">
+        {% for i in project.indicator_set.all %}
+        <option value="{{i.name}}">{{i.name}}</option>
+        {% endfor %}
+        </select>
+    
+        <input type="hidden" name="newindicator_add" value="1" />    
+        <button class='massButton' name='Add' value='1'>{% trans 'Add' %}</button>
+
+    </form>
+    
+    <h2>{% trans 'Blog' %}</h2>
+    
+    {% if blogrecord %}
+        {% trans 'Last record' %}:
+        <div class="sp_indicator">
+            {{blogrecord.text|apply_markup:"markdown"}} 
+            <div class="dulldate">{{blogrecord.created}}</div>
+        </div>
+        <form name=delblog method="post">
+            {% csrf_token %}
+            <input type=submit name="delblog" value="{% trans 'Delete' %}">
+        </form>
+    {% endif %}
+    
+    {% if draft %}
+        {% trans 'Preview' %}:
+        <div class="sp_indicator">
+            {{draft|apply_markup:"markdown"}} 
+            <div class="dulldate">{% now "d M Y H:i:s" %}</div>
+        </div>
+    {% endif %}
+    
+    <form method=post>
+        {% csrf_token %}
+        <textarea cols=80 name=blogpost>{{draft}}</textarea>
+        <br>
+   
+        <button class='massButton' name='add' value='1'>{% trans 'Add' %}</button>
+        <button class='massButton' name='preview' value='1'>{% trans 'Preview' %}</button>
+
+        <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">{% trans 'Markdown cheatsheet' %}</a>
+    
+    </form>
+    
+    </div> <!-- smalledit -->
+{% endblock %}

@@ -1,0 +1,8 @@
+{% load i18n %}
+{% trans 'Subscribe to status page' %} {{sp.title}}
+{% trans 'generated on' %} {{hostname}} at {% now "d M Y H:i:s" %}
+
+{% trans 'Please confirm subscription to status page' %} {{sp.title}}: {{prefix}}{% url 'okerr:statussubscribe' project.get_textid sp.addr datecode email code %}
+
+
+

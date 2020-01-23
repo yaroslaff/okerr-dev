@@ -1,0 +1,19 @@
+<html>
+<head>
+    {% include 'mail-css.html' %}
+</head>
+    <body>
+    <h1>Okerr registration information</h1>
+
+    Thanks for registration on Okerr!<br>
+    Your username is: {{username}}<br>
+    Your auto-generated password is: {{password}}<br>
+    Please change password after first sign-in.<br>
+    <a href="{{loginurl}}">Log in</a>! :-)<br>
+    Thank you!
+    
+    {% include "alert-ad.html" %}
+    {% include "bulkmail.html" %}
+    </body>
+</html>
+

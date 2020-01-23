@@ -1,0 +1,12 @@
+[Unit]
+Description=okerr network processor
+PartOf=okerr.service
+After=okerr.service
+
+[Service]
+Type=simple
+ExecStart=%VENV%/bin/python %OKERR%/netprocess.py --user root
+EnvironmentFile=/etc/okerr/env/netprocess
+
+[Install]
+WantedBy=okerr.service

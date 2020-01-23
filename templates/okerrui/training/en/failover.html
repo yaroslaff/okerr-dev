@@ -1,0 +1,17 @@
+<p>
+Create simple failover scheme.
+</p>
+<p>
+Open project settings, move to "Failover (Dynamic DNS)" section and create record with any name (e.g. 'www').
+You will need account on any Dynamic DNS service, but you can use built-in test account "CloudFlare (okerr account for testing)" to complete traning easily. In this case full DNS name will be <i>www</i>.{{textid}}.dyn1.okerr.com.
+</p>
+
+<p>
+On failover configuration page add two indicators with different IP addresses and priorities. Indicators must not be in maintenance mode.
+Wait til IP address will be set for your new domain name. Make top-priority indicator into 'ERR' state (you can force it pressing button 'ERR') and wait when DNS servers will get IP address of backup server. Mission accomplished! 
+</p>
+
+
+<p>
+For real using this scheme, you will need at least two webservers on different IP addresses. Each webserver must be configured to serve website (for Apache webserver, site must be lister in ServerName or ServerAlias). But it's not needed to complete training. You can use any random IP addresses, e.g. 1.1.1.1 and 1.1.1.2.
+</p>

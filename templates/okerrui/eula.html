@@ -1,0 +1,24 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% block content %}
+
+<center>
+{% with "eula."|add:request.LANGUAGE_CODE|add:".txt" as loceula %}
+<textarea readonly rows=20 cols=80>{% include loceula %}</textarea>
+{% endwith %}
+<p>
+{% if request.user.is_authenticated %}
+    {% if request.user.profile.eula_accepted %}
+        You already accepted this version of EULA
+    {% else %}
+    <form method=post>
+        {% csrf_token %}
+        <input type=hidden name=cmd value='accept_eula'>
+        <input type=checkbox name=agree>
+        {% trans 'I accept End-User License Agreement' %}
+        <br>
+        <input type=submit value='{% trans 'Accept' %}'>
+    </form>
+    {% endif %}
+{% endif %}
+{% endblock %}

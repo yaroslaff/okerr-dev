@@ -1,0 +1,14 @@
+<html>
+<head>
+    {% include 'mail-css.html' %}
+</head>
+    <body>
+    <h1>Okerr registration code</h1>
+
+    Thanks for registration in Okerr!<br>
+    Your verification code is: {{code}}, please enter it <a href="{{vlink}}?email={{email}}&code={{code}}">there</a>.               
+
+    {% include "alert-ad.html" %}
+    {% include "bulkmail.html" %}
+    </body>
+</html>

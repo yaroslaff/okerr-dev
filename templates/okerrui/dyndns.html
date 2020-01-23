@@ -1,0 +1,236 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load markup_tags %}
+{% load static %}
+
+{% block title %}{% trans 'Failover (Dynamic DNS)' %}{% endblock %}
+
+{% block content %}
+
+
+<h1>{% trans 'Failover (Dynamic DNS)' %}</h1>
+
+{% with project=project prefix="" %}
+    {% include 'okerrui/projectlinks.html' %}
+{% endwith %}
+<h2>Host {{ ddr.fqdn }}</h2>
+
+<div class="container">
+    <div>
+
+        <form method=post>
+            {% csrf_token %}
+        {% trans 'Dynamic DNS service' %}: 
+            <select name="method" onchange="this.form.submit();">
+            {% for srvk, srvdata  in ddr.methods.items %}
+                {% if srvk == ddr.method %}
+                    <option value='{{srvk}}' selected>{{srvdata.name}}
+                {% else %}
+                    <option value='{{srvk}}'>{{srvdata.name}}
+                {% endif %}
+
+            {% endfor %}
+            </select>
+        </form>
+
+        {# MANAGE RECORD #}
+        <div>
+            <form method=post class=myform id="dyndns_settings">
+                {% csrf_token %}
+                {% for ftuple in ddr.get_fields %}
+                    <p>
+                        <label for="{{ftuple.0}}">{{ftuple.0}}:</label>
+                        {% if ftuple.1 %}
+                            {% if ftuple.0 == 'secret' %}                        
+                                <input id="{{ftuple.0}}" type=password name="{{ftuple.0}}" value="{{ftuple.1}}">
+                            {% else %}
+                                <input id="{{ftuple.0}}" type=text name="{{ftuple.0}}" value="{{ftuple.1}}">
+                            {% endif %}
+                        {% else %}                                                
+                            {% if ftuple.0 == 'secret' %}                        
+                                <input id="{{ftuple.0}}" type=password name="{{ftuple.0}}" value="">
+                            {% else %}
+                                <input id="{{ftuple.0}}" type=text name="{{ftuple.0}}" value="">                            
+                            {% endif %}
+                        {% endif %}
+                        {% if ftuple.2 %}
+                        <span class="tooltip"><img src="{% static 'help.png' %}"><span class="tooltiptext">{{ftuple.2}}</span></span> 
+                        {% endif %}
+                    </p>
+                {% endfor %}
+            </form>
+            <form method=post class=myform id="dyndns_push">
+                {% csrf_token %}
+            </form>
+                <p>
+                    <button name='configure' form="dyndns_settings" value='1'>{% trans 'Save' %}</button>
+                    <button name='push' form="dyndns_push" value='1'>{% trans 'Force set DNS' %}</button>
+                </p>
+        </div>
+
+        {# MANAGE INDICATORS #}
+
+        {% if ddr.dyndnsrecordvalue_set.all %}
+            <table class="humantable2">
+            <tr>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Priority' %}</th>
+                <th>{% trans 'Policy' %}</th>
+                <th>{% trans 'Value' %}</th>
+                <th>{% trans 'Commands' %}</th>
+                
+            </tr>
+            {% for ddrv in ddr.values %}
+                <tr>
+                    <td>
+                        <span class="links">
+                        <a href="{% url 'okerr:ilocator' project.get_textid ddrv.indicator.name %}">
+                        
+                        {% for flag in ddrv.indicator.flags %}
+                            {% with 'iflags/'|add:flag|add:'.png' as image_static %}
+                                <img src="{% static image_static %}">
+                            {% endwith %}
+                        {% endfor %}
+                        
+                        {{ddrv.indicator.name}}</a>
+                        </span>
+                    </td>
+                    <td>{{ddrv.indicator.status}}</td>
+                    <td>{{ddrv.priority}}</td>
+                    <td>
+                        {{ddrv.indicator.policy.name}}
+                    </td>
+                    <td>
+                        {% if ddrv.value == ddr.curvalue %}
+                            <b>{{ddrv.value}} [active]</b>
+                        {% else %}
+                            {{ddrv.value}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method=post action="{% url 'okerr:ilocator' ddrv.indicator.project.get_textid ddrv.indicator.name %}" style="display: inline;">                
+                            {% csrf_token %}
+                            <input type=hidden name="return_url" value="{{request.path}}">                 
+                            <button class='massButton' name='set_ok' value='1'>{% trans 'OK' %}</button>
+                            <button class='massButton' name='set_err' value='1'> {% trans 'ERR' %}</button>
+                        </form>
+
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="name" value="{{ddrv.indicator.name}}" />    
+                            <button class='massButton' name='delvalue' value='1'>{% trans 'Delete' %}</button>
+                        </form>
+                        
+                    </td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% else %}
+            {% trans 'No indicators' %}    
+        {% endif %}
+
+
+
+        {# ADD INDICATOR #}
+
+        <form method="post" class=myform>
+            {% csrf_token %}
+            <input type="hidden" name="host" value="{{ddr.hostname}}" />    
+
+            <p>
+                <label for="indicator">{% trans 'Add indicator' %}:</label>
+                <select name="indicator" id="indicator">
+
+                {% for i in project.indicator_set.all %}
+                    {% if i in ddr.indicators %}
+                        <option value="{{i.name}}" disabled>{{i.name}}</option>
+                    {% else %}
+                        <option value="{{i.name}}">{{i.name}}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </p>
+            <p>    
+                <label for="value">{% trans 'Value' %}</label>
+                <input type=text id="value" name='value' value='' placeholder='1.2.3.4'>
+            </p>
+            <p>
+                <label for="priority">{% trans 'Priority' %}</label>
+                <input type=text id="priority" name='priority' value='{{ddr.getdefpriority}}'>
+            </p>
+            <p>
+                <button name='addvalue' value='1'>{% trans 'Add' %}</button>
+            </p>
+        </form>
+
+
+    </div> {# left column, management #}
+    <div>
+    
+        {% if ddr.status_age.0 != 'not configured' %}        
+            <table>
+                <tr>
+                    <td>{% trans 'Current IP (local)' %}</td>
+                    <td>{{ddr.curvalue}}</td>
+                    <td>
+                        {% with statusage=ddr.status_age %}
+                            {{statusage.0}} ({{statusage.1}})
+                        {% endwith %}
+                    </td>
+                </tr>
+
+            {% if nsdomain|length %}
+                <tr class="title"><td colspan=3>{{ ddr.get_domain }} {% trans 'DNS servers' %}</td></tr>
+                {% for rtuple in nsdomain %}
+                    <tr>
+                    <td>{{rtuple.0}}</td>
+                    <td>{{rtuple.1}}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+
+            <tr class="title"><td colspan=3>{% trans 'Public DNS servers' %}</td></tr>
+            {% if nspublic|length %}
+                {% for rtuple in nspublic %}
+                    <tr>
+                    <td>{{rtuple.0}}</td>
+                    <td>{{rtuple.1}}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+
+            </table>
+            
+            {% trans 'Status' %} ({{ddr.last_try}}): {% if True or status_json %}
+                <br>
+                <textarea rows=10 cols=50>{{status}}</textarea>
+                <br>
+            {% else %}
+                {{status}}<br>
+            {% endif %}
+
+        {% else %}
+        {% endif %} {# if configured #}
+
+
+    </div>  {# right column, info #}
+</div> {# container #}
+    
+
+{% trans 'Log records' %}:
+<br>
+<textarea id=logs cols=100 rows=10 disabled=true>{% for logrecord in log %}{{logrecord}}
+{% endfor %}</textarea>
+<br>
+
+<form method=post>
+    {% csrf_token %}
+    <input type=hidden name='host' value='{{ddr.hostname}}'>
+    <br>
+    <button class='massButton' name='delete' onclick="return confirm('Are you sure?')">{% trans 'Delete' %} {{ddr.hostname}}</button>
+</form>
+
+
+
+{% endblock %}

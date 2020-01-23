@@ -1,0 +1,24 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load markup_tags %}
+
+{% block title %}{% trans 'Message of the day' %}{% endblock %}
+
+{% block content %}
+
+<center>
+
+<div class="motd">
+{{motd|apply_markup:"markdown"}}
+</div>
+
+<p>
+
+    <form method=post>
+        {% csrf_token %}
+        <input type=hidden name="return_url" value="{{return_url}}">
+        <input type=hidden name="hash" value="{{hash}}">
+        <input type=submit name="continue" value='{% trans 'Continue' %}'>
+    </form>
+
+{% endblock %}

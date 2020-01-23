@@ -1,0 +1,272 @@
+{% load i18n %}
+{% load cycle from future %}
+{% load static %}
+
+{% load get_item %}
+
+    <script language="JavaScript">
+    function submit_cbs(formid,cmd){
+        f = document.getElementById(formid);
+        f.elements['masscmd'].value=cmd;
+        f.submit();
+    }
+
+    function checkAll(formid, mastername)
+    {
+        var checkboxes = new Array();
+        f = document.getElementById(formid);
+        
+        checktoggle = f[mastername].checked
+        
+        checkboxes = f.getElementsByTagName('input');
+         
+        for (var i=0; i<checkboxes.length; i++)  {
+            if (checkboxes[i].type == 'checkbox')   {
+                checkboxes[i].checked = checktoggle;
+            }
+        }
+    }
+    </script>
+
+    <acronym title="textid(s): {% for tid in project.textid %}{{tid}} {%endfor%}">
+    <b>&nbsp;{{project.name}}&nbsp;</acronym></b>
+    <a href="{% url 'okerr:project' project.id %}"><img src="{% static 'wrench.png' %}"></a>
+    <a href="{% url 'okerr:keys' project.id '' %}"><img src="{% static 'key.png' %}"></a>
+
+    <a href={% url 'okerr:pjson' project.id %}><img src="{% static 'page.png' %}"></a>
+
+    <span onclick="showall()"> &#x21CA; </span> <span onclick="hideall()"> &#x21C8; </span> 
+
+  {% with itree=project.itree %}
+    {% include 'okerrui/itree.html' %}
+  {% endwith %} 
+
+
+        <table cellspacing=0 border=0 width="100%"> {# project table #}
+
+
+            <tr class=title> {# project control bar #}
+                <td>
+                    <acronym title="textid(s): {% for tid in project.textid %}{{tid}} {%endfor%}">
+                    <b>&nbsp;{{project.name}}&nbsp;</acronym></b>
+                    <a href="{% url 'okerr:project' project.id %}"><img src="{% static 'wrench.png' %}"></a>
+                    <a href="{% url 'okerr:keys' project.id '' %}"><img src="{% static 'key.png' %}"></a>
+                </td>
+                <td>
+                    <form method=post style="display:inline">
+                        {%csrf_token%}
+                        <input type=hidden name=setsubtree value=1>
+                        <input type=hidden name=project value={{project.id}}>
+                        <select name=subtree onchange="this.form.submit()">>
+                            <option value=""></option>
+                            {%for t in project.tree%}
+                                {% if t == project.subtree %}
+                                    <option value="{{t}}" selected>{{t}}</option>
+                                {%else%}
+                                    <option value="{{t}}">{{t}}</option>
+                                {%endif%}
+                            {%endfor%}
+                        </select>
+                        <input type="image" src="{% static 'magnifier.png' %}" name="image" width="16" height="16"> </form>
+<a href={% url 'okerr:pjson' project.id %}><img src="{% static 'page.png' %}"></a>
+            
+                </td>
+                <td align=right>
+                    &nbsp;{{project.ni}}/{{project.nitotal}} {% trans 'indicator(s)' %}</b>
+                </td>
+                </tr>
+
+
+                {# tags #}
+                <tr>
+                <td colspan=3> 
+
+
+                {% if project.tags %}
+                {# <tr><td colspan=3> #} 
+                {% trans 'User tags' %}:                
+                    {% for tag,value in project.tags.items %}
+                        <form method=post name=switchtag_{{project.id}}_{{forloop.counter0}} style="display: inline">
+                            {% csrf_token %}
+                            <input type=hidden name=switchtag value="1">
+                            <input type=hidden name=project value="{{project.id}}">
+                            <input type=hidden name=tag value="{{tag}}">
+                        </form>          
+                                   
+                        {% comment %} 
+                        <font color=red>{{value}}</font>[<a
+                        href="javascript:document.switchtag_{{project.id}}_{{forloop.counter0}}.submit();"
+                        style="text-decoration:none">{{tag}}</a>]                
+                        {% endcomment %}
+
+                        {% if value == '+' %}
+                            <font style='background-color: #999999'>[ <a
+                        href="javascript:document.switchtag_{{project.id}}_{{forloop.counter0}}.submit();"
+                        style="text-decoration:none"><b>{{tag}}</b></a> ]</font>
+                        {% elif value == '-' %}
+                            <font style='background-color: #999999'><strike><b>[ <a
+                        href="javascript:document.switchtag_{{project.id}}_{{forloop.counter0}}.submit();"
+                        style="text-decoration:none">{{tag}}</a> ]</b></strike></font>
+                        {% else %}
+                            [ <a
+                        href="javascript:document.switchtag_{{project.id}}_{{forloop.counter0}}.submit();"
+                        style="text-decoration:none">{{tag}}</a> ]
+
+                        
+                        {% endif %}
+                        
+                        
+                    {%endfor%}
+                {# </td></tr> #}        
+                {% endif %}
+
+
+                {# metatags #}
+                {# <tr> <td colspan=3> #} 
+                    {% trans 'System tags' %}:
+                    {% for tag in project.metatags_list %}
+                        <form method=post name=switchmetatag_{{project.id}}_{{forloop.counter0}} style="display: inline">
+                            {% csrf_token %}
+                            <input type=hidden name=switchtag value="1">
+                            <input type=hidden name=project value="{{project.id}}">
+                            <input type=hidden name=tag value="{{tag}}">
+                        </form>  
+                        {% comment %}                   
+                        <font color=red>{{project.metatags|get_item:tag}}</font>[<a
+                        href="javascript:document.switchmetatag_{{project.id}}_{{forloop.counter0}}.submit();"
+                        style="text-decoration:none">{{tag}}</a>]                   
+                        {% endcomment %}
+                        
+                        {% if project.metatags|get_item:tag == '+' %}
+                            <font style='background-color: #999999'>[ <a
+                        href="javascript:document.switchmetatag_{{project.id}}_{{forloop.counter0}}.submit();"
+                        style="text-decoration:none"><b>{{tag}}</b></a> ]</font>
+                        {% elif project.metatags|get_item:tag == '-' %}
+                            <strike><font style='background-color: #999999'><b>[ <a
+                        href="javascript:document.switchmetatag_{{project.id}}_{{forloop.counter0}}.submit();"
+                        style="text-decoration:none">{{tag}}</a> ]</b></font></strike>
+                        {% else %}
+                            [ <a
+                        href="javascript:document.switchmetatag_{{project.id}}_{{forloop.counter0}}.submit();"
+                        style="text-decoration:none">{{tag}}</a> ]
+                        {% endif %}
+                        
+                        
+                        
+                        
+                    {%endfor%}
+                {# </td></tr> #}        
+                
+                {# <tr><td colspan=3> #}
+                            {% trans 'Reset' %}:
+                            <form method=post name=resettag{{project.id}} style="display: inline">
+                            {% csrf_token %}
+                            <input type=hidden name=resettags value="1">
+                            <input type=hidden name=project value="{{project.id}}">
+                        </form>          
+                        [ <a href="javascript:document.resettag{{project.id}}.submit();"
+                        style="text-decoration:none">Reset all tag filters</a> ]
+                </tr>
+                
+
+
+
+                {% if project.ni %}
+                <tr>
+                <td colspan=3>
+                    <form name=cms{{project.id}} id=cbs{{project.id}} method=post> {# for with checkboxes #}
+                    <input type=hidden name='masscmd' value=''>
+                    <input type=hidden name='project_id' value='{{project.id}}'>
+                    {% csrf_token %}
+
+                    <table border=0 cellspacing=0 width=100%> {# inside table #}
+                        <tr bgcolor=white>
+                            <th><input name='master' type="checkbox"/
+                            onclick="javascript:checkAll('cbs{{project.id}}',
+                            'master');">
+                            <th><img src="{% static 'star.png' %}">
+                            <th>{% trans 'Flags' %}
+                            <th>{% trans 'Name' %}
+                            <th>{% trans 'Details' %}
+                            <th>{% trans 'Age' %}
+                            <th>{% trans 'Status Age' %}
+                            <th>{% trans 'Policy' %}
+                            <th>{% trans 'Details' %}                                               
+                            {% for irec in project.ilist %}
+
+                                {% if irec.i.okerrm == 'ERR' %}
+                                <tr bgcolor="{% cycle '#ffaaaa' '#ffbbbb' %}">
+                                {% else %}
+                                <tr bgcolor="{% cycle '#eeeeee' '#dddddd' %}">
+                                {% endif %}
+
+                                <td align=center>
+                                    <input type=checkbox name="ii" value="{{irec.i.id}}">
+                                </td>
+                                <td align=center>
+                                {% if irec.star == 'True' %}
+                                    <img src="{% static 'star.png' %}">
+                                {%endif%}
+                                
+                                <td>
+                                {% for flag in irec.i.flags %}
+                                    {% with "iflags/"|add:flag|add:".png" as imagename %}
+                                        <img src="{% static imagename %}">
+                                    {% endwith %}
+                                {% endfor %}
+                                
+                                
+                                
+                                <td>
+                                <a href="{% url 'okerr:indicator' irec.i.id %}">{{ irec.i.name }}</a>
+                                
+                                
+                                <td><span title='{{irec.i.details}}'>{{ irec.i.briefdetails }}</span>
+                                <td>{{ irec.i.age_short }}
+                                <td>{{ irec.i.statusage_short }}
+                                <td>{% trans irec.i.policy.name %}
+                                <td><a href="{% url 'okerr:indicator' irec.i.id %}"><img src="{% static 'wrench.png' %}"></a>
+                            </tr>                
+                            {%endfor%}
+                    </table> {# end of inside table#}    
+                    </form> {# end of checkboxes form #}
+                </td>
+                </tr>
+                <tr>
+                <td colspan=3 align=left>
+                    {# MASS COMMANDS #}
+                    <button type="submit" 
+                        onClick="submit_cbs('cbs{{project.id}}','mass_maintenance')">
+                        {% trans 'Set maintenance' %}</button>
+                    <button type="submit" 
+                        onClick="submit_cbs('cbs{{project.id}}','mass_unmaintenance')">
+                        {% trans 'Stop maintenance' %}</button>
+                    <button type="submit" 
+                        onClick="submit_cbs('cbs{{project.id}}','mass_retest')">
+                        {% trans 'Retest ASAP' %}</button>
+                    
+                    {% if 'danger' in request.session %}
+                    <button type="submit" 
+                        onClick="submit_cbs('cbs{{project.id}}','mass_delete')">
+                        {% trans 'Delete (danger)' %}</button>
+                    {% endif %}
+
+
+
+                    <form method=post>
+                        {% csrf_token %}
+                        {% trans 'remark' %}: <input type=text name=remark value="">
+                        <input type=hidden name=project value="{{project.id}}">
+                        <input type=submit name=projectsummary 
+                        value="{% trans 'send summary to all members' %}"> 
+                    </form>
+                </td>
+                </tr>        
+                {% else %} {# if project.ni #}
+                <tr>
+                    <td colspan=3>
+                        {% trans 'No indicators with this tag set in this subtree' %}
+                    </td>           
+                </tr>
+                {%endif%}                            
+            </table> {# project table #}

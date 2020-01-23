@@ -1,0 +1,54 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+
+<acronym title="textid(s): {% for tid in project.projecttextid_set.all %}{{tid}} {%endfor%}">
+    <b>&nbsp;{{project.name}}</b></acronym>
+<span title="indicators"><a href="{% url 'okerr:pi' project.get_textid %}"><img src="{% static 'iflags/OK.png' %}"></a></span>
+<span title="scripts and servers"><a href="{% url 'okerr:servers' project.get_textid %}"><img src="{% static 'computer.png' %}"></a></span>
+<span title="project settings"><a href="{% url 'okerr:project' project.get_textid %}"><img src="{% static 'wrench.png' %}"></a></span>
+
+<h2><a href="{% url 'okerr:servers' project.get_textid %}">config</a>: {{path}}</h2>    
+<form method=post>
+{% csrf_token %}
+
+<fieldset>
+{% for i in includes %}
+    {% if i in enabled %}
+        <input type="checkbox" name="includes" value="{{i}}" checked {{disabled}}>{{i}}<br>
+    {% else %}
+        <input type="checkbox" name="includes" value="{{i}}" {{disabled}}>{{i}}<br>
+    {% endif %}
+{% endfor %}
+</fieldset>
+
+{% if save %}
+    <input name='save' type='submit' value="{% trans 'Save' %}">
+{% endif %}
+</form>
+    
+{% if save %}
+    <div class=halfdiv>
+    {% trans 'Clone this config with name' %}: <form method=post>
+    {% csrf_token %}
+    <input type=text name='name'>
+    <input name='clone' type='submit' value="{% trans 'Clone' %}">
+    </form>
+    </div>
+
+    {% if can_delete %}
+        <div class=halfdiv style="background-color: #993333;">
+        <form method=post >
+        {% trans 'Delete this config' %}: <form method=post>
+        {% csrf_token %}
+        <input name='delete' type='submit' value="{% trans 'Delete' %}">
+        </form>
+        </div>
+    {% endif %}
+{% endif %}
+
+        
+{% endblock%}

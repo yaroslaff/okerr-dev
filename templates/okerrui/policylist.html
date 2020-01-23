@@ -1,0 +1,48 @@
+{% extends "okerrui/base.html" %}
+{% block content %}
+    <b>Your policies</b>
+    <table border=0 cellspacing=0>
+        <tr>
+            <th>Id
+            <th>Name
+            <th>Period
+            <th>Wipe
+            <th>Autocreate
+            <th>Edit
+    {% for p in policies %}
+        {% if forloop.counter|divisibleby:2 %}
+            <tr bgcolor="dddddd">
+        {% else %}
+        <tr>
+        {% endif %}
+            <td>{{ p.id }}
+            <td>{{ p.name }}
+            <th>{{ p.period }}
+            <th>{{ p.wipe }}
+            <th>{{ p.autocreate }}
+            <td><a href="{% url 'okerr:policy' p.id %}">edit
+        </tr>
+    {%endfor%}
+    </table>
+
+    <p>
+
+    {# add policy #}
+    <form action="" method="post">
+    {% csrf_token %}
+    <table>
+    <tr>
+        <td>
+            Policy name:
+        </td>
+        <td>
+            <input type=text name="name">
+        </td>
+    </tr>
+
+    </table>
+    
+    <input type="submit" name="add" value="Add" />
+    </form>
+
+{% endblock %}

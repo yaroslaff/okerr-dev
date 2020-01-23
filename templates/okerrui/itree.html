@@ -1,0 +1,122 @@
+{% load static %}
+{% load i18n %}
+
+{% if itree.prefix %}
+
+    {# should we display this or not? #}
+    {% if itree.sumstatus|get_item:'ERR' %}
+        <div id={{itree.uid}} class="indcont0" style="display:block; width:100%;">
+    {% else %}
+        <div id={{itree.uid}} class="indcont0" style="display:none;">
+    {% endif %}
+{%else%}
+    <div id={{itree.uid}} style="width:100%;">
+{%endif%}
+
+
+
+
+{% for b in itree.branches %} <!-- branches-->
+  <div style="margin-left:0px; border: 0px double black;">     
+  {% with itree=itree.branches|get_item:b %}
+    <div style="margin-left: 0px; border-left: 2px solid #999;  border-bottom: 2px solid #999; " id="cont-{{itree.uid}}"> <!-- header and possible content -->
+        <div style="background: #ccc" onclick='toggleTable("{{itree.uid}}")'>
+          <span float=left> <!-- flags -->
+            {% if not itree.sumstatus|get_item:'ERR' %}
+                <img src="{% static 'iflags/OK.png' %}">
+            {% else %}
+                <img src="{% static 'iflags/ERR.png' %}">
+            {% endif %}
+
+            {% if itree.sumstatus|get_item:'MAINTENANCE' %}
+                <img src="{% static 'iflags/maintenance.png' %}">
+            {% endif %}
+            
+            {% if itree.sumstatus|get_item:'PENDING' %}
+                <img src="{% static 'iflags/pending.png' %}">
+            {% endif %}
+
+
+          </span>
+
+          <b>{{itree.prefix}}</b> 
+
+            <span style="color: #999999">
+            {% if itree.sumstatus|get_item:'OK' %}
+                OK: {{itree.sumstatus|get_item:'OK'}}
+            {% endif %}
+
+            {% if itree.sumstatus|get_item:'ERR' %}
+                ERR: {{itree.sumstatus|get_item:'ERR'}}
+            {% endif %}
+          
+            {% if itree.sumstatus|get_item:'PENDING' %}
+                p: {{itree.sumstatus|get_item:'PENDING'}}
+            {% endif %}
+
+
+            {% if itree.sumstatus|get_item:'MAINTENANCE' %}
+                m: {{itree.sumstatus|get_item:'MAINTENANCE'}}
+            {% endif %}
+            
+            {% if itree.sumstatus|get_item:'SILENT' %}
+                s: {{itree.sumstatus|get_item:'SILENT'}}
+            {% endif %}
+
+
+            </span>
+            
+
+          <span float=left id="arr-{{itree.uid}}">&#x21CA;</span>
+          
+          
+        </div>
+        <div style="margin-left:20px;">
+          {% include "okerrui/itree.html" %}
+        </div>
+    </div>
+  {% endwith %}       
+  </div>
+{% endfor%}  <!-- branches -->
+
+
+
+
+<div> <!--indicators -->
+    <table width="100%" cellspacing=0>
+        {% for i in itree.indicators %}
+            {% if i.okerrm == 'ERR' %}
+            <tr bgcolor="{% cycle '#ffaaaa' '#ffbbbb' %}">
+            {% else %}
+            <tr bgcolor="{% cycle '#eeeeee' '#dddddd' %}">
+            {% endif %}
+            <td align=center>
+                <input type=checkbox name="ii" value="{{i.id}}">
+            </td>
+            <td align=center>
+            {% if i.star == 'True' %}
+                <img src="{% static 'star.png' %}">
+            {%endif%}
+            
+            <td>
+            {% for flag in i.flags %}
+                {% with "iflags/"|add:flag|add:".png" as imagename %}
+                    <img src="{% static imagename %}">
+                {% endwith %}
+            {% endfor %}            
+            <td>
+            <a href="{% url 'okerr:indicator' i.id %}">{{ i.name }}</a>                        
+            <td><span title='{{i.details}}'>{{ i.briefdetails }}</span>
+            <td><span title="age (from last update)">{{ i.age_short }}</span>
+            <td><span title="status age (from last change of status)">{{ i.statusage_short }}</span>
+            {% comment 'not needed on index' %}
+            <td><span title="policy">{% trans i.policy.name %}</span>
+            <td><a href="{% url 'okerr:indicator' i.id %}"><img src="{% static 'wrench.png' %}"></a>
+            {% endcomment %}
+        </tr>                
+        {%endfor%}
+    </table> {# end of inside table#}    
+
+</div> <!-- indicators -->
+
+</div> <!-- root div -->

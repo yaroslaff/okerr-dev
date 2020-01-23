@@ -1,0 +1,51 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load markup_tags %}
+
+{% block title %}{% trans 'Training' %}{% endblock %}
+
+{% block content %}
+
+
+<h1>{% trans 'Training' %}</h1>
+
+<div class="container">
+    <div>
+    {% if stage != 'DONE' %}
+
+        <h2>{% trans 'Common requirements' %}</h2>
+        {% blocktrans %}
+        All traning tasks must be done on project '<a href='{{plink}}'>{{pname}}</a>' (text id: {{textid}}, <a href="{{pconfig}}">settings</a>). Indicator(s) must have name starting with 'test:'. After each task is done, click button 'Check' below.<br>
+        Easier to use this page at one browser tab, and perform task in other tab.
+        {% endblocktrans %}
+
+                
+        <h2>{% trans 'Current task' %} ({{n}}/{{total}}): {% trans tasktitle %}</h2>
+        
+    {% endif %}
+        
+        {% include taskfile %}        
+ 
+    </div>
+    <div class="fluid" style="width: 30%; border: 2px solid #aaa;">
+        <ul>
+            {% for t in tasks %}
+                <li class="{{t.class}}">{{t.title}}</li>
+            {% endfor %}
+        </ul>    
+    </div>
+</div>
+
+
+<p>
+
+</p>
+
+    {% if stage != 'DONE' %}
+    <form method=post>
+        {% csrf_token %}
+        <button name="check" class="massButton">{% trans "Check" %}</button>
+    </form>
+    {% endif %}
+
+{% endblock %}

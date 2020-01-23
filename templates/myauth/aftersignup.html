@@ -1,0 +1,14 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+    
+    {% if error_message %}
+        <strong>{{ error_message }}</strong>
+    {% endif %}
+
+    <h1>Thanks for signup!</h1>
+    Email is sent to your email address {{ email }} with verification code. Please check your mailbox and enter code at <a href="{% url 'myauth:verify' %}">verification page</a>.
+
+{% endblock%}

@@ -1,0 +1,93 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+
+
+
+<center>
+<b>{% trans 'wizard for indicator' %} {{ i.name }}</b>
+<p>
+<center>
+<table>
+<form method=post>
+{% csrf_token %}
+<tr>
+    <td>{% trans 'Indicator (old)' %}:
+    <td>{{ i.name }}    
+</tr>
+
+<tr>
+    <td>{% trans 'CheckMethod' %}:
+    <td>{{ i.cm.name }} 
+</tr>
+
+<tr>
+    <td>{% trans 'Project' %}:
+    <td>{{ i.project }} 
+</tr>
+
+<tr>
+    <td>{% trans 'Policy' %}:
+    <td>{{ i.policy }} 
+</tr>
+
+<tr>
+    <td>{% trans 'Patience' %}:
+    <td>{{ i.getpatience }}
+</tr>
+
+
+<tr>
+    <td>{% trans 'Upper level indicator name (new)' %}:
+    <td>{{upname}}
+</tr>
+
+<tr>
+    <td>{% trans 'Upper level indicator policy' %}:
+    <td><select name='policy'>
+    {% for policy in i.project.policy_set.all %}
+        {% if i.policy == policy %}
+        <option value={{policy.name}} selected>{{policy}}
+        {% else %}
+        <option value={{policy.name}}>{{policy}}
+        {% endif %}
+    {% endfor %}
+    </select>
+</tr>
+
+<tr>
+    <td>{% trans 'OK threshold' %}:
+    <td><input type=text name=okthreshold value="{{ okthreshold }}">
+    <span title="{% trans "Upper indicator will switch to OK if lower indicator OK status is older this this number of seconds. Default value is period + patience" %}"> <img src="{% static 'help.png' %}"></span>
+</tr>
+
+<tr>
+    <td>{% trans 'ERR threshold' %}:
+    <td><input type=text name=errthreshold value="{{ errthreshold }}">
+    <span title="{% trans "Upper indicator will switch to ERR if lower indicator ERR status is older this this number of seconds. Default value is 2*period + patience" %}"> <img src="{% static 'help.png' %}"></span>
+    
+</tr>
+
+<tr>
+    <td>{% trans 'Silent low-level indicator' %}
+    <td><input type=checkbox name=silent checked>
+</tr>
+
+{% if i.usertags %}
+<tr>
+    <td>{% trans 'Copy tags' %}
+    <td><input type=checkbox name=copytags checked> ({{i.usertags|join:", "}})
+</tr>
+{% endif %} 
+
+<tr>
+    <td colspan=2>
+    <input type=submit value="{% trans 'Create upper-level indicator' %}">
+</tr>
+
+
+</table>
+</form>
+
+{% endblock %}

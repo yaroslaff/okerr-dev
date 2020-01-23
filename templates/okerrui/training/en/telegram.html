@@ -1,0 +1,22 @@
+Connect Telegram messenger to your account.
+
+<ul>
+    <li>Install Telegrap app on your phone.
+    <li>(Recommended) Set name (username) for telegram account.
+    <li>Set this name on your <a href="{% url 'myauth:profile' %}">профиле</a>.
+    <li>Find user OkerrBot.
+    <li>In chat OkerrBot make command <b>/on</b>
+</ul>
+
+
+Command /on binds telegram chat (where you did this command) and account. Field 'Telegram username' of profile must match telegram username.
+<br>
+If you dont have username in telegram, you can either set username, or you will get error message with chat id. You can use this chat id instead of username for 'telegram username' field and repeat <b>/on</b> command.
+
+<br>
+<a href="https://okerr.freshdesk.com/solution/articles/22000219591-%D0%9F%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BE%D0%BF%D0%BE%D0%B2%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D0%B9-%D0%B2-telegram">More detailed instructions (in russian)</a>.
+<br>
+If you already linked your telegram account to profile, just click 'Check'.
+<br>
+After you linked account, you will get alerts in telegram and always can get brief status with command <b>/sum</b>. (Telegram has feature to mute chat if you dont want to get notifications, so you dont have to unlink it).
+

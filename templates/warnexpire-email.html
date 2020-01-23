@@ -1,0 +1,23 @@
+<html>
+<h1><font color="#666666">okerr IMPORTANT alert</font></h1>
+for: {{user.username}}<br>
+generated on {{hostname}} at {% now "d M Y H:i:s" %}
+<p>
+<h2>Membership expiration alert</h2>
+Your membership in group {{membership.group.name}} expires soon.
+<br>
+Expiration date/time: {{membership.expires}}
+<br>
+Time left: {{timeleft}}
+<p>
+
+You are owner of project(s):
+<ul>
+{% for p in profile.ownerprojects %}
+    <li>{{p.name}}
+{% endfor %}
+</ul>
+These projects could be downgraded, and indicators (over new membership limits)
+could be disabled.
+</html>
+

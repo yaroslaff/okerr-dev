@@ -1,0 +1,66 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+
+
+    <b>{% trans 'Your Projects' %}</b>
+    <table>
+        <tr class=title>
+            <td>{% trans 'Title' %}
+            <td>{% trans 'Statistics' %}
+            <td>{% trans 'Text ID' %}
+            <td>{% trans 'Owner' %}
+            <td>{% trans 'Members' %}
+            <td>{% trans 'Manage project' %}
+            <td>{% trans 'Manage indicators' %}
+            
+    {% for t in projects %}
+        {% if forloop.counter|divisibleby:2 %}
+            <tr bgcolor="eeeeee">
+        {% else %}
+        <tr>
+        {% endif %}
+            
+            <td>
+                <a href="{% url 'okerr:project' t.textid %}">{{t.name}}</a>
+            <td><div class="tooltip">{{ t.stats.ni }} / {{ t.stats.enabled }}
+                    <span class="tooltiptext">Total {{ t.stats.ni }} indicators, {{ t.stats.enabled }} enabled</span>
+                </div>
+            <td>
+                {% for tid in t.textids %}
+                    <a href="{% url 'okerr:project' tid %}">{{ tid }}</a>
+                {% endfor %}
+                
+            <td>{{ t.owner }}            
+            <td>{{ t.nmembers }}
+            <td>{{ t.tadmin }}
+            <td>{{ t.iadmin }}
+        </tr>
+    {%endfor%}
+    </table>
+
+    <p>
+
+    {# add project #}
+    <form action="" method="post">
+    {% csrf_token %}
+    <table>
+    <tr>
+        <td>
+            {% trans 'Project name' %}:
+        </td>
+        <td>
+            <input type=text name="name">
+        </td>
+    </tr>
+
+    </table>
+    
+    <button class='massButton' name='add' value='1'>{% trans 'Add' %}</button>
+
+    </form>
+
+{% endblock %}

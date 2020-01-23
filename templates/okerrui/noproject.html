@@ -1,0 +1,15 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+    
+<div class='header'>
+{% trans 'NO PROJECTS' %}
+</div>
+{% trans 'You have no your project and no access to projects of others.' %}
+{% blocktrans %}You can <a href="{{projectlist}}">create your project</a>.{% endblocktrans %}
+
+{% endblock%}
+

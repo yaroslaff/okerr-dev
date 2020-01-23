@@ -1,0 +1,38 @@
+<html>
+    <head>
+        {% include 'mail-css.html' %}
+    </head>
+    <body>
+    <h1><font color="#666666">okerr alert</font></h1>
+    for: {{user.username}}<br>
+    generated on {{hostname}} at {% now "d M Y H:i:s" %}
+    <p>
+    <h2>Alerts</h2>
+    <table>
+    {% for a in profile.mail_alerts %}
+        <tr>
+        <td>{{a.created|date:"d M Y H:i:s"}}</td>
+        <td><a href="{{siteurl}}{% url 'okerr:ilocator' a.indicator.project.get_textid a.indicator.name %}">{{a.indicator.name}}</a></td>
+        <td>{{a.message}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <h2>Project(s) summary</h2>
+    <table>
+    {% for p in profile.projects %}
+        <tr>
+            <td>{{p.name}}</td>
+            <td>{{p.stringstat}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+
+    {% include "alert-ad.html" %}
+
+    {% include "bulkmail.html" %}
+
+    </body>
+</html>
+

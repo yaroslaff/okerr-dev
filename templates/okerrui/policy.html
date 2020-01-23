@@ -1,0 +1,141 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+
+
+{% block title%}{{p.name}}{%endblock%}
+
+
+{% block content %}
+
+
+{% with project=project prefix="Policy" %}
+    {% include 'okerrui/projectlinks.html' %}
+{% endwith %}
+
+    
+    <b>{% trans "Policy" %}:</b> {{p.name}}<br>
+    ({{p.numindicators_total}} {% trans 'indicator(s) uses this policy' %}, {{p.numindicators_disabled}} {% trans 'disabled' %})
+   
+    <form action="{% url 'okerr:policy' project.get_textid p.name %}" method="post">
+    <table border=0 align=center>
+        <tr>
+            <td>{% trans 'Policy' %}
+            <td><input type=text name="name" value="{{ p.name }}">
+        </tr>
+
+        <tr>
+            <td>{% trans 'Period' %}
+            <td><input type=text name="period" value="{{ p.period }}">
+        </tr>
+ 
+        <tr>
+            <td>{% trans 'Wipe' %}
+            <td><input type=text name="wipe" value="{{ p.wipe }}">
+        </tr>
+
+        <tr>
+            <td>{% trans 'Patience' %}
+            <td><input type=text name="patience" value="{{ p.patience }}">
+        </tr>
+
+        <tr>
+            <td>{% trans 'Secret' %}
+            <td><input type=text name="secret" value="{{ p.secret }}">
+        </tr>
+
+        <tr>
+            <td>{% trans 'Retry schedule' %}
+            <td><input type=text name="retry_schedule" value="{{ p.retry_schedule }}">
+        </tr>
+
+        <tr>
+            <td>{% trans 'Recovery retry schedule' %}
+            <td><input type=text name="recovery_retry_schedule" value="{{ p.recovery_retry_schedule }}">
+        </tr>
+
+        <tr>
+            <td>{% trans 'Alert reduction' %}
+            <td><input type=text name="reduction" value="{{ p.reduction }}">
+        </tr>
+
+
+        <tr>
+            <td>{% trans 'URL to report status changes' %}
+            <td><input type=text name="url_statuschange" value="{{ p.url_statuschange }}">
+        </tr>
+
+
+         <tr>
+            <td>{% trans 'Autocreate' %}
+            <td>
+            {% if p.autocreate %}
+                <input type="checkbox" name="autocreate" value="1" checked>
+            {% else %}
+                <input type="checkbox" name="autocreate" value="1">
+            {% endif %}
+        </tr>
+
+         <tr>
+            <td>{% trans 'Accept updates over HTTP' %}
+            <td>
+            {% if p.httpupdate %}
+                <input type="checkbox" name="httpupdate" value="1" checked>
+            {% else %}
+                <input type="checkbox" name="httpupdate" value="1">
+            {% endif %}
+        </tr>
+ 
+
+         <tr>
+            <td>{% trans 'Accept updates over SMTP' %}
+            <td>
+            {% if p.smtpupdate %}
+                <input type="checkbox" name="smtpupdate" value="1" checked>
+            {% else %}
+                <input type="checkbox" name="smtpupdate" value="1">
+            {% endif %}
+        </tr>
+ 
+    </table>
+
+        {% csrf_token %}
+        <center>
+        <button class='massButton' name='apply' value='1'>{% trans 'Apply' %}</button>
+        <button class='massButton' name='delete' value='1' onclick="return confirm('{% trans 'Are you sure?' %}')">{% trans 'Delete' %}</button>
+
+    </form>
+    
+    {# policy subnet #}
+    <table>
+        <th>{% trans 'Subnet' %} (a.b.c.d/bits)</th>
+        <th>{% trans 'Remark' %}</th>
+        <th>{% trans 'Commands' %}</th>
+        {% for subnet in p.policysubnet_set.all %}
+            <tr>
+                <td>
+                    {{subnet.subnet}}
+                </td>
+                <td>
+                    {{subnet.remark}}
+                </td>
+                <td>
+                    <form method=post>
+                        {% csrf_token %}
+                        <input type=hidden name=subid value={{subnet.id}}>
+                        <button class='massButton' name='delsubnet' value='1'>{% trans 'Delete' %}</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    <tr>
+    <form method=post>
+    {% csrf_token %}
+    <td><input type=text name=subnet></td>
+    <td><input type=text name=remark></td>
+    <td><button class='massButton' name='addsubnet' value='1'>{% trans 'Add subnet' %}</button></td>
+    </tr>
+    </form>
+    </table>
+
+{% endblock %}

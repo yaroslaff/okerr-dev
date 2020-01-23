@@ -1,0 +1,118 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    
+    
+{% with project=project prefix="servers" %}
+    {% include 'okerrui/projectlinks.html' %}
+{% endwith %}
+    
+<div syle="text-align: center;">
+    <div class=halfdiv>
+        <h2>{% trans 'Access' %}</h2>
+        <ul>
+        {% if access_msg %}
+            {{access_msg}}
+        {% else %}
+            {% for u, pass in access.items %}
+                <form method=post name=del_{{u}} style="display: inline">
+                {% csrf_token %}
+                <input type=hidden name=delete value="1">
+                <input type=hidden name=client value="{{u}}">
+                </form> 
+
+                <li>{{u}} : {{pass}} [<a href="javascript:document.del_{{u}}.submit();" style="text-decoration:none">x</a>]<br>
+            {% endfor %}
+            </ul>
+            <form method=post>
+            {% csrf_token %}
+            user: <input type=text name=name> pass: <input type=text name=pass> <input type=submit name="add" value="Add/Change">
+            </form>
+        {% endif %}
+    </div>
+
+
+    <div class=halfdiv>
+        <h2>{% trans 'Configuration templates' %}</h2>
+        <ul>
+        {% for k in conf %}
+            <li><a href="{% url 'okerr:srvedit' project.get_textid 'conf' k%}">{{k}}</a>
+        {% endfor %}
+        </ul>
+
+        <form method=post>
+            {% csrf_token %}
+            <input type=text name="name" >
+            <input type=hidden name=path value="conf">
+            <input type=submit name="create" value="{% trans 'Create' %}">
+        </form>
+
+
+
+    </div>
+
+    <div class=halfdiv>
+        <h2>{% trans 'Servers' %}</h2>
+        <ul>
+        {% for k in servers %}
+            <li><a href="{% url 'okerr:srvedit' project.get_textid 'servers' k%}">{{k}}</a>
+        {% endfor %}
+        </ul>
+        
+        <form method=post>
+            {% csrf_token %}
+            <input type=text name="name" >
+            <input type=hidden name=path value="servers">
+            <input type=submit name="create" value="{% trans 'Create' %}">
+        </form>
+
+        
+    </div>
+
+    <div class=halfdiv>
+        <h2>{% trans 'Okerr script library' %}</h2>
+        <ul>
+        {% for k in lib %}
+            <li><a href="{% url 'okerr:srvedit' project.get_textid 'lib' k %}">{{k}}</a>
+        {% endfor %}
+        </ul>
+
+        <form method=post>
+            {% csrf_token %}
+            <input type=hidden name=path value="lib">
+            <input type=submit name="update" value="{% trans 'Update' %}">
+        </form>
+
+
+        {% if 'danger' in request.session %}
+            <form method=post>
+                {% csrf_token %}
+                <input type=text name="name" >
+                <input type=hidden name=path value="lib">
+                <input type=submit name="create" value="{% trans 'Create' %}">
+            </form>
+        {% endif %}
+    </div>
+
+    <div class=halfdiv>
+        <h2>{% trans 'My script library' %}</h2>
+        <ul>
+        {% for k in mylib %}
+            <li><a href="{% url 'okerr:srvedit' project.get_textid 'mylib' k %}">{{k}}</a>
+        {% endfor %}
+        </ul>
+
+        <form method=post>
+            {% csrf_token %}
+            <input type=text name="name" >
+            <input type=hidden name=path value="mylib">
+            <input type=submit name="create" value="{% trans 'Create' %}">
+        </form>
+    </div>
+
+
+</div>
+
+{% endblock%}

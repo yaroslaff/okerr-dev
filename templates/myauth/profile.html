@@ -1,0 +1,196 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+    
+    <form action="{% url 'myauth:profile' %}" method="post">
+    {% csrf_token %}
+    <table border=0>
+
+    <tr>
+    <td>{% trans 'Username' %}:</td>
+    <td>{{ user.username }}</td>
+    </tr>
+
+
+    <tr>
+    <td>{% trans 'First Name' %}:</td>
+    <td><input type=text name="first_name" value={{ user.first_name }}></td>
+    </tr>
+
+
+    <tr>
+    <td>{% trans 'Last Name' %}:</td>
+    <td><input type=text name="last_name" value={{ user.last_name }}></td>
+    </tr>
+
+
+    <tr>
+    <td>{% trans 'Telegram username' %}:</td>
+    <td><input type=text name="telegram_name" value={{ profile.telegram_name }}>
+        {% if profile.telegram_chat_id %}
+            ({% trans 'Linked' %})
+        {% else %}
+            ({% trans 'Not linked' %})
+        {% endif %}
+    </td>
+    </tr>
+
+    <tr>
+    <td>{% trans 'Created' %}</td>
+    <td>{{ user.date_joined }}</td>
+    </tr>
+
+    <tr>
+    <td>{% trans 'Training' %}</td>
+    <td>
+        {% if profile.training_stage == 'DONE' %}
+            {% trans 'Completed' %}
+        {% elif profile.training_stage %}
+            <a href="{% url 'okerr:training' %}">{% trans 'Continue' %}</a>
+        {% else %}
+            <a href="{% url 'okerr:training' %}">{% trans 'Begin' %}</a>
+        {% endif%}
+    
+    </td>
+    </tr>
+
+
+   <tr class='title'><td></td><td>{% trans 'Access' %}</td></tr>
+
+
+    <tr>
+    <td>{% trans 'Group(s)' %}:</td>
+    <td>
+        {% for g in groups %}
+            [ {{g.name}}
+        {% if g.expires %}
+            <span class="dull">({{g.left}})</span>
+        {% endif %}
+        ]
+        {% endfor %}
+    </td>
+    </tr>
+
+    <tr>
+    <td>{% trans 'Perk(s)' %}:</td>
+    <td>
+        {% for g in perks %}
+            [ {{g.name}}
+        {% if g.expires %}
+            <span class="dull">({{g.left}})</span>
+        {% endif %}
+        ]
+        {% endfor %}
+    </td>
+    </tr>
+
+
+    <tr>
+        <td>{% trans 'Parameters' %}:</td>
+    </tr>
+    {% for name,val in args.items %}
+    <tr>
+        <td>&nbsp;.&nbsp;.&nbsp;{{name}}</td>
+        <td>{{val}}</td>
+    </tr>
+    {% endfor %}
+
+    {% if qi %}
+    <tr>
+        <td>{% trans 'Quick indicators' %}:</td>
+    </tr>
+        {% for period, num in qi.items%}
+    <tr>
+        <td>&nbsp;{% trans 'Period' %}: {{period}}s</td>
+        <td>{% trans 'Indicators' %}: {{num}}</td>
+    </tr>
+            
+        {% endfor %}
+    {% endif %}
+    <tr>
+    <td>{% trans 'Projects' %}:</td>
+    <td>
+        {% for t in profile.projects %}
+            <a href="{% url 'okerr:pi' t.get_textid %}">{{t.name}}</a>
+            <a href="{% url 'okerr:project' t.id %}"><img src="{% static 'wrench.png' %}"></a>
+        {% endfor %}
+    </tr>
+
+
+    <tr class='title'><td></td><td>{% trans 'Outgoing emails' %}</td></tr>
+
+    <tr>
+    <td>{% trans 'Send summaries' %}</td>
+    {% if profile.sendsummary %}
+    <td><input type=checkbox name="sendsummary" checked></td>
+    {% else %}
+    <td><input type=checkbox name="sendsummary"></td>
+    {% endif %}
+    </tr>
+
+    <tr>
+    <td>{% trans 'Daily summary time' %} (UTC)</td>
+    <td><input type=text name="sumtime" size=6 value="{{profile.sumtimehhmm}}"></td>
+    </tr>
+
+    <tr>
+    <td>{% trans 'Next summary time' %} (UTC)</td>
+    <td>{{profile.nextsummary}}</td>
+    </tr>
+
+    <tr>
+    <td>{% trans 'Send alerts' %}</td>
+    {% if profile.sendalert %}
+    <td><input type=checkbox name="sendalert" checked></td>
+    {% else %}
+    <td><input type=checkbox name="sendalert"></td>
+    {% endif %}
+    </tr>
+
+
+    <tr class='title'><td></td><td>{% trans 'Bonus code' %}</td></tr>
+
+    <tr>
+    <td>{% trans 'Bonus code' %}</td>
+    <td><input type=text name="bonus_code" autocomplete="off" value=""></td>
+    </tr>
+
+    <tr class='title'><td></td><td>{% trans 'Password' %}</td></tr>
+
+    <tr>
+    <td>{% trans 'Current password' %} ({% trans 'required' %}):</td>
+    <td><input type=password name="password"></td>
+    </tr>
+ 
+    <tr>
+    <td>{% trans 'New password' %}:</td>
+    <td><input type=password name="pass1" value=""></td>
+    </tr>
+
+    <tr>
+    <td>{% trans 'New password'%} ({% trans 'verification' %}):</td>
+    <td><input type=password name="pass2" value=""></td>
+    </tr>
+ 
+ 
+    <tr class='title'><td></td><td>{% trans 'Delete account' %}</td></tr>
+
+    <tr>
+    <td colspan=2><input type=checkbox name="suicide">{% trans 'Delete account (irreversibly)' %}</td>
+    </tr>
+ 
+    <tr>
+    <td>{% trans "'Yes, I am sure!'" %}</td>
+    <td><input type=text name=iamsure></td>
+    </tr>
+
+    </table>
+    <button class='massButton' name='change' value='1'>{% trans 'Change' %}</button>
+    </form>
+
+</html>
+
+{% endblock %}

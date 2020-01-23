@@ -1,0 +1,20 @@
+okerr alert
+
+for: {{user.username}}
+generated on: {% now "d M Y H:i:s" %}
+
+Alerts
+--
+
+{% for a in profile.mail_alerts %}
+  {{a.created|date:"d M Y H:i:s"}} {{a.indicator.name}} {{a.message}}
+{% endfor %}
+
+Project(s) summary
+--
+{% for p in profile.projects %}
+{{p.name}}: {{p.stringstat}}
+{% endfor %}
+
+
+

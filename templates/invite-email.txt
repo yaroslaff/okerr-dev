@@ -1,0 +1,8 @@
+okerr invite
+{{user.username}} invites you to join his project {{project.name}} on okerr!
+
+As soon as you will register (if you didn't registered already) and login, you will find invitation in 'Projects' part of user interface.
+
+Registration URL: {{regurl}}
+Login URL: {{loginurl}}
+

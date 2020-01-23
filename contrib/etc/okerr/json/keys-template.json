@@ -1,0 +1,167 @@
+{
+    "@access": {},
+    "conf": {
+        "anyserver": {
+            "@include lib:client_ip": "",
+            "@include lib:df": "",
+            "@include lib:dfi": "",
+            "@include lib:get_google": "",
+            "@include lib:la": "",
+            "@include lib:maxlogsz": "",
+            "@include lib:okerr_errors": "",
+            "@include lib:opentcp": "",
+            "@include lib:ping_google": "",
+            "@include lib:uptime": "",
+            "@include lib:version": ""
+        }
+    },
+    "lib": {
+        "backups": {
+            "0010": "#",
+            "0020": "# configuration",
+            "0030": "SET DIR=/var/lib/okerr/backups",
+            "0040": "SET RE=.gz$",
+            "0050": "METHOD numerical minlim=10240",
+            "0060": "TAG backup",
+            "0070": "# script",
+            "0080": "DIR path=$DIR maxdepth=2",
+            "0090": "FILTER type==\"REG\"",
+            "0100": "# Backup file monitoring",
+            "0110": "GREP field=basename re=$RE",
+            "0120": "FILTER mage<86400",
+            "0130": "REPLACE field=basename search=\"\\d{8}\" replace=DATE dest=tplname",
+            "0140": "GROUP key=tplname max=ctime",
+            "0150": "FORK",
+            "0160": "NAME $_name:backup:$tplname",
+            "0170": "DETAILS $basename: $size bytes",
+            "0180": "FORMAT $size"
+        },
+        "client_ip": {
+            "0010": "NAME $_name:client_ip",
+            "0020": "METHOD string options=\"reinit dynamic\"",
+            "0030": "TAG client_ip",
+            "0040": "MINVERSION 2.0.148",
+            "0050": "STR $_client_ip"
+        },
+        "df": {
+            "0010": "NAME $_name:df",
+            "0020": "METHOD numerical maxlim=80",
+            "0030": "TAG df",
+            "0040": "DF",
+            "0050": "FILTER not ('/media/' in path or '/var/lib/docker' in path)",
+            "0060": "FORK",
+            "0070": "EXPORT path=path",
+            "0080": "NAME $_name-$path",
+            "0090": "DETAILS $percent% ($usedg/${totalg}G used, $freeg left)",
+            "0100": "FORMAT $percent"
+        },
+        "dfi": {
+            "0010": "NAME $_name:df",
+            "0020": "METHOD numerical maxlim=80",
+            "0030": "TAG df",
+            "0040": "DF",
+            "0050": "FILTER not ('/media/' in path or '/var/lib/docker' in path)",
+            "0060": "FORK",
+            "0070": "EXPORT path=path",
+            "0080": "NAME $_name-inodes-$path",
+            "0090": "DETAILS $inodes_percent% ($inodes_free inodes left)",
+            "0100": "FORMAT $inodes_percent"
+        },
+        "du": {
+            "0010": "SET DIR=/home",
+            "0030": "METHOD numerical",
+            "0050": "NAME $_name:du",
+            "0060": "DIR path=$DIR mindepth=1 maxdepth=1",
+            "0070": "FILTER type=='DIR'",
+            "0080": "FORK",
+            "0090": "NAME $_name:$basename",
+            "0100": "DU path=$_dict_path",
+            "0110": "SAVE size",
+            "0120": "KMGT",
+            "0130": "DETAILS",
+            "0140": "LOAD size"
+        },
+        "get_google": {
+            "10": "NAME $_name:get_google",
+            "20": "TAG http",
+            "30": "METHOD numerical maxlim=2",
+            "40": "EXCEPT 999",
+            "50": "GETURL url=http://google.com timeout=2",
+            "60": "DETAILS fetched in $elapsed seconds",
+            "70": "FORMAT $elapsed"
+        },
+        "la": {
+            "10": "NAME $_name:la",
+            "20": "METHOD numerical maxlim=1",
+            "30": "TAG la",
+            "40": "LOADAVG period=2"
+        },
+        "maxlogsz": {
+            "010": "NAME $_name:maxlogsz",
+            "020": "METHOD numerical maxlim=10240000",
+            "030": "TAG maxlogsz",
+            "040": "DIR path=/var/log",
+            "050": "FILTER type==\"REG\"",
+            "060": "GREP field=basename re=\"\\.log$\"",
+            "070": "SORT field=size",
+            "080": "LAST",
+            "090": "KMGT field=size destfield=sizeh",
+            "100": "DETAILS $basename is $sizeh bytes",
+            "110": "FORMAT $size"
+        },
+        "mysql": {
+            "10": "NAME $_name:mysql",
+            "20": "TAG db",
+            "30": "EXCEPT \"ERR\"",
+            "40": "RUN mysql --batch -N -u okerrtest -pokerrtestpass -e 'SELECT(1)'",
+            "50": "DETAILS $stderr",
+            "60": "EXPORT code=code",
+            "70": "EVAL $code == 0"
+        },
+        "okerr_errors": {
+            "10": "NAME $_name:okerr_errors",
+            "20": "METHOD numerical",
+            "30": "TAG okerr_errors",
+            "40": "ERRORS"
+        },
+        "opentcp": {
+            "010": "NAME $_name:opentcp",
+            "020": "METHOD string options=\"reinit dynamic text\"",
+            "030": "TAG opentcp",
+            "040": "CONNECTIONS",
+            "050": "FILTER status==\"LISTEN\" and ((proto==\"TCP\" and ip==\"0.0.0.0\") or ((proto==\"TCP6\" and ip==\"::\")))",
+            "060": "FILTER basename!=\"smtpd\" and basename!=\"pop3-login\"",
+            "070": "GROUP key=port",
+            "080": "SORT field=port",
+            "090": "FORMAT $port($basename)",
+            "100": "STR",
+            "110": "DETAILS $_str"
+        },
+        "ping_google": {
+            "10": "NAME $_name:ping_google",
+            "20": "TAG ping",
+            "30": "METHOD numerical maxlim=1",
+            "40": "EXCEPT 999",
+            "50": "PING host=google.com timeout=1000 count=3",
+            "60": "FORMAT $packet_lost"
+        },
+        "uptime": {
+            "010": "NAME $_name:uptime",
+            "020": "METHOD numerical diffmin=0",
+            "030": "TAG uptime",
+            "040": "UPTIME",
+            "050": "SAVE uptimesec",
+            "060": "DHMS",
+            "070": "DETAILS",
+            "080": "LOAD uptimesec"
+        },
+        "version": {
+            "10": "NAME $_name:version",
+            "20": "METHOD heartbeat",
+            "30": "TAG version",
+            "40": "VERSION"
+        }
+    },
+    "mylib": {},
+    "servers": {}
+}

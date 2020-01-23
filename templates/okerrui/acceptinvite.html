@@ -1,0 +1,28 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% block content %}
+
+<b>{% trans 'Accept invitation' %}</b>
+<p>
+
+{% trans 'You have invitations to projects' %}:
+<ul>
+{% for inv in pi %}
+<li>{{ inv.project.name }} ({% trans 'expires' %}: {{ inv.expires }})
+{% endfor %}
+</ul>
+
+<form method=post>
+{% csrf_token %}
+<button class='massButton' name='accept' value='1'>{% trans 'Accept all invitations' %}</button>
+<button class='massButton' name='notaccept' value='1'>{% trans 'Maybe later' %}</button>
+
+
+</form>
+<p>
+
+{% url 'okerr:invitations' as invurl %}
+{% blocktrans %}
+You can alway see and accept your invitations on <a href="{{invurl}}">page</a>.
+{% endblocktrans %}
+{% endblock %}

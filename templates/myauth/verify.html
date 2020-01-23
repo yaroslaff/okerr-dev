@@ -1,0 +1,22 @@
+{% extends "okerrui/base.html" %}
+{% block content %}
+    
+    <form action="{% url 'myauth:verify' %}" method="get">
+    {% csrf_token %}
+    <table align=center>
+    <tr>
+    <td>Email:</td>
+    <td><input type=text name="email"></td>
+    </tr>
+    <tr>
+    <td>Verification Code:</td>
+    <td><input type=text name="code"></td>
+    </tr>
+    <tr>
+        <td colspan=2 align=center>
+            <input type=submit name=login value="Verify">
+        </td>
+    </tr>
+    </table>
+    </form>
+{% endblock %}

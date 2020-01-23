@@ -1,0 +1,25 @@
+okerr summary
+--
+
+for: {{username}}
+remark: {{remark}}
+oldest update: {{project.updatemin}} ({{project.updatemin|timesince}})
+newest update: {{project.updatemax}} ({{project.updatemax|timesince}})
+
+Indicators which require attention:
+--
+Id|Name|Status|Age|Status Age|Disabled            
+{% for i in indicators %}
+{%if 'ATTENTION' in i.tags %}
+{{ i.id }} | {{ i.name }} | {{ i.status }} | {{ i.age }} | {{ i.statusage }} | {{ i.disabled }}
+{%endif%}
+{%endfor%}
+
+
+
+All Indicators
+--
+Id|Name|Status|Age|Status Age|Disabled            
+{% for i in indicators %}
+{{ i.id }} | {{ i.name }} | {{ i.status }} | {{ i.age }} | {{ i.statusage }} | {{ i.disabled }}{%endfor%}
+

@@ -1,0 +1,19 @@
+okerr IMPORTANT alert
+for: {{user.username}}
+generated on {{hostname}} at {% now "d M Y H:i:s" %}
+
+Membership expiration alert
+--
+
+Your membership in group {{membership.group.name}} expires soon.
+Expiration date/time: {{membership.expires}}
+Time left: {{timeleft}}
+
+You are owner of project(s):
+{% for p in profile.ownerprojects %}
+  {{p.name}}
+{% endfor %}
+
+These projects could be downgraded, and indicators (over new membership limits)
+could be disabled.
+

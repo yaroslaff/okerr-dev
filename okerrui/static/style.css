@@ -1,0 +1,681 @@
+body {
+    font-size:14px;color:#222222;
+    background-color:#fafafa; margin:0px;
+    font-family: 'Ubuntu', serif; font-weight: 400; 
+    }
+
+.divcontent {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.humantable {
+    padding: 2px;
+    border-spacing: 5px;
+    border-collapse: separate;
+}
+
+
+
+.humantable2 {
+    padding: 2px;
+    border-spacing: 0px;
+    border-collapse: separate;
+}
+
+.humantable2 td {
+    padding: 2px 20px;
+}
+
+.humantable2 th {
+    padding: 2px 20px;
+}
+
+.humantable2 tr {
+    padding: 2px 20px;
+}
+
+
+.humantable2 tr:nth-child(even) {
+    background: #CCC;
+}
+
+
+table {
+    border-spacing: 0px; 
+    padding: 10px;
+}
+
+tr.title td {
+    font-size:16px;
+    color:#333;
+    background-color:#ddd;
+    margin:20px;
+    border-bottom: 2px solid #aaa;
+    border-top: 2px solid #aaa;
+    padding: 2px;
+    padding-left: 10px;
+    border-spacing: 20px;
+    }
+
+td.title {
+    font-size:16px;color:#000000;
+    background-color:#bbbbbb;margin:20px;
+    border-bottom: 1px solid #dd2222;
+    }
+
+td.notifytitle {
+    font-size:16px;color:#000000;
+    background-color:#dd3333;margin:20px;
+    border-bottom: 1px solid #000000;
+    }
+
+td.notify {
+    font-size:16px;color:#000000;
+    background-color:#dddddd;margin:40px;
+    padding-left: 10px; padding-top: 10px; padding-bottom: 10px;
+    text-align: center;
+    }
+
+p.title {
+    font-size:16px;color:#000000;
+    background-color:#bbbbbb;margin:20px;
+    border-bottom: 1px solid #dd2222;
+    }
+
+p.footer {
+    font-size:12px;color:#676767; text-align:left;
+    background-color:#dedede; padding-left: 20px; padding-top: 20px; padding-bottom: 20px; }
+
+.sysinfo {
+    font-size: 12px;
+    color:#676767;
+    text-align: right;
+    padding: 0px;
+}
+
+.header {font-size:16px;color:#343434; text-align:left; width: 100%;
+background-color:#dedede; padding-left: 20px; padding-top: 20px; 
+padding-bottom: 20px; border: 0; }
+
+
+.checkarg {font-size:14px; width:400px;}
+/*input.checkarg {font-size:14px; width:400px;}*/
+
+/*border-top: 1px solid #000;
+border-top-style: dotted;*/
+
+.tabp { background-color: #fafafa; padding-top: 2px;
+padding-bottom: 2px; width: 100%; text-align: center}
+
+.tab { font-size: 14px; font-weight: normal; background-color: #dddddd;
+padding-left: 10px; padding-right: 10px; padding-top: 5px; padding-bottom: 5px; } 
+
+.tabactive { font-size: 14px; font-weight: normal; background-color: #999999;
+padding-left: 10px; padding-right: 10px; padding-top: 5px; padding-bottom: 5px; } 
+
+.links a { text-decoration: none; }
+
+.err {color: red; }
+.ok {color: green; }
+
+.indcont {}
+
+td.min {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.jsid {
+    padding: 10px;
+}
+
+.loading {
+    font-size: 24pt;
+    font-weight: bold;
+    color: #666666;
+}
+
+
+.loading-joke {
+    font-size: 12pt;
+    color: #666666;
+}
+
+#logblock {
+    font-size: 12pt;
+    color: #666666;
+    width: 80%;    
+    display: none; /* not displayed until new log records are added */
+
+    
+    margin: auto;
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #dddddd;
+    border-style: dashed;
+    border-width: 3px;
+    border-color: #cccccc;
+    text-align: left;
+}
+
+.logrec {
+    font-size: 12pt;
+    color: #000;
+    width: 100%;    
+    padding: 0px;
+    margin: 0px;
+}
+
+.logdel {
+    color: #ff0000;
+    padding-left: 10px;
+    cursor: pointer;
+}
+
+
+
+.logcont {
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.log {
+    text-align: left;
+    width: 100%;
+    border-collapse: collapse;
+    border: 0px;
+}
+
+.log td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    padding-left: 20px;
+    padding-right: 20px;
+
+}
+
+.log tr:nth-child(even) {
+    background: #EEE;
+}
+
+.redalert {
+    color: red;
+    padding-left: 20px;
+    padding-right: 20px;
+
+   animation-name: flash;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-play-state: running;
+}
+
+@keyframes flash {
+    from {color: red;}
+    to {color: blue;}
+}
+
+
+.iTreeTitleBar {    
+    background-color: #888888;
+    cursor: pointer; 
+    border-left-style: solid;
+    border-left-color: #000000;        
+    border-left-width: 1px;
+    padding-left: 20px;
+    }
+
+
+.iTreeTitleBarClosed {    
+    background-color: #888888; 
+    cursor: pointer; 
+    border-bottom-style: solid;
+    border-bottom-color: #666;        
+    border-bottom-width: 0px;
+    padding-left: 20px;
+    }
+
+.iTreeTitleBarClosed:hover {    
+    background-color: #666666; 
+   
+    }
+
+
+.iTreeTitleBar:hover {    
+    background-color: #666666; 
+    }
+
+
+.iTreeTitle { 
+    color: #eee;
+    font-size: 1.1em;   
+    font-weight: normal;
+    padding-left: 5px;
+    }
+
+.iTreeTitle-arrows {
+    font-weight: bold;
+    cursor: pointer; 
+}
+
+.iTreeTitle-sumstatus {
+    color: #666666;    
+    padding: 10px;
+}
+
+.iTreeTitle-sumstatus-iconnum {
+    padding: 5px;
+    color: #444;
+}
+
+
+
+.iTreeData {
+    background-color: #dddddd;
+
+    border-bottom-style: solid;
+    border-bottom-color: black;        
+    border-bottom-width: 0px;
+
+    border-left-style: solid;
+    border-left-color: black;        
+    border-left-width: 1px;
+    
+    padding-bottom: 1px;
+
+}
+
+.iTreeBranches {
+    padding-bottom: 10px;
+}
+
+.iTable {
+    background-color: #cccccc;
+    padding: 0px;
+    border-spacing: 0px;
+}
+
+.iTable tr:nth-child(even) {background-color: #dddddd}
+
+.iTable tr:hover {background-color: #9999aa;}
+
+.iTable a:link { text-decoration: none; color: #333333; }
+.iTable a:visited { text-decoration: none; color: #333333; }
+
+.clicktext {
+    cursor: pointer; 
+}
+
+.tagList {
+    background-color: #fff;
+    padding: 2px;
+    margin: 5px;
+
+    font-size: 11px; 
+
+    border-style: solid;
+    border-color: black;
+    
+    border-bottom-width: 1px;
+    border-top-width: 1px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    
+}
+
+
+.tagSpan {
+    padding: 2px;
+    margin: 2px;    
+    padding-right: 2px;
+    padding-left: 2px;
+    cursor: pointer;
+}
+
+.tagSpan0 {
+}
+
+.tagSpan1 {
+    text-decoration: underline;
+    font-weight: bold;    
+    background-color: #ddd;
+}
+
+.tagSpan-1 {
+    text-decoration: line-through;
+    color: #aaa;
+    background-color: #ddd;
+}
+
+.massOpButtons {
+    padding: 5px;
+}
+
+
+.massButton {
+    background-color: #ddd;
+    color: #666;
+    border: 2px solid #aaa ; 
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 5px;
+    border-radius: 8px;
+    -webkit-transition-duration: 0.3s; /* Safari */
+    transition-duration: 0.3s;
+}
+
+.massButton:hover {
+    background-color: #bbb;
+    color: #000;
+}
+
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    left: 80%;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.statusline {
+    color: #666666;
+    padding-left: 10px;
+}
+
+.dull {
+    color: #999999;
+}
+
+
+.dulldate {
+    color: #999999;
+    text-align: right;
+    font-size: 10px; 
+}
+
+
+.halfdiv {
+    width: 40%;
+    vertical-align: top;
+    background-color: #dddddd;
+    padding: 10px;
+    margin: 10px;
+    display: inline-block;
+}
+
+/* login password form */
+.loginpass {
+    display: inline-block;
+/*    width: 40%;*/
+    vertical-align: middle; 
+}
+
+
+/* oauth login buttons */
+.oauth-block {
+    display: inline-block; 
+/*    width: 50%; */
+    vertical-align: middle; 
+    text-align: center;
+}
+
+.oauth-button {
+    display: inline-block;  
+    text-align: center;
+    padding: 20px;  
+}
+
+.motd {
+    
+    margin: auto;
+    width: 50%;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: inline-block;
+    background-color: #dddddd;
+    border-style: dashed;
+    border-width: 3px;
+    border-color: #cccccc;
+    text-align: left;
+}
+
+.smalledit {
+    width: 50%;
+    margin: 0 auto;
+    text-align: left;
+    border-style: dashed;
+    border-width: 0px;
+    border-color: #cccccc;
+    text-align: left;
+}
+
+.sp_indicator {
+
+    background-color: #eee;
+    padding: 10px;
+    margin: 10px;   
+}
+
+.training-active {
+    font-weight: bold;
+}
+
+.training-completed {
+    text-decoration: line-through;
+    color: #aaa;
+}
+
+.training-todo {
+    color: #999;
+}
+
+
+
+.container {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.container > div {
+    display: table-cell;
+}
+
+.fluid {
+    background: #eee;
+    padding: 5px;
+}
+
+code {
+    background:#aaa; 
+    /*border:black dashed 1px; */
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+/* submit button */
+
+input[type=text] {padding:5px; border:2px solid #ccc; 
+-webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+input[type=text]:focus {border-color:#666; }
+
+input[type=password] {padding:5px; border:2px solid #ccc; 
+-webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+input[type=password]:focus {border-color:#666; }
+
+
+textarea {padding:5px; border:2px solid #ccc; 
+-webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+
+
+form.myform             { display: table; margin-top: 10px; margin-bottom: 10px;     }
+form.myform > p         { display: table-row;  }
+form.myform > p > label { display: table-cell; }
+form.myform > p > input { display: table-cell; }                                
+form.myform > p > textarea { display: table-cell; }                                
+
+
+form.myform > p > button {
+    display: table-cell;
+    background-color: #ddd;
+    color: #666;
+    border: 2px solid #aaa ; 
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 5px;
+    border-radius: 8px;
+    -webkit-transition-duration: 0.3s; /* Safari */
+    transition-duration: 0.3s;
+}
+
+form.myform > p > button:hover {
+    background-color: #bbb;
+    color: #000;
+}
+
+/******* JS ALERT START *******/
+
+.alert-area {
+  max-height: 100%;
+  position: fixed;
+  bottom: 5px;
+  left: 20px;
+  right: 20px;
+}
+
+.alert-box {
+  font-size: 16px;
+  color: rgba(80, 80, 80, 1);
+  background: rgba(150, 150, 150, 0.6);
+  line-height: 1.3em;
+  padding: 10px 15px;
+  margin: 5px 10px;
+  position: relative;
+  border-radius: 5px;
+  transition: opacity 0.5s ease-in;
+}
+
+.alert-box.hide {
+  opacity: 0;
+}
+
+.alert-close {
+  background: transparent;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.alert-close:before,
+.alert-close:after {
+  content: '';
+  width: 15px;
+  border-top: solid 2px white;
+  position: absolute;
+  top: 5px;
+  right: -1px;
+  display: block;
+}
+
+.alert-close:before {
+  transform: rotate(45deg);
+}
+
+.alert-close:after {
+  transform: rotate(135deg);
+}
+
+.alert-close:hover:before,
+.alert-close:hover:after {
+  border-top: solid 2px #d8d8d8;
+}
+
+@media (max-width: 767px) and (min-width: 481px) {
+  .alert-area {
+    left: 100px;
+    right: 100px;
+  }
+}
+
+@media (min-width: 768px) {
+  .alert-area {
+    width: 600px;
+    left: auto;
+    right: 0;
+  }
+}
+
+.alert-message-container {
+  text-align: center;
+  line-height: 2.5em;
+  margin-top: 50px;
+}
+
+.alert-message-box {
+  font-size: 20px;
+  width: 300px;
+  border: solid 1px #444;
+  padding: 10px 15px;
+  outline: none;
+  transition: box-shadow 0.1s;
+}
+
+.alert-message-box:focus {
+  box-shadow: 0 0 15px 2px #888;
+}
+
+.alert-message-button {
+  font-size: 18px;
+  color: white;
+  background: #14b9ff;
+  width: 250px;
+  border: solid 1px #14b9ff;
+  padding: 10px 20px;
+  margin-top: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s;
+}
+
+.alert-message-button:hover,
+.alert-message-button:focus,
+.alert-message-button:active {
+  background: #7dd8ff;
+}
+
+
+/******* JS ALERT STOP *******/

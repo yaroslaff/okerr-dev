@@ -1,0 +1,84 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% block content %}
+    <table>
+    
+        <tr class=title>
+            <td>{% trans 'Your projects' %}</td>
+        </tr>
+        <tr>
+            <td>
+                <ul>
+                {% for project in user.profile.projects %}
+                    <li>{{project.name}}
+                {% endfor %}
+                </ul>
+            </td>
+        </tr>
+            
+        <tr class=title>
+            <td>{% trans 'Your personal invitations' %}</td>
+        </tr>
+        <tr>
+            <td>
+                {% if invitations.all %}
+                <table>
+                <tr>
+                    <th>{% trans 'Project' %}
+                    <th>{% trans 'Code' %}
+                    <th>{% trans 'Expires' %}
+                    <th>{% trans 'Email' %}
+                    <th>{% trans 'Left/Total' %}
+                    <th>{% trans 'Use!' %}
+                </tr>
+                {% for inv in invitations %}
+                    <tr><td>
+                    {{inv.project.name}}
+                    </td><td>
+                    {{inv.secret}}
+                    </td><td>
+                    {{inv.expires}}
+                    </td><td>
+                    {{inv.email}}
+                    </td><td>
+                    {% if inv.total %}
+                    {{inv.left}}/{{inv.total}}
+                    {% else %}
+                    {% trans 'unlimited' %}
+                    {% endif %}
+                    </td><td>
+                    <form method=post name=invite{{inv.id}}>
+                        {%csrf_token%}
+                        <input type=hidden name=inviteid value={{inv.id}}>
+                    <a href="javascript:document.invite{{inv.id}}.submit();"
+                    style="text-decoration:none">{% trans 'Accept' %}</a>
+
+
+                    </form>
+                    
+                    </td></tr>
+                {% endfor %}
+                </table>
+                <p>
+        {%else%}
+            {% trans 'Sorry, you have no personal invitations. But maybe your friends created common invitation? Ask them to send you code.' %}
+            <p>
+        {%endif%}
+            </td>            
+        </tr>
+        <tr class=title>
+            <td>{% trans 'Have invitation code' %}?</td>
+        </tr>
+        <tr>
+            <td>
+                <form method=post>    
+                {% csrf_token %}
+                {% trans 'Paste it here' %}: <input type=text name=code size="40">
+                <input type=submit value="Enter">
+                </form>
+            </td>
+        </tr>
+    </table>
+ 
+{% endblock %}
+

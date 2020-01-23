@@ -1,0 +1,11 @@
+<b>Watch news</b>
+<br>
+Lets configure okerr to get notifications about changes on news site.
+<ul>
+    <li>Create indicator (e.g., <b>test:webpage</b>) and set checkmethod 'HTTP SHA1 hash dynamic'. 
+    <li>Set url https://meduza.io/.
+    <li>Wait until okerr will initialized field 'hash' (request retest).
+</ul>
+
+Unlike usual (so-called 'static') indicators, this 'dynamic' indicator always will have 'OK' state. This is useful when any content of web page is good (does not requires any 'fix'), but you still will get alerts when content changes.
+

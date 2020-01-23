@@ -1,0 +1,74 @@
+<html>
+<h1><font color="#666666">okerr IMPORTANT alert</font></h1>
+generated on {{hostname}} at {% now "d M Y H:i:s" %}
+<p>
+<h2>Patrol report</h2>
+
+
+{% if maxindicators %}
+    <h3>max_indicators limit</h3>
+    max_indicators ({{profile.get_maxindicators}}) limit reached. Following indicators are disabled automatically.
+    <ul>
+        {% for i in maxindicators %}
+            <li><a href="{{siteurl}}{% url 'okerr:ilocator' i.project.get_textid i.name %}">{{i.name}}</a>
+        {% endfor %}
+    </ul>
+{% endif %}
+ 
+{% if minperiod %}
+    <h3>minperiod limit</h3>
+    Following indicators are disabled automatically (minperiod: {{profile.get_minperiod}}):
+    <ul>
+        {% for i in minperiod %}
+            <li><a href="{{siteurl}}{% url 'okerr:ilocator' i.project.get_textid i.name %}">{{i.name}}</a>
+                (policy: {{i.policy.name}} period: {{i.policy.period}})
+        {% endfor %}
+    </ul>    
+{% endif %}
+
+
+{% if teamsize %}
+    <h3>teamsize limit</h3>
+    Following projects are limited automatically (teamsize: {{profile.get_teamsize}}):
+    <ul>
+        {% for p in teamsize %}
+            <li>
+                <a href="{{siteurl}}{% url 'okerr:pi' p.get_textid %}">{{p.name}}</a> 
+                textid: <a href="{{siteurl}}{% url 'okerr:pi' p.get_textid %}">{{p.get_textid}}</a>
+                ({{p.nmembers}} members)
+        {% endfor %}
+    </ul>    
+{% endif %}
+
+{% if maxprojects %}
+    <h3>teamsize limit</h3>
+    Following projects are limited automatically (maxprojects: {{profile.get_maxprojects}}):
+    <ul>
+        {% for p in maxprojects %}
+            <li>
+                <a href="{{siteurl}}{% url 'okerr:pi' p.get_textid %}">{{p.name}}</a>
+                textid: <a href="{{siteurl}}{% url 'okerr:pi' p.get_textid %}">{{p.get_textid}}</a>
+                ({{p.nmembers}} members)
+        {% endfor %}
+    </ul>    
+{% endif %}
+
+
+{% if unlimited %}
+    <h3>Limitations removed</h3>
+    Limitations are removed from following projects:
+    <ul>
+        {% for p in unlimited %}
+            <li>
+                <a href="{{siteurl}}{% url 'okerr:pi' p.get_textid %}">{{p.name}}</a>
+                textid: <a href="{{siteurl}}{% url 'okerr:pi' p.get_textid %}">{{p.get_textid}}</a>
+                    ({{p.nmembers}} members)
+        {% endfor %}
+    </ul>    
+{% endif %}
+
+You can upgrade your membership, or order perk, or disable/delete other indicators/projects to enable/unlimit these indicators/projects.
+<br>
+
+</html>
+

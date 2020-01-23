@@ -1,0 +1,12 @@
+[Unit]
+Description=okerr process
+After=syslog.target
+PartOf=okerr.service
+After=okerr.service
+
+[Service]
+Type=simple
+ExecStart=%VENV%/bin/python %OKERR%/process.py
+
+[Install]
+WantedBy=okerr.service

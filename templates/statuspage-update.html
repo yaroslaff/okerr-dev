@@ -1,0 +1,18 @@
+{% load i18n %}
+{% load markup_tags %}
+
+<html>
+<h1><font color="#666666">{% trans 'Updated status page' %} {{sp.title}}</font></h1>
+{% trans 'generated on' %} {{hostname}} at {% now "d M Y H:i:s" %}
+
+<div style="border: 3px dashed #666; background: #ccc; padding: 10px;">
+{{text|apply_markup:"markdown"}} 
+</div>
+<p>
+{% trans 'Status page' %}: <a href="{{base_url}}{% url 'okerr:status' project.get_textid sp.addr %}">{{ sp.title }}</a>.
+</p>
+<p>
+{% trans 'You can' %} <a href="{{base_url}}{% url 'okerr:statusunsubscribe' project.get_textid sp.addr datecode email code %}">{% trans 'Unsubscribe' %}</a>.
+</p>
+</html>
+

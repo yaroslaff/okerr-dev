@@ -1,0 +1,71 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+{% load age %}
+{% load markup_tags %}
+{% block title%}{{sp.title}}{% endblock %}
+
+{% block content %}
+
+<div class="smalledit">
+<h1>{{sp.title}}</h1>
+      
+    {{sp.desc|apply_markup:"markdown"}} 
+
+    {% for chapter, silist in chapters.items %}
+        <h2>{{chapter}}</h2>
+        
+        {% for si in silist %}
+            <div class="sp_indicator">
+
+                <div class='dulldate' style="float: right;">
+                    {% trans 'Updated' %}: {{si.indicator.updated}} ({% age si.indicator.updated %} {% trans 'ago' %})
+                    <br>
+                    {% trans 'Changed' %}: {{si.indicator.changed}} ({% age si.indicator.changed %} {% trans 'ago' %})
+                </div>
+
+                <div>
+                    {% if si.indicator.status == 'OK' %}
+                        <img src="{% static 'iflags/OK.png' %}">
+                    {% else %}
+                        <img src="{% static 'iflags/ERR.png' %}">
+                    {% endif %}
+                    <b>{{si.title}}</b> 
+                    {% if si.details %}
+                        <br>
+                        <span class="dull">{{ si.indicator.details }}</span>
+                    {% endif %}
+                    <br>
+                    {{ si.desc }}   
+                </div>
+
+            </div>
+        {% endfor %}
+    
+    {% endfor %} <!-- chapters -->
+
+{% if sp.blogrecords %}
+    <h1>{% trans 'Blog' %}</h1>    
+    {% for blogrecord in sp.blogrecords %}
+        <div class="sp_indicator">
+            {{blogrecord.text|apply_markup:"markdown"}} 
+            <div class="dulldate">{{blogrecord.created}}</div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if sp.can_subscribe %}
+    <h1>{% trans 'Subscribe' %}</h1>
+    <p>
+    {% trans 'You can subscribe and receive email about new blog records (e.g. when problem will be resolved)' %}    
+    <form method="post">
+        {% csrf_token %}
+        Email: <input type=text name=email placeholder="you@example.com">
+        <button class='massButton' name='subscribe' value='1'>{% trans 'Subscribe' %}</button>
+    </form>
+
+{% endif %}
+
+
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+    
+    {% if error_message %}
+        <strong>{{ error_message }}</strong>
+    {% endif %}
+
+    <h1>Registered!</h1>
+    Congratulations, you are registered!
+    <p>
+    username: {{ username }}
+    password: {{ password }}
+    <p>
+    <a href="{% url 'myauth:login' %}">Log in</a> and please change password immediately.
+
+{% endblock %}

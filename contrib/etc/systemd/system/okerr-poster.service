@@ -1,0 +1,12 @@
+[Unit]
+Description=okerr HTTP poster 
+After=syslog.target
+
+[Service]
+Type=simple
+ExecStart=%VENV%/bin/python -u %OKERR%/okerr-poster.py
+StandardOutput=journal
+
+[Install]
+WantedBy=okerr.service
+

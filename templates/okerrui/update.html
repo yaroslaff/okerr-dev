@@ -1,0 +1,37 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% block content %}
+    <b>Update</b>
+    <form method=post>
+    {% csrf_token %}
+    <input type=hidden name="showform" value="1">
+    <table border=0 cellspacing=0>  
+        <tr>
+        <td>Indicator (required)</td>
+        <td><input type=text name=idname></td>
+        </tr>
+
+        <tr>
+        <td>Status (required)</td>
+        <td><input type=text name=status></td>
+        </tr>
+
+        <tr>
+        <td>Details</td>
+        <td><input type=text name=details></td>
+        </tr>
+
+        <tr>
+        <td>Policy</td>
+        <td><input type=text name=policy></td>
+        </tr>
+
+        <tr>
+        <td>Secret</td>
+        <td><input type=text name=secret></td>
+        </tr>
+    <table>
+
+    <input type=submit name=update value="Update">
+    </form>
+{% endblock %}

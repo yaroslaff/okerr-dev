@@ -1,0 +1,36 @@
+<p>
+Logical indicator gives great opportunities. Each logical indicator has status OK or ERR based on logical expression and <a href="{% url 'okerr:pjson' project.get_textid %}">project context</a>. 
+</p>
+
+<h3>Error age</h3>
+<p>
+Each indicator has virtual parameters 'errage' and 'uerrage'. errage - age of error (in seconds) since moment when ERR status was set. (If indicator has status OK, errage is 0). uerrage - similar age of unhandled error (If indicator is OK or if in maintenance - uerrage is 0. Otherwise it's age of error in seconds, equal to errage).
+
+</p>
+<p>
+Indicators has tags. Some tags (such as OK or ERR or heartbeat) are system and set automatically. Users can set or remove other tags to indicator.
+</p>
+<p>
+Project contex has 'age' structure. For each tag it has maximal value for errage and uerrage among all indicators with this tag. And, since all indicators in stage ERR has tag 'ERR', age['ERR:errage'] and age ['ERR:uerrage'] - has maximal values for all indicators in project.
+</p>
+
+<h3>Escalation indicator</h3>
+<p>
+For this task assign tag 'test' to one or more test ('test:...') indicators. Create indicator ('test:escalation'), set check method 'Logical expression'. And set expr:
+
+<br>
+<code>age["test:uerrage"] < 3600</code>
+<br>
+(You can set any other value instead of 3600 (1 hour)). Indicator will be re-evaluated with period from it's policy. After evaluation, indicator will have state 'OK' of expression is True, and 'ERR' of expression is False. If there is error in expression, indicator will have flag 'problem'. (Need to fix error and manually remove this flag). 
+
+Indicator will switch to 'ERR' if any indicator (with tag 'test') will be in 'ERR' for more then 1 hour. Administrator should either fix all problems quickly or set 'maintenance' status (if need more time to fix).
+</p>
+<p>
+Assign any policy without retry schedule for this escalation indicator.
+</p>
+
+<h3>Bonus: alerts subscription</h3>
+<p>
+By default, each user gets alerts about all status changes in project. At profile page you can uncheck 'Send alerts' to disable alerts. Then you can subscribe to particular (most important) indicators at each indicator page (checkbox 'subscribe'). After this, you will get alerts only regarding these indicators. Team leaders can handle escalations this way: they will not get distracted by usual problems (which will be handled by technical specialists), but will be notified when problem not fixed in allowed time.
+</p>
+

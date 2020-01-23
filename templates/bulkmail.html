@@ -1,0 +1,13 @@
+{% if MYMAIL_FOOTER == 'elasticemail' %}
+    <div class="bulk">
+    You can disable alerts for your account in <a href="https://cp.okerr.com/profile">profile</a> or <a href="{unsubscribe}">Unsubscribe</a>. You can <a href="https://api.elasticemail.com/contact/subscribe?version=2&pID=32d4349c-bd19-46dd-a93e-e63b846d784e
+    ">manage subscription</a> here.
+    <br>
+    {accountcompany}: {accountzip}, {accountcountry}, {accountstate}, {accountcity}, {accountaddress1}.
+    </div>
+{% else %}
+    <div class="bulk">
+    Sent from host {{hostname}}.<br>
+    You can disable alerts for your account in <a href="https://cp.okerr.com/profile">profile</a>.
+    </div>
+{% endif %}

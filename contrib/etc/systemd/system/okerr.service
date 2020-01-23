@@ -1,0 +1,11 @@
+[Unit]
+Description=Okerr monitoring
+After=syslog.target redis-server.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

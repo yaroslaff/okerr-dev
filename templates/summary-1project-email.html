@@ -1,0 +1,79 @@
+<h2>Project: {{project.name}}</h2>
+
+{% if project.indicators_deep %}
+oldest update: {{project.updatemin}} ({{project.updatemin|timesince}})<br>
+newest update: {{project.updatemax}} ({{project.updatemax|timesince}})<br>
+<p>
+
+
+{% if project.req_attention %}                    
+    <h3>ATTENTION</h3>
+        <table border=0 cellspacing=0>
+            <tr>
+                <th>Flags
+                <th>Name
+                <th>Details
+                <th>Age
+                <th>Status Age
+            {% for i in project.indicators_deep.all %}        
+                
+                {% if not i.disabled and 'ATTENTION' in i.tags %}                 
+
+                    {% if i.okerrm == 'ERR' %}
+                    <tr bgcolor="{% cycle '#ffaaaa' '#ffbbbb' %}">
+                    {% else %}
+                    <tr bgcolor="{% cycle '#eeeeee' '#dddddd' %}">
+                    {% endif %}
+                                    
+                        <td>{% for f in i.flags %}
+                            <img src="http://static.okerr.com/iflags/{{f}}.png" alt="flag: {{f}}">
+                        {% endfor %}
+                        <td><a href="{{siteurl}}{% url 'okerr:ilocator' i.project.get_textid i.name %}">{{i.name}}</a>
+                        <td>{{ i.briefdetails }}
+                        <td>{{ i.age_short }}
+                        <td>{{ i.statusage_short }}                
+                    </tr>
+            {% endif %}
+        {%endfor%}
+        </table>    
+<p>
+{% else %}
+No indicators requires immediate attention
+{% endif %}
+
+<h3>All Indicators</h3>
+    <table border=0 cellspacing=0>
+        <tr>
+            <th>Flags
+            <th>Name
+            <th>Details
+            <th>Age
+            <th>Status Age
+        {% for i in project.indicators_deep %}
+        
+        {% if not i.disabled %}
+            
+            {% if i.okerrm == 'ERR' %}
+            <tr bgcolor="{% cycle '#ffaaaa' '#ffbbbb' %}">
+            {% else %}
+            <tr bgcolor="{% cycle '#eeeeee' '#dddddd' %}">
+            {% endif %}
+
+            
+            
+            <td>{% for f in i.flags %}
+                    <img src="http://static.okerr.com/iflags/{{f}}.png" alt="flag: {{f}}">
+                {% endfor %}
+            <td><a href="{{siteurl}}{% url 'okerr:ilocator' i.project.get_textid i.name %}">{{i.name}}</a>
+            <td>{{ i.briefdetails }}
+            <td>{{ i.age_short }}
+            <td>{{ i.statusage_short }}
+            </tr>
+        {% endif %}
+    {%endfor%}
+    </table>
+{% else %}
+No indicators in this project.
+{% endif %}
+
+

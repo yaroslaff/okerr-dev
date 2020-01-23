@@ -1,0 +1,64 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div style="text-align: center;">
+        
+        <div class="loginpass">
+            <form action="{% url 'myauth:login' %}" method="post">
+            {% csrf_token %}
+            <table border=0 align=center>
+            <tr>
+            <td>{% trans 'Email' %}:</td>
+            <td><input type=text name="username"></td>
+            </tr>
+            <tr>
+            <td>{% trans 'Password' %}:</td>
+            <td><input type=password name="password"></td>
+            </tr>
+            <tr>
+            <td align=center>
+                <button class='massButton' name='login' value='1'>{% trans 'Login' %}</button>
+            </td>
+            <td align=right>
+                <a href="{% url 'myauth:demologin' %}">{% trans 'Demo' %}</a>
+            </td>
+            </tr>
+            <tr>
+            <td align=left><a href="{% url 'myauth:signup' %}">{% trans 'Register' %}</a></td>
+            <td align=right><a href="{% url 'myauth:recover' %}">{% trans 'Forgot password' %}</a></td>
+            </tr>
+            </table>
+            </form>
+
+        </div>
+
+
+        {% if oauth2_providers %}
+        <div class="oauth-block">
+            {% trans 'Login or register via oauth2' %}:<br>
+            {% for pcode, ps in providers.items %}
+                <div class="oauth-button">
+                    <a href="{% url "okerr:oauth2_login" pcode next %}">
+                        <img src="{{ps.logo}}" alt="{{ps.title}}"><br>
+                        {{ps.title}}
+                    </a>
+                </div>
+            {% endfor %}
+            <p>
+            {% for p in oauth2_providers %}
+                <div class="oauth-button">
+                    <a href="{% url "okerr:oauth2_login" p.code next%}">
+                        <img src="{{p.logo}}" alt="{{p.title}}"><br>
+                        {{p.title}}
+                    </a>
+                </div>
+            {% endfor %}
+            </p>
+        </div>
+        {% endif %}
+
+    </div>   
+
+{% endblock %}
+

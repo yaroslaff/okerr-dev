@@ -1,0 +1,19 @@
+<p>
+At last task we created policy, which are good for active check. Now we will create policy for passive checks.
+</p>
+
+<p>
+At <a href="{% url 'okerr:project' project.get_textid %}">project page</a> create policy 'test:passive' for passive indicators. Configure it this ways:
+<ul>
+    <li>Set 'secret' (password, which should be set at okerrclient to update indicators)
+    <li>Autocreate is on.
+</ul>
+
+Create passive indicator (created from okerrclient) with this policy, e.g.:
+<br>
+<code>
+    okerrclient --name test:passive -S MySecret -s 'POLICY test:passive' 'OK'
+</code>
+
+</p>
+

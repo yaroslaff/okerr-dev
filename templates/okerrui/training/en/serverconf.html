@@ -1,0 +1,16 @@
+<p>
+In last task, okerrclient executed set of standard checks and updated (created) indicators. You can manage this set(s) and use different sets of checks on different servers.
+</p>
+
+<p>
+Create configuration template 'testconf' (or any other name starting with 'test') at <a href="{% url 'okerr:servers' project.get_textid %}">servers page</a> . Colon character not allowed in configuration name. Include any checks in your configuration template (for example: uptime and version). Then, create configuration for your server (with name of server) to link your server to this template. You can know it's name by command <code>hostname</code> or set it by argument <code>--name</code> when running okerrclient or option <code>name</code> in configuration file.
+</p>
+
+<p>
+Run okerrclient, it will perform only checks from template you created and assigned to server.
+</p>
+
+<p>
+<h3>Ссылки по теме:</h3>
+<a href="https://okerr.freshdesk.com/solution/articles/22000222052-%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F%D0%BC%D0%B8-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%BE%D0%B2">Управление конфигурациями серверов</a>
+</p>

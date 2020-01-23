@@ -1,0 +1,308 @@
+{% load i18n %}
+{% load static %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load sysinfo %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}okerr{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href='{% static "style.css" %}'/>
+        <link href='https://fonts.googleapis.com/css?family=Ubuntu+Mono|Ubuntu|Roboto|Roboto+Slab&subset=latin,cyrillic,cyrillic-ext,latin-ext' rel='stylesheet' type='text/css'>
+        <link rel="shortcut icon" type="image/png" href="{% block favicon %}https://static.okerr.com/favicon.ico{% endblock %}"/>
+</head>
+<body>
+    <table class=header>
+        <tr>
+            <td>
+                <a href="https://okerr.com/"><img src="{% static 'okerrlogo.png' %}"></a>
+            </td>
+            <td align=right class="sysinfo">
+            {% if user.is_authenticated %}
+                {{ user.email }}
+            {% endif %}
+            &nbsp;
+            okerr:BETA
+            <br>
+            {% trans "Server time" %}: {% now "d M Y H:i:s (e)" %}
+            {% getbacklog as backlog %}
+            {% getlastloopage as loopage %}
+            <br>
+            backlog:
+            {% if backlog < 30 %}
+                <span class="ok">
+            {% else %}
+                <span class="err">
+            {% endif %}
+            {{ backlog }} seconds
+            </span>
+            lastloop:
+            {% if loopage < 30 %}
+                <span class="ok">
+            {% else %}
+                <span class="err">
+            {% endif %}
+            {{ loopage }} seconds
+            </span>
+            </td>
+        </tr>
+            <td colspan=2>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'okerr:index' %}">{% trans "Indicators" %}</a>
+                        <a href={% url 'okerr:projectlist' %}>{% trans "Projects" %}</a>
+                        <a href={% url 'okerr:invitations' %}>{% trans "Invitations" %}</a>
+                        <a href={% url 'myauth:profile' %}>{% trans 'Profile' %}</a>
+                        <a href="https://okerr.freshdesk.com/">{% trans 'Support' %}</a>
+                        <a href="{% url 'myauth:logout' %}">{% trans "Logout" %}</a>
+                    {% else %}
+
+                        <a href="https://okerr.freshdesk.com/">{% trans 'Support' %}</a>
+                         <a href="{% url 'myauth:login' %}">{% trans "Login" %}</a>
+                         <a href="{% url 'myauth:signup' %}">{% trans "Register" %}</a>
+                    {% endif %}
+
+                    <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                    <input name="language" type="hidden" value="ru" />
+                    <input type="image" src="{% static 'rus.png' %}" alt="rus">
+                    </form>
+
+
+                    <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                    <input name="language" type="hidden" value="en" />
+                    <input type="image" src="{% static 'uk.png' %}" alt="eng"> </form>
+            </tr>
+    </table>
+    </p>
+
+    <div id="alert-area" class="alert-area"></div>
+
+    {% if error_message %}
+        <p><strong>{{ error_message }}</strong></p>
+    {% endif %}
+
+    {% if msg %}
+        <table  bgcolor="#bbbbbb" width="50%" align=center>
+        {% for m in msg %}
+            <tr><td>
+            {{ m }}
+            </td></tr>
+        {% endfor %}
+
+        <table>
+    {% endif %}
+
+    <div class="divcontent">
+    {% block content %}{% endblock %}
+    </div>
+
+    {# footer #}
+    <p class=footer>
+    (c) WWW Security, 2014-2019.
+    <a href="https://twitter.com/OkerrRus"><img src="{% static 'Twitter_Logo_Blue.png' %}">@OkerrRus</a>
+    <br>
+
+    {% if request.LANGUAGE_CODE == 'ru' %}
+    Использовались технологии <a href="https://www.djangoproject.com/">Django</a>,
+    <a href="https://pypi.python.org/pypi/evalidate/">evalidate</a> и
+    <a href='http://www.chartjs.org/'>Chart.js</a>, а так же наборы иконок
+    <a href="http://led24.de/iconset/">LED</a> и
+    <a href="http://www.famfamfam.com/lab/icons/silk/">Silk</a>.
+    {% else %}
+    Used <a href="https://www.djangoproject.com/">Django</a>,
+    <a href="https://pypi.python.org/pypi/evalidate/">evalidate</a> and
+    <a href='http://www.chartjs.org/'>Chart.js</a> technologies and
+    <a href="http://led24.de/iconset/">LED</a> and
+    <a href="http://www.famfamfam.com/lab/icons/silk/">Silk</a> icon sets.
+    {% endif %}
+    <br>
+    <a href="{% url 'okerr:eula' %}">{% trans 'End-user license agreement' %}</a> |
+    <a href="http://okerr.readthedocs.org/">{% trans 'Documentation' %}</a> |
+    <a href="https://okerr.freshdesk.com/">{% trans 'Support' %}</a> (<a href="mailto:support@okerr.com">support@okerr.com</a>) |
+    <a href="{% url 'myauth:logout' %}">{% trans 'Logout' %}</a>
+   </p>
+    <script>
+    function getXmlHttp(){
+      var xmlhttp;
+      try {
+        xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+      } catch (e) {
+        try {
+          xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        } catch (E) {
+          xmlhttp = false;
+        }
+      }
+      if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
+        xmlhttp = new XMLHttpRequest();
+      }
+      return xmlhttp;
+    }
+
+
+
+    // send post (silently)
+    function sendpost(path, params, func) {
+        var method = "POST"; // Set method to post by default if not specified.
+
+        func = func || function () {}
+        params = params || [];
+        var xhr = new XMLHttpRequest();
+
+        // fix 'csrfmiddlewaretoken'
+        if(! ("csrfmiddlewaretoken" in params)){
+            params["csrfmiddlewaretoken"] = "{{ csrf_token }}";
+        }
+
+        var body = ''
+        //var body = 'name=' + encodeURIComponent(name) +
+        //  '&surname=' + encodeURIComponent(surname);
+        for(var fname in params){
+            if(body != ''){
+                body += '&'
+            }
+            body += fname
+            body += "="
+            body += encodeURIComponent(params[fname])
+        }
+        xhr.open(method, path, true)
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        xhr.onreadystatechange = func
+        xhr.send(body)
+    }
+
+    // send post AND show new page
+    function post(path, params, method) {
+        method = method || "post"; // Set method to post by default if not specified.
+
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        for(var key in params) {
+            if(params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+
+                form.appendChild(hiddenField);
+             }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+
+
+    // return unique (per page) ID
+    function pageuid(){
+
+        if ( typeof pageuid.counter == 'undefined' ) {
+            // It has not... perform the initialization
+            pageuid.counter = 0;
+        }
+
+        pageuid.counter++;
+        return 'pageuid-'+pageuid.counter
+    }
+
+
+
+    // The main class
+    var AlertBox = function(id, option) {
+      this.show = function(msg) {
+        if (msg === ''  || typeof msg === 'undefined' || msg === null) {
+          throw '"msg parameter is empty"';
+        }
+        else {
+          var alertArea = document.querySelector(id);
+          var alertBox = document.createElement('DIV');
+          var alertContent = document.createElement('DIV');
+          var alertClose = document.createElement('A');
+          var alertClass = this;
+          alertContent.classList.add('alert-content');
+          alertContent.innerText = msg;
+          alertClose.classList.add('alert-close');
+          alertClose.setAttribute('href', '#');
+          alertBox.classList.add('alert-box');
+          alertBox.appendChild(alertContent);
+          if (!option.hideCloseButton || typeof option.hideCloseButton === 'undefined') {
+            alertBox.appendChild(alertClose);
+          }
+          alertArea.appendChild(alertBox);
+          alertClose.addEventListener('click', function(event) {
+            event.preventDefault();
+            alertClass.hide(alertBox);
+          });
+          if (!option.persistent) {
+            var alertTimeout = setTimeout(function() {
+              alertClass.hide(alertBox);
+              clearTimeout(alertTimeout);
+            }, option.closeTime);
+          }
+        }
+      };
+
+      this.hide = function(alertBox) {
+        alertBox.classList.add('hide');
+        var disperseTimeout = setTimeout(function() {
+          alertBox.parentNode.removeChild(alertBox);
+          clearTimeout(disperseTimeout);
+        }, 500);
+      };
+    };
+
+
+    function jsalert(msg){
+      var alertboxPersistent = new AlertBox('#alert-area', {
+        closeTime: 5000,
+        persistent: true,
+        hideCloseButton: false
+      });
+      alertboxPersistent.show(msg);
+    }
+
+    function toggleDiv(id) {
+        var div = document.getElementById(id);
+        div.style.display = div.style.display == "none" ? "block" : "none";
+    }
+
+
+    // notifications
+    function updatenotifications_fn(){
+        var i = this
+
+        return function(){
+            if (this.readyState == 4 && this.status == 200){
+
+                var ndata = JSON.parse(this.responseText);
+
+                for(var nid in ndata){
+                     jsalert(ndata[nid]);
+                }
+
+            }else{
+                // console.log("state: %d, status: %d", this.readyState,this.status)
+            }
+        }
+    }
+
+    function notifications(){
+        var xmlhttp = getXmlHttp();
+        xmlhttp.onload = updatenotifications_fn();
+        xmlhttp.open('GET', '/getnotifications');
+        xmlhttp.send();
+    }
+    /* START notifications on load */
+    window.addEventListener("load", function(){
+        notifications()
+    }, false);
+
+    </script>
+</body>

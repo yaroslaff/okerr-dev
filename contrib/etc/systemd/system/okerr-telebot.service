@@ -1,0 +1,13 @@
+[Unit]
+Description=okerr telegram bot
+After=syslog.target
+
+[Service]
+Type=simple
+ExecStart=%VENV%/bin/python -u %OKERR%/okerr-telebot.py
+StandardOutput=append:/var/log/okerr/telebot-out.log
+StandardError=append:/var/log/okerr/telebot-err.log
+
+[Install]
+WantedBy=multi-user.target
+
