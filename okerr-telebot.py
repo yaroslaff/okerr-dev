@@ -34,6 +34,7 @@ from okerrupdate import OkerrProject, OkerrExc
 from myutils import dhms, md_escape
 
 bot = telebot.TeleBot(settings.TGBOT_TOKEN)
+started = time.time()
 
 # updater = None
 stop = False
@@ -298,6 +299,24 @@ Total {} (maintenance: {}, silent: {}, ERR: {})
             text=msg)
         # end for project
 
+
+@bot.message_handler(commands=['info'])
+def cmd_info(message):
+    reg_command(message)
+    chat_id=message.chat.id
+    tgname = message.from_user.username
+
+    uptime = time.time() - started
+    hostname = socket.gethostname()
+
+    msg = 'Hello {}!\nYour chat id is {}\nHostname: {}\nUptime: {}'.format(tgname, chat_id, hostname, dhms(uptime))
+
+    bot.send_message(
+        chat_id=chat_id,
+        # parse_mode = telegram.ParseMode.MARKDOWN,
+        reply_markup = get_reply_markup(chat_id),
+        text=msg)
+
 @bot.message_handler(commands=['on'])
 def cmd_on(message):
     reg_command(message)
@@ -394,8 +413,6 @@ def main():
 
     main_rs = RemoteServer(url=args.server)
     assert(main_rs)
-
-    started = time.time()
 
     signal.signal(signal.SIGINT, sighandler)    
 
