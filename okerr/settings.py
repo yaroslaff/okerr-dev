@@ -142,7 +142,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'debug_toolbar',
-    'test_without_migrations',
+#    'test_without_migrations',
 #    'social_django',
 #    'maintenancemode',
     'oauth2_provider',
