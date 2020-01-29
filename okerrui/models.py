@@ -2532,12 +2532,14 @@ class Indicator(TransModel):
             # bad name, looks like number
             return False
 
-
         # '/' is good char, because used in names like df-/var
         badchars = ['<','>','%','\\','@']
         for ch in badchars:
             if ch in name:
                 return False
+
+        if '//' in name or name.startswith('/'):
+            return False
 
         return True
 
