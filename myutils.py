@@ -27,9 +27,6 @@ import logging
 import logging.handlers
 
 
-# sendinblue
-from mailin import Mailin
-
 def md_escape(txt):
     escape = '\\`*_#!'
     #escape = '\\`*_{}[]()#+-.!'
@@ -372,33 +369,18 @@ def send_email(to_addr, from_addr=None, from_name=None, to_name=None, subject='n
     if should_send(to_addr, settings.MAIL_RECIPIENTS):
         log.info('send {} ({}) to {}'.format(what, settings.MYMAIL_METHOD, to_addr))
         
-        if settings.MYMAIL_METHOD=='sendinblue':
-            m = Mailin("https://api.sendinblue.com/v2.0","1xthUwD6bX9qHN4g")
-            # sendingblue SMTP
-            data = { 
-                "to" : {to_addr:to_name,},
-                "from" : [from_addr, from_name],
-                "subject" : subject,
-                "html" : html,
-                "attachment" : []
-            }
+        # plain SMTP sending
+        headers = {
+            'IsTransactional': 'True'
+        }
+        # log.info('send to {}, headers: {}'.format(to_addr, headers))
+        msg = EmailMultiAlternatives(subject, text, from_addr, [to_addr], headers=headers)
+        if html:
+            msg.attach_alternative(html, "text/html")
+        if text:
+            msg.attach_alternative(text, "text/plain")
 
-            result = m.send_email(data)
-            # log.info("{} sent {}: {}".format(what, result['code'],result))
-
-        else:            
-            # plain SMTP sending
-            headers = {
-                'IsTransactional': 'True'
-            }
-            # log.info('send to {}, headers: {}'.format(to_addr, headers))
-            msg = EmailMultiAlternatives(subject, text, from_addr, [to_addr], headers=headers)
-            if html:
-                msg.attach_alternative(html, "text/html")
-            if text:
-                msg.attach_alternative(text, "text/plain")
-            
-            msg.send()                        
+        msg.send()
 
 
     else:
