@@ -191,8 +191,9 @@ SITEURL = 'http://{HOSTNAME}/'
 def test_systemd(args):
     services_dir = '/etc/systemd/system'
     orig_services_dir = os.path.join(mydir, 'contrib/etc/systemd/system')
-    services = ['okerr.service','okerr-netprocess.service', 'okerr-poster.service',	'okerr-process.service', 'okerr-smtpd.service',
-                'okerr-tgbot.service','okerr-ui.service']
+    services = ['okerr.service',
+                'okerr-netprocess.service', 'okerr-poster.service',	'okerr-process.service', 'okerr-smtpd.service',
+                'okerr-telebot.service', 'okerr-ui.service']
 
     ok = True
 
