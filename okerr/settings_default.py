@@ -13,37 +13,39 @@ MACHINES = {
     }
 }
 
-DB_HOST="localhost"
+DB_HOST = "localhost"
 SITEURL = None
-SECRET_KEY='<default secret key, will be overwritten by environment or config>'
-TRUSTED_IPS=[]
-TRUSTED_HOSTS=[]
-TRUSTED_NETS=[]
-LOG_SYSLOG=True
-LOG_STDOUT=False
-HONOR_LAST_FAIL=True
-LOG_SERVER=None
+SECRET_KEY = '<default secret key, will be overwritten by environment or config>'
+TRUSTED_IPS = []
+TRUSTED_HOSTS = []
+TRUSTED_NETS = []
+LOG_SYSLOG = True
+LOG_STDOUT = False
+HONOR_LAST_FAIL = True
+LOG_SERVER = None
 MYIP = None
-SERVER_EMAIL='noreply@okerr.com'
-OKERR_REDIS_DB=1
-TPROC_MAXSLEEP=30
-JKEYS_TPL="{}"
+SERVER_EMAIL = 'noreply@okerr.com'
+OKERR_REDIS_DB = 1
+TPROC_MAXSLEEP = 30
+JKEYS_TPL = "{}"
 OAUTH2_ADV_LIST = list()
 
 # MAIL settings
-EMAIL_HOST='localhost'
-EMAIL_PORT=25
-FROM='"okerr robot" <noreply@okerr.com>'
-TGBOT_TOKEN=None
-MAIL_RECIPIENTS=['*']
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+FROM = '"okerr robot" <noreply@okerr.com>'
+TGBOT_TOKEN = None
+MAIL_RECIPIENTS = ['*']
 MYMAIL_METHOD = 'smtp'
-MYMAIL_FOOTER = '' # Not None! 'elasticemail' or any other string
-IMPORT_PATH='demo' # from settings.BASE_DIR
+MYMAIL_FOOTER = ''  # Not None! 'elasticemail' or any other string
+LOGMAIL = []  # list of emails to send log messages
 
-PROCSLEEP=10
+IMPORT_PATH = 'demo' # from settings.BASE_DIR
+
+PROCSLEEP = 10
 
 
-TPROC_GET_MAX=100
+TPROC_GET_MAX = 100
 
 # cleaning old data
 LOGRECORD_AGE = datetime.timedelta(days=31)

@@ -15,6 +15,7 @@ mydir = sys.path[0]
 
 """
 TODO: SECRET_KEY
+okerrupdate config
 RMQ keys generate
 install RMQ
 install sensor
@@ -56,14 +57,6 @@ def systemd(command, daemon=None):
             print("failed to systemd{}".format(command))
             assert(rc.returncode == 0)
 
-def UNUSED_test_migrate(args):
-    if not fix:
-        print("[MIGRATE works only with --fix]")
-        return
-
-    # here we have --fix
-
-
 
 def test_rsyslogd(args):
     basename = '20-okerr.conf'
@@ -82,6 +75,7 @@ def test_rsyslogd(args):
     else:
         print("[RSYSLOGD not configured]")
         return False
+
 
 def test_redis(args):
     confpath = '/etc/redis/redis.conf'
@@ -193,30 +187,39 @@ def test_systemd(args):
     orig_services_dir = os.path.join(mydir, 'contrib/etc/systemd/system')
     services = ['okerr.service',
                 'okerr-netprocess.service', 'okerr-poster.service',	'okerr-process.service', 'okerr-smtpd.service',
-                'okerr-telebot.service', 'okerr-ui.service']
+                'okerr-telebot.service', 'okerr-ui.service', 'okerr-mqsender.service']
+
+    services_custom = [
+        ('okerr-sensor.service', os.path.join(args.venv, 'okerrsensor/okerr-sensor-venv.service'), '/etc/systemd/system/okerr-sensor.service')
+    ]
+
+    for service in services:
+        src = os.path.join(orig_services_dir, service)
+        dst = os.path.join(services_dir, service)
+        services_custom.append((service, src, dst))
+
 
     ok = True
 
     print("[SYSTEMD ...]")
 
-    for service in services:
-        path = os.path.join(services_dir, service)
-        if os.path.exists(path) and not args.overwrite:
-            print("already exists " + path + " and no --overwrite")
+    for service, src, dst in services_custom:
+        # path = os.path.join(services_dir, service)
+        if os.path.exists(dst) and not args.overwrite:
+            print("already exists {} and no --overwrite".format(dst))
             continue
 
         if args.fix:
-            print("Make {}".format(path))
-            srcpath = os.path.join(orig_services_dir, service)
+            print("Make {}".format(dst))
 
-            copy_template(srcpath, path, tokens)
+            copy_template(src, dst, tokens)
 
             systemd('daemon-reload')
             systemd('enable', service)
             systemd('start', service)
         else:
             print("No fix")
-            ok=False
+            ok = False
 
     return ok
 
@@ -277,19 +280,17 @@ def test_dbadmin(args):
             # already exists
             return True
 
-
-
 def test_python(args):
-    reqs = os.path.join(mydir,'requirements.txt')
-    adns = os.path.join(mydir,'contrib/adns-1.4-py1.tar.gz')
+    reqs = os.path.join(mydir, 'requirements.txt')
+    # adns = os.path.join(mydir, 'contrib/adns-1.4-py1.tar.gz')
 
-    pip3 = os.path.join(args.venv, 'bin/pip3')
+    pip3venv = os.path.join(args.venv, 'bin/pip3')
 
     print("[PYTHON]")
 
-    os.system('{} install wheel'.format(pip3))
-    os.system('{} install -r {}'.format(pip3, reqs))
-    os.system('{} install {}'.format(pip3, adns))
+    os.system('{} install wheel'.format(pip3venv))
+    os.system('{} install -r {}'.format(pip3venv, reqs))
+    # os.system('{} install {}'.format(pip3, adns))
     return True
 
 def test_user(args):
@@ -424,7 +425,8 @@ def test_deb_packages(args):
         'libadns1-dev',
         'mariadb-server',
         'rsyslog',
-        'postfix'
+        'postfix',
+        'cron'
     ]
 
     print("[DEB]")
@@ -448,8 +450,53 @@ def test_deb_packages(args):
 
     return True
 
+
+def test_postinstall(args):
+    print("test_postinstall")
+    python3 = os.path.join(args.venv, 'bin/python3')
+    okerrmod = os.path.join(args.venv, 'bin/okerrmod')
+    manage = os.path.join(sys.path[0], 'manage.py')
+
+
+
+    # check 1 okerr user
+
+    # check if user exists
+
+    cmd = [python3, manage, 'profile','--user', args.email]
+    user_exist = subprocess.run(cmd).returncode == 0
+
+    if user_exist:
+        print("postinstall: user {} already exists".format(args.email))
+
+    elif args.fix:
+        print("create user", args.email)
+        cmd = [python3, manage, 'profile', '--create', args.email, '--pass', args.password, '--textid', 'okerr']
+        subprocess.run(cmd)
+
+        print("grant admin to user", args.email)
+        cmd = [python3, manage, 'group', '--assign', 'Admin', '--user', args.email, '--infinite']
+        subprocess.run(cmd)
+    else:
+        print("User {} not exists!".format(args.email))
+        return False
+
+    # check 2 okerrupdate config
+
+    if os.path.exists('/etc/okerr/okerrupdate'):
+        print("already exists /etc/okerr/okerrupdate config")
+    elif args.fix:
+        cmd = [okerrmod,'--init', '--url', 'http://localhost/', '--direct', '--textid', 'okerr']
+        subprocess.run(cmd)
+    else:
+        print("missing okerrupdate config!")
+        return False
+
+    return True
+
+
 tests = ['deb', 'user', 'venv', 'python', 'dbadmin', 'redis', 'rsyslogd', 'systemd','bashrc', 'localconf', 'apache',
-         'uwsgi']
+         'uwsgi','postinstall']
 
 def_venv = '/opt/venv/okerr'
 def_varrun = '/var/run/okerr'
@@ -466,7 +513,7 @@ g.add_argument('--user', default='okerr', metavar='user')
 g.add_argument('--group', default='okerr', metavar='group')
 g.add_argument('--wwwgroup', default=def_wwwgroup, metavar='group', help='www group def: {}'.format(def_wwwgroup))
 g.add_argument('--home', default='/opt/okerr', metavar='DIR')
-g.add_argument('--rootpass', default=None)
+g.add_argument('--rootpass', default=None, help='mariadb root pass')
 g.add_argument('--dbname', default='okerr')
 g.add_argument('--dbuser', default='okerr')
 g.add_argument('--dbpass', default='okerrpass')
@@ -474,6 +521,11 @@ g.add_argument('--venv', default=def_venv, help='Path to virtualenv {}'.format(d
 g.add_argument('--varrun', default=def_varrun, metavar='DIR', help='path to /var/run/NAME directory. def: {}'.format(def_varrun))
 g.add_argument('--host', default=list(), nargs='+', help='my hostnames')
 g.add_argument('--apache', default=False, action='store_true', help='install apache2 and integrate with it')
+
+g = parser.add_argument_group('Installation post-config option')
+g.add_argument('--email', default=None, required=True, metavar='EMAIL')
+g.add_argument('--pass', dest='password', default=None, required=True, metavar='PASSWORD')
+
 
 args = parser.parse_args()
 
@@ -499,6 +551,7 @@ testmap = {
     # 'varrun': test_varrun,
     'uwsgi': test_uwsgi,
     'apache': test_apache,
+    'postinstall': test_postinstall,
     # 'migrate': test_migrate
 }
 
