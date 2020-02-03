@@ -20,15 +20,16 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--list', action='store_true', help='list all profiles')
         parser.add_argument('--pa', help='ProfileArg')
-        parser.add_argument('--delete',action='store_true', default=False, help='delete selected profile (or profilearg)')
+        parser.add_argument('--delete', action='store_true', default=False, help='delete selected profile (or profilearg)')
         parser.add_argument('--create', default=None, metavar='username', help='create user (with --pass)')
-        parser.add_argument('--user',default=None, help='user email')
-        parser.add_argument('--pass',default=None, help='user pass')
-        parser.add_argument('--rename',default=None, metavar='NEW-EMAIL', help='New email')
-        parser.add_argument('--patrol',action='store_true', default=False, help='patrol profiles')
-        parser.add_argument('--tstage',default=None, help='set training stage (magic codes: prev, next, first)')
-        parser.add_argument('-b',dest='batch',default=False,action='store_true', help='brief output for batch mode')
-        parser.add_argument('--really',default=False,action='store_true', help='really. (for dangerous operations)')
+        parser.add_argument('--user', default=None, help='user email')
+        parser.add_argument('--pass', default=None, help='user pass')
+        parser.add_argument('--textid', default=None, help='first project textid')
+        parser.add_argument('--rename', default=None, metavar='NEW-EMAIL', help='New email')
+        parser.add_argument('--patrol', action='store_true', default=False, help='patrol profiles')
+        parser.add_argument('--tstage', default=None, help='set training stage (magic codes: prev, next, first)')
+        parser.add_argument('-b',dest='batch', default=False,action='store_true', help='brief output for batch mode')
+        parser.add_argument('--really', default=False,action='store_true', help='really. (for dangerous operations)')
 
     def handle(self, *args, **options):
         #print "options:",options
@@ -60,7 +61,7 @@ class Command(BaseCommand):
             profile.partner_name = ''
             profile.partner_id = ''
             profile.save()
-            profile.inits()
+            profile.inits(textid = options['textid'])
 
             print("created user {} pass {}".format(email, password))
             print("dont forget to add to groups")
@@ -136,7 +137,8 @@ class Command(BaseCommand):
                     p = Profile.objects.filter(partner_name = partner, partner_id = partner_id).first()
     
             if not p:                               
-                print("no such profile")
+                print("no profile for", options['user'])
+                sys.exit(1)
                 return
         
             if options['pass']:
