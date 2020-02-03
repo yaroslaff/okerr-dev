@@ -41,7 +41,7 @@ def copy_template(src, dst, tokens):
 
 def systemd(command, daemon=None):
 
-    if command in ['restart', 'enable', 'disable']:
+    if command in ['restart', 'start', 'stop', 'enable', 'disable']:
         rc = subprocess.run(['systemctl', command, daemon])
         if rc.returncode == 0:
             print("systemd {} {}".format(command, daemon))
@@ -138,12 +138,17 @@ def test_bashrc(args):
 
 def test_localconf(args):
     localconf_dir = '/etc/okerr'
-    localconf_subdirs = ['json', 'local.d', 'env']
+    localconf_subdirs = ['json', 'local.d', 'env', 'ssl']
     localconf_path = os.path.join(localconf_dir, 'local.d','local.conf')
     copyfiles = [
         ('contrib/etc/okerr/json/keys-template.json', 'json/keys-template.json'),
-        ('contrib/etc/okerr/env/netprocess', 'env/netprocess')
+        ('contrib/etc/okerr/env/netprocess', 'env/netprocess'),
+        ('contrib/etc/okerr/env/sensor', 'env/sensor'),
+        ('contrib/etc/okerr/env/mqsender', 'env/mqsender'),
     ]
+
+    if args.rmq:
+        copyfiles.append(('contrib/etc/rabbitmq/rabbitmq.config','/etc/rabbitmq/rabbitmq.config'))
 
     if os.path.exists(localconf_path) and not args.overwrite:
         print("[LOCALCONF SKIP {} exists]".format(localconf_path))
@@ -177,6 +182,7 @@ SITEURL = 'http://{HOSTNAME}/'
         for fsrc, fdst in copyfiles:
             src = os.path.join(mydir, fsrc)
             dst = os.path.join(localconf_dir, fdst)
+            print("make local config", dst)
             copy_template(src, dst, tokens)
 
 
@@ -204,7 +210,6 @@ def test_systemd(args):
     print("[SYSTEMD ...]")
 
     for service, src, dst in services_custom:
-        # path = os.path.join(services_dir, service)
         if os.path.exists(dst) and not args.overwrite:
             print("already exists {} and no --overwrite".format(dst))
             continue
@@ -216,7 +221,7 @@ def test_systemd(args):
 
             systemd('daemon-reload')
             systemd('enable', service)
-            systemd('start', service)
+            systemd('restart', service)
         else:
             print("No fix")
             ok = False
@@ -301,7 +306,7 @@ def test_user(args):
     except KeyError:
         print("[USER {} not exists]".format(args.user))
         if(args.fix):
-            print("Create user {} home {}".format(args.user, args.home))
+            print("create user {} home {}".format(args.user, args.home))
             os.system('useradd -r -m -G redis -d {} -s /bin/bash {}'.format(args.home, args.user))
             os.system('passwd -l {}'.format(args.user))
             return True
@@ -432,7 +437,11 @@ def test_deb_packages(args):
     print("[DEB]")
 
     if args.apache:
-        packages.extend(['apache2','libapache2-mod-proxy-uwsgi'])
+        packages.extend(['apache2', 'libapache2-mod-proxy-uwsgi'])
+
+    if args.rmq:
+        print("RMQ specific configuration")
+        packages.append('rabbitmq-server')
 
     if args.fix or args.overwrite:
         os.system('apt update')
@@ -452,7 +461,7 @@ def test_deb_packages(args):
 
 
 def test_postinstall(args):
-    print("test_postinstall")
+    print("[POSTINSTALL]")
     python3 = os.path.join(args.venv, 'bin/python3')
     okerrmod = os.path.join(args.venv, 'bin/okerrmod')
     manage = os.path.join(sys.path[0], 'manage.py')
@@ -463,14 +472,14 @@ def test_postinstall(args):
 
     # check if user exists
 
-    cmd = [python3, manage, 'profile','--user', args.email]
+    cmd = [python3, manage, 'profile', '--user', args.email]
     user_exist = subprocess.run(cmd).returncode == 0
 
     if user_exist:
         print("postinstall: user {} already exists".format(args.email))
 
     elif args.fix:
-        print("create user", args.email)
+        print("create okerr user", args.email)
         cmd = [python3, manage, 'profile', '--create', args.email, '--pass', args.password, '--textid', 'okerr']
         subprocess.run(cmd)
 
@@ -483,10 +492,10 @@ def test_postinstall(args):
 
     # check 2 okerrupdate config
 
-    if os.path.exists('/etc/okerr/okerrupdate'):
+    if os.path.exists('/etc/okerr/okerrupdate') and not args.overwrite:
         print("already exists /etc/okerr/okerrupdate config")
     elif args.fix:
-        cmd = [okerrmod,'--init', '--url', 'http://localhost/', '--direct', '--textid', 'okerr']
+        cmd = [okerrmod, '--init', '--url', 'http://localhost/', '--direct', '--textid', 'okerr']
         subprocess.run(cmd)
     else:
         print("missing okerrupdate config!")
@@ -494,9 +503,70 @@ def test_postinstall(args):
 
     return True
 
+def test_ca(args):
 
-tests = ['deb', 'user', 'venv', 'python', 'dbadmin', 'redis', 'rsyslogd', 'systemd','bashrc', 'localconf', 'apache',
-         'uwsgi','postinstall']
+    mkcert = os.path.join(sys.path[0], 'ca', 'mkcert.sh')
+    cwd = os.path.join(sys.path[0], 'ca')
+
+    code = 'ca'
+    if os.path.exists('/etc/okerr/ssl/{}.pem'.format(code)) and not args.overwrite:
+        print("Already exists {}.pem".format(code))
+    elif args.fix:
+        print("Generate SSL certificates")
+        cmd = [mkcert, 'ca']
+        subprocess.run(cmd, cwd=cwd)
+    else:
+        print("Certificates {} not found".format(code))
+        return False
+
+    for code in ['client', 'rabbitmq']:
+        if os.path.exists('/etc/okerr/ssl/{}.pem'.format(code)) and not args.overwrite:
+            print("Already exists {}.pem".format(code))
+        elif args.fix:
+            print("Generate SSL certificates")
+            cmd = [mkcert, 'client', code]
+            subprocess.run(cmd, cwd=cwd)
+        else:
+            print("Certificates {} not found".format(code))
+            return False
+
+    return True
+
+def test_sanity(args):
+    if args.run in ['all', 'postinstall'] and (args.email is None or args.password is None):
+        print("Need email and password for 'postinstall' check")
+        return False
+
+    return True
+
+def test_rabbitmq(args):
+    """
+    rabbitmqctl add_vhost okerr
+    rabbitmqctl list_vhosts
+    rabbitmqctl add_user okerr 'OkerrSecretPassword'
+    rabbitmqctl set_permissions -p okerr okerr ".*" ".*" ".*"
+    """
+
+    rabbitmqctl = '/usr/sbin/rabbitmqctl'
+
+    if args.rmq is None:
+        print("[RABBITMQ skipped]")
+        return True
+
+    cmdlist = [
+        [rabbitmqctl, 'add_vhost', 'okerr'],
+        [rabbitmqctl, 'add_user', 'okerr', 'okerr'],
+        [rabbitmqctl, 'set_permissions', '-p', 'okerr', 'okerr', '.*', '.*', '.*']
+    ]
+
+    for cmd in cmdlist:
+        print("RUN:", ' '.join(cmd))
+        subprocess.run(cmd)
+
+    return True
+
+tests = ['sanity', 'deb', 'user', 'venv', 'python', 'dbadmin', 'redis', 'rsyslogd', 'ca', 'rabbitmq', 'systemd',
+         'bashrc', 'localconf', 'apache', 'uwsgi', 'postinstall']
 
 def_venv = '/opt/venv/okerr'
 def_varrun = '/var/run/okerr'
@@ -520,14 +590,29 @@ g.add_argument('--dbpass', default='okerrpass')
 g.add_argument('--venv', default=def_venv, help='Path to virtualenv {}'.format(def_venv))
 g.add_argument('--varrun', default=def_varrun, metavar='DIR', help='path to /var/run/NAME directory. def: {}'.format(def_varrun))
 g.add_argument('--host', default=list(), nargs='+', help='my hostnames')
+
+g = parser.add_argument_group('Installation variants')
+g.add_argument('--local', default=False, action='store_true',
+               help='Typical local-server install: --apache --rmq --fix --overwrite '
+                    '--user okerr@example.com --pass okerr_default_password')
 g.add_argument('--apache', default=False, action='store_true', help='install apache2 and integrate with it')
+g.add_argument('--rmq', default=False, action='store_true', help='install RabbitMQ server')
 
 g = parser.add_argument_group('Installation post-config option')
-g.add_argument('--email', default=None, required=True, metavar='EMAIL')
-g.add_argument('--pass', dest='password', default=None, required=True, metavar='PASSWORD')
+g.add_argument('--email', default=None, metavar='EMAIL')
+g.add_argument('--pass', dest='password', default=None, metavar='PASSWORD')
 
 
 args = parser.parse_args()
+
+# process typical install method
+if args.local:
+    args.apache = True
+    args.rmq = True
+    args.fix = True
+    args.overwrite = True
+    args.email = args.email or 'okerr@example.com'
+    args.password = args.password or 'okerr_default_password'
 
 tokens = {
     '%OKERR%': mydir,
@@ -538,6 +623,7 @@ tokens = {
 }
 
 testmap = {
+    'sanity': test_sanity,
     'user': test_user,
     'deb': test_deb_packages,
     'venv': test_venv,
@@ -551,6 +637,8 @@ testmap = {
     # 'varrun': test_varrun,
     'uwsgi': test_uwsgi,
     'apache': test_apache,
+    'ca': test_ca,
+    'rabbitmq': test_rabbitmq,
     'postinstall': test_postinstall,
     # 'migrate': test_migrate
 }

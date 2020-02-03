@@ -1,0 +1,7 @@
+SENSOR_NAME=okerr-dev@local.ru
+
+RMQ_USER=okerr
+RMQ_PASS=okerr
+RMQ_VHOST=okerr
+RMQ_HOST=localhost
+

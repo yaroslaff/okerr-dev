@@ -1,0 +1,5 @@
+RMQ_USER=okerr
+RMQ_PASS=okerr
+RMQ_HOST=localhost
+RMQ_VHOST=okerr
+

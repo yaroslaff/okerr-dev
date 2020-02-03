@@ -4,8 +4,6 @@ CERTDIR=${CERTDIR:-/etc/okerr/ssl/}
 cmd=${1:-all}
 
 ca(){
-  echo "# make ca cert in $CERTDIR"
-
 
   if [ ! -f $CERTDIR/ca.key ]
   then
@@ -24,6 +22,7 @@ ca(){
 }
 
 client(){
+
   CNAME=${1:-client}
   echo "# generate client cert $CNAME"
 
