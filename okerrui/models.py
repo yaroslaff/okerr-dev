@@ -270,7 +270,7 @@ class Project(TransModel):
 
     # project.create
     @staticmethod
-    def create(name,owner, partner_access = False):
+    def create(name,owner, partner_access=False, textid=None):
 
         log.info("user: {} ci: {} create project: {}".format(owner, owner.profile.ci, name))
 
@@ -339,14 +339,20 @@ class Project(TransModel):
                     remark='IPv6 world access (default)')
                 subnet.save()
 
-
-
-
             except BaseException as e:
                 print("Exception",e)
                 print("at ",sys._getframe().f_code.co_name)
 
-        project.mk1textid()
+        if textid:
+            if ProjectTextID.objects.filter(textid=textid).count() == 0:
+                print("set textid:", textid)
+                t1 = ProjectTextID(project=project, textid=textid)
+                t1.save()
+            else:
+                print("ALREADY exists project with textid", textid)
+                project.mk1textid()
+        else:
+            project.mk1textid()
 
         # create keys
         # keypasswd = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(10))
@@ -4271,7 +4277,7 @@ class Profile(TransModel):
         return csum % csz
 
     # profile.init
-    def init(self, partner_access = False):
+    def init(self, partner_access=False, textid=None):
         now=timezone.now()
         self.sumtime= (now - now.replace(hour=0, minute=0, second=0,
             microsecond=0)).total_seconds()
@@ -4282,12 +4288,12 @@ class Profile(TransModel):
         # project = Project(name=self.user.username, owner=self.user)
         self.ci = myci()
 
-        project = Project.create(self.user.username,self.user, partner_access = partner_access)
+        Project.create(self.user.username, self.user, partner_access=partner_access, textid=textid)
 
 
     # profile.inits
-    def inits(self, partner_access = False):
-        self.init(partner_access = partner_access)
+    def inits(self, partner_access = False, textid=None):
+        self.init(partner_access=partner_access, textid=textid)
         #print "inits after init, now save. textid:",self.textid
         self.save()
 
