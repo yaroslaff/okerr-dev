@@ -140,11 +140,11 @@ def set_chat_id(email, tgname, chat_id):
         return r['msg']
             
     except Profile.DoesNotExist as e:
-        log.error('Not found profile for tg user {}. Try little later?'.format(tgname))
+        log.info('Not found profile for tg user {}. Try little later?'.format(tgname))
         if tgname:
-            return "Telegram user with name '{}' not known in Okerr. Sorry. Please set this name in okerr profile first.".format(tgname)
+            return "Telegram user with name '{}' not known in Okerr. Sorry. Please set this name in okerr profile first and try little later.".format(tgname)
         else:
-            return "Telegram user with id {} not known in Okerr. Sorry. Please set this id in okerr profile first.".format(chat_id)
+            return "Telegram user with id {} not known in Okerr. Sorry. Please set this id in okerr profile first and try little later.".format(chat_id)
         
     except Profile.MultipleObjectsReturned as e:
         log.error('Multiple profiles for tg user {}'.format(tgname))
