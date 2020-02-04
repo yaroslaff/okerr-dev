@@ -125,6 +125,7 @@ urlpatterns = [
     url(r'^api/create/(?P<pid>[^/]+)/(?P<iname>.+)', views.api_create, name='api_create'),
     url(r'^api/delete/(?P<pid>[^/]+)/(?P<iname>.+)', views.api_delete, name='api_delete'),
     url(r'^api/checkmethods', views.api_checkmethods, name='api_checkmethods'),
+    url(r'^api/recheck/(?P<pid>[^/]+)/?$', views.api_recheck, name='api_recheck'),
 
     url(r'^api/director/(?P<textid>.*)', views.api_director, name='api_director'),
     url(r'^api/check_version/(?P<product>[^/]+)/(?P<version>.+)', views.api_check_version, name='api_check_version'),

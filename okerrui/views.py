@@ -12,6 +12,7 @@ from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
 from django.forms import ModelForm
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.db import connection, transaction
 from django.db.models import Count, Q
 from django.conf import settings
@@ -261,13 +262,13 @@ def security_check(request, quiet=False):
     try:
         ghba_tuple = socket.gethostbyaddr(remoteip) # getfqdn need for charlie > charlie.okerr.com
     except socket.herror:
-        log.info(u'security check fail, no reverse for {} req: {}'.format(remoteip, request.path))
+        log.info('security check fail, no reverse for {} req: {}'.format(remoteip, request.path))
         return False
 
     revlist = ghba_tuple[1]
     revlist.append(ghba_tuple[0])
 
-    log.debug(u"security_check {} ip: {} revlist: {}".format(func, remoteip, revlist))
+    log.debug("security_check {} ip: {} revlist: {}".format(func, remoteip, revlist))
 
     for r in revlist:
         rev = socket.getfqdn(r) # add optional domain
@@ -3734,6 +3735,22 @@ def api_indicators(request,pid):
     return HttpResponse(''.join(ilist), content_type='text/plain; charset=utf-8')
 
 
+@csrf_exempt
+@require_http_methods(["POST"])
+def api_recheck(request, pid):
+
+    if not security_check(request):
+        log.warning("security check failed, remoteip: {}".format(remoteip))
+        return HttpResponse(status = 401)
+
+    project = Project.get_by_textid(pid)
+    if project is None:
+        return HttpResponseNotFound("No such project. (textid: '{}')".format(request.POST['textid']))
+
+    num = project.recheck()
+
+    return HttpResponse('{}'.format(num), content_type='text/plain; charset=utf-8')
+
 
 def api_prefix(request,pid,prefix):
     """
@@ -4303,23 +4320,6 @@ def api_partner_revoke(request):
 #
 
 
-def UNUSED_api_project(request,tid):
-
-    if not security_check(request):
-        return HttpResponse(status = 401)
-
-    project = Project.get_by_textid(tid)
-    if not project:
-        return HttpResponse('', status=403)
-
-    # check if user is related to project
-    if not project.member(request.user):
-        return HttpResponse('', status=403)
-
-    content = json.dumps(project.rawdatastruct(),sort_keys=True,indent=4, separators=(',', ': '))
-    return HttpResponse(content, content_type='text/plain')
-
-
 def api_profile(request, pid):
 
     if not security_check(request):
@@ -4372,16 +4372,6 @@ def api_profile(request, pid):
     return HttpResponse(out, content_type='text/plain')
 
 
-def UNUSED_api_summary(request):
-
-    if not security_check(request):
-        return HttpResponse(status = 401)
-
-    out = json.dumps(TransactionEngine.summary(Profile),
-        indent=4, separators=(',',': '), sort_keys=True)
-
-    return HttpResponse(out, content_type='text/plain')
-
 @csrf_exempt
 def api_setci(request):
 
@@ -4394,7 +4384,7 @@ def api_setci(request):
 
 
     if not security_check(request):
-        log.warn("security check failed, remoteip: {}".format(remoteip))
+        log.warning("security check failed, remoteip: {}".format(remoteip))
         return HttpResponse(status = 401)
 
     if not request.POST:
