@@ -246,15 +246,16 @@ class Project(TransModel):
             i.save()
 
     def recheck(self):
-        num = 0
+        l = list()
         cmlist = CheckMethod.objects.exclude(codename__in=CheckMethod.passive_list)
 
-        for i in self.indicator_set.filter(_status='ERR', disabled=False, maintenance__isnull=True, cm__in=cmlist):
+        for i in self.indicator_set.filter(_status='ERR', silent=False, disabled=False,
+                                           maintenance__isnull=True, cm__in=cmlist):
             i.retest()
             i.save()
-            num += 1
+            l.append(i.name)
 
-        return num
+        return l
 
     # project.touch
     def touch(self, touchall=False):

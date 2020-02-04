@@ -257,7 +257,7 @@ def cmd_recheck(message):
         url = main_rs.api_director(textid)
         rs = RemoteServer(url=url)
 
-        num = rs.api_recheck(textid)
+        l = rs.api_recheck(textid)
         log.info("rechecked project {}: {} indicators".format(textid, num))
 
         if num is None:
@@ -270,7 +270,11 @@ def cmd_recheck(message):
                                                                                                       p.get_textid()))
             return
 
-        msg = "Set {} indicators in project {} to recheck".format(num, textid)
+        if l:
+            # not empty list
+            msg = "Project {}: recheck: {}".format(textid, ' '.join(l[:5]))
+        else:
+            msg = "Project {}: nothing to recheck".format(textid)
 
         bot.send_message(
             chat_id=chat_id,

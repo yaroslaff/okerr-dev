@@ -355,7 +355,7 @@ class RemoteServer():
         try:
             r = requests.post(url, headers=self.headers, timeout=15)
             if r.status_code == 200:
-                return int(r.text)
+                return json.loads(r.text)
             return None
         except requests.exceptions.RequestException as e:
             self.log.error("{}: api_recheck({}) error: {}".format(self.name, textid, e))

@@ -3747,9 +3747,9 @@ def api_recheck(request, pid):
     if project is None:
         return HttpResponseNotFound("No such project. (textid: '{}')".format(request.POST['textid']))
 
-    num = project.recheck()
+    out = project.recheck()
 
-    return HttpResponse('{}'.format(num), content_type='text/plain; charset=utf-8')
+    return HttpResponse(json.dumps(out, indent=4, separators=(',',': '), sort_keys=True), content_type='application/json')
 
 
 def api_prefix(request,pid,prefix):
