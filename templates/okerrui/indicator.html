@@ -495,19 +495,19 @@
 
 		var DataHour = [
 				{
-					value: {{uptime.hour.OK}},
+					value: {{uptime.hour.OK|stringformat:".4f"}},
 					color:"#007700",
 					highlight: "#007700",
 					label: "OK"
 				},
 				{
-					value: {{uptime.hour.ERR}},
+					value: {{uptime.hour.ERR|stringformat:".4f"}},
 					color: "#FF0000",
 					highlight: "#FF0000",
 					label: "ERR"
 				},
 				{
-					value: {{uptime.hour.maintenance}},
+					value: {{uptime.hour.maintenance|stringformat:".4f"}},
 					color: "#444444",
 					highlight: "#444444",
 					label: "Maintenance"
@@ -517,19 +517,19 @@
 
 		var DataDay = [
 				{
-					value: {{uptime.day.OK}},
+					value: {{uptime.day.OK|stringformat:".4f"}},
 					color:"#007700",
 					highlight: "#007700",
 					label: "OK"
 				},
 				{
-					value: {{uptime.day.ERR}},
+					value: {{uptime.day.ERR|stringformat:".4f"}},
 					color: "#FF0000",
 					highlight: "#FF0000",
 					label: "ERR"
 				},
 				{
-					value: {{uptime.day.maintenance}},
+					value: {{uptime.day.maintenance|stringformat:".4f"}},
 					color: "#444444",
 					highlight: "#444444",
 					label: "Maintenance"
@@ -538,19 +538,19 @@
 
 		var DataMonth = [
 				{
-					value: {{uptime.month.OK}},
+					value: {{uptime.month.OK|stringformat:".4f"}},
 					color:"#007700",
 					highlight: "#007700",
 					label: "OK"
 				},
 				{
-					value: {{uptime.month.ERR}},
+					value: {{uptime.month.ERR|stringformat:".4f"}},
 					color: "#F00",
 					highlight: "#F00",
 					label: "ERR"
 				},
 				{
-					value: {{uptime.month.maintenance}},
+					value: {{uptime.month.maintenance|stringformat:".4f"}},
 					color: "#444444",
 					highlight: "#444444",
 					label: "Maintenance"
