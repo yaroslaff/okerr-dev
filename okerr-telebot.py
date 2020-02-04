@@ -259,7 +259,7 @@ def cmd_recheck(message):
 
         l = rs.api_recheck(textid)
 
-        if num is None:
+        if l is None:
             log.error('api_recheck for {} / {} returned None'.format(rs.name, p.get_textid()))
             bot.send_message(
                 chat_id=chat_id,
