@@ -261,10 +261,11 @@ def main():
 
     g = parser.add_argument_group('RabbitMQ options')
     g.add_argument('--rmqhost', default=os.getenv('RMQ_HOST','localhost'), help='RabbitMQ host ($RMQ_HOST, localhost)')
-    g.add_argument('--rmqvhost', default=os.getenv('RMQ_VHOST','okerr'), help='RabbitMQ VirtualHost ($RMQ_VHOST, okerr)')
+    g.add_argument('--rmqvhost', default=os.getenv('RMQ_VHOST','okerr'),
+                   help='RabbitMQ VirtualHost ($RMQ_VHOST, okerr)')
     g.add_argument('--rmquser', default=os.getenv('RMQ_USER', 'okerr'), help='RabbitMQ username (okerr)')
     g.add_argument('--rmqpass', default=os.getenv('RMQ_PASS', 'okerr_default_password'),
-                   help='RabbitMQ password (okerr)')
+                                                  help='RabbitMQ password (okerr_default_password)')
     g.add_argument('--rmqttl', type=int, default=os.getenv('RMQ_TTL','60'), help='TTL (in seconds) for task message')
     g.add_argument('--pem', default=def_pem,
                    help='Client cert+key PEM file: {}'.format(def_pem))
