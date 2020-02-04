@@ -148,7 +148,7 @@ def test_localconf(args):
     ]
 
     if args.rmq:
-        copyfiles.append(('contrib/etc/rabbitmq/rabbitmq.config','/etc/rabbitmq/rabbitmq.config'))
+        copyfiles.append(('contrib/etc/rabbitmq/rabbitmq.config', '/etc/rabbitmq/rabbitmq.config'))
 
     if os.path.exists(localconf_path) and not args.overwrite:
         print("[LOCALCONF SKIP {} exists]".format(localconf_path))
@@ -508,6 +508,8 @@ def test_ca(args):
     mkcert = os.path.join(sys.path[0], 'ca', 'mkcert.sh')
     cwd = os.path.join(sys.path[0], 'ca')
 
+    print("[CA]")
+
     code = 'ca'
     if os.path.exists('/etc/okerr/ssl/{}.pem'.format(code)) and not args.overwrite:
         print("Already exists {}.pem".format(code))
@@ -540,17 +542,17 @@ def test_sanity(args):
     return True
 
 def test_rabbitmq(args):
-    """
-    rabbitmqctl add_vhost okerr
-    rabbitmqctl list_vhosts
-    rabbitmqctl add_user okerr 'OkerrSecretPassword'
-    rabbitmqctl set_permissions -p okerr okerr ".*" ".*" ".*"
-    """
 
     rabbitmqctl = '/usr/sbin/rabbitmqctl'
 
     if args.rmq is None:
         print("[RABBITMQ skipped]")
+        return True
+
+    # check
+    rc = subprocess.run([rabbitmqctl, 'list_permissions', '-p', 'okerr'])
+    if rc.returncode == 0 and not args.overwrite:
+        print("[RABBITMQ vhost exists]")
         return True
 
     cmdlist = [
@@ -565,8 +567,9 @@ def test_rabbitmq(args):
 
     return True
 
-tests = ['sanity', 'deb', 'user', 'venv', 'python', 'dbadmin', 'redis', 'rsyslogd', 'ca', 'rabbitmq', 'systemd',
-         'bashrc', 'localconf', 'apache', 'uwsgi', 'postinstall']
+
+tests = ['sanity', 'deb', 'user', 'venv', 'python', 'localconf', 'dbadmin', 'redis', 'rsyslogd', 'ca', 'rabbitmq',
+         'bashrc', 'apache', 'uwsgi', 'systemd', 'postinstall']
 
 def_venv = '/opt/venv/okerr'
 def_varrun = '/var/run/okerr'
