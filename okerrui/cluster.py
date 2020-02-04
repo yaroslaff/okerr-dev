@@ -345,9 +345,22 @@ class RemoteServer():
                 return json.loads(r.text)
             return None
         except requests.exceptions.RequestException as e:
-            self.log.error(u"{}: api_admin_qsum({}) error: {}".format(self.name, textid, e))
-            return None        
-    
+            self.log.error("{}: api_admin_qsum({}) error: {}".format(self.name, textid, e))
+            return None
+
+    def api_recheck(self, textid):
+        url = urllib.parse.urljoin(self.url, '/api/recheck/{}'.format(textid))
+        self.log.info("RECHECK FROM {}".format(url))
+
+        try:
+            r = requests.post(url, headers=self.headers, timeout=15)
+            if r.status_code == 200:
+                return int(r.text)
+            return None
+        except requests.exceptions.RequestException as e:
+            self.log.error("{}: api_recheck({}) error: {}".format(self.name, textid, e))
+            return None
+
 
     def send_tproc_results(self, portion, options = dict()):
                 

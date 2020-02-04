@@ -116,9 +116,9 @@ def set_chat_id(email, tgname, chat_id):
         # verify profile
         if profile.telegram_name != tgname and profile.telegram_name != str(chat_id):
             if tgname:
-                return u'Set telegram name {} in profile'.format(tgname)
+                return 'Set telegram name {} in profile'.format(tgname)
             else:
-                return u'Set telegram name {} in profile'.format(chat_id)
+                return 'Set telegram name {} in profile'.format(chat_id)
         
         rs = RemoteServer(ci = profile.ci)
         if tgname:
@@ -162,7 +162,8 @@ def get_reply_markup(chat_id):
                 telebot.types.KeyboardButton('/help')
             )
             markup.row(
-                telebot.types.KeyboardButton('/sum')
+                telebot.types.KeyboardButton('/sum'),
+                telebot.types.KeyboardButton('/recheck')
             )
         else:
             markup.row(
@@ -214,6 +215,71 @@ def cmd_debug(update, ctx):
             text="Profile {} @{}, chat_id: {} ci: {}/{}".format(p.user.username, p.telegram_name, p.telegram_chat_id, p.ci, myci()))
 
 
+@bot.message_handler(commands=['recheck'])
+def cmd_recheck(message):
+    reg_command(message)
+    projects = list()
+
+    chat_id = message.chat.id
+
+    username = main_rs.api_admin_chat_id(chat_id)
+    if username is None:
+        tgname = message.from_user.username
+        error_msg = "chat id: {} tg name: {} not linked to any account".format(chat_id, tgname)
+        log.info(error_msg)
+        bot.send_message(
+            chat_id=chat_id,
+            text=error_msg,
+            reply_markup=get_reply_markup(chat_id))
+        return
+
+    project_list = main_rs.api_admin_member(username)
+    if project_list is None:
+        log.info('Failed to get project list for user {} from {}'.format(username, main_rs))
+        bot.send_message(
+            chat_id=chat_id,
+            text="Internal exception, please contact support",
+            reply_markup=get_reply_markup(chat_id))
+        return
+
+    for textid in project_list:
+        projects.append(textid)
+
+    if not projects:
+        log.info("no projects!")
+        bot.send_message(
+            chat_id=chat_id,
+            text="No projects",
+            reply_markup=get_reply_markup(chat_id))
+        return
+
+    for textid in projects:
+        url = main_rs.api_director(textid)
+        rs = RemoteServer(url=url)
+
+        num = rs.api_recheck(textid)
+        log.info("rechecked project {}: {} indicators".format(textid, num))
+
+        if num is None:
+            log.error('api_recheck for {} / {} returned None'.format(rs.name, p.get_textid()))
+            bot.send_message(
+                chat_id=chat_id,
+                parse_mode="Markdown",
+                reply_markup=get_reply_markup(chat_id),
+                text='Server {} for project {} unavailable at moment. Sorry. Try again later.'.format(rs.name,
+                                                                                                      p.get_textid()))
+            return
+
+        msg = "Set {} indicators in project {} to recheck".format(num, textid)
+
+        bot.send_message(
+            chat_id=chat_id,
+            parse_mode="Markdown",
+            reply_markup=get_reply_markup(chat_id),
+            text=msg)
+        # end for project
+
+
 @bot.message_handler(commands=['sum'])
 def cmd_qsum(message):
 
@@ -262,7 +328,7 @@ def cmd_qsum(message):
         log.info("show project {}".format(textid))
 
         #msg = 'zzzzz'
-        tpl = u'''
+        tpl = '''
 Project *{}* ({})
 Total {} (maintenance: {}, silent: {}, ERR: {})
 '''
@@ -284,7 +350,7 @@ Total {} (maintenance: {}, silent: {}, ERR: {})
         for i in data['ERR'][:5]:
             try:
                 link = rs.reverse('okerr:ilocator', {'pid': data['textid'], 'iid': i['name']})                
-                msg += u'[{}]({}) = {} ({}) {} ago\n'.format(
+                msg += '[{}]({}) = {} ({}) {} ago\n'.format(
                     md_escape(i['name']), link, i['status'], md_escape(i['details']), i['age'])
             except Exception as e:
                 print(e)
