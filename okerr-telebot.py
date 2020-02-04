@@ -258,7 +258,6 @@ def cmd_recheck(message):
         rs = RemoteServer(url=url)
 
         l = rs.api_recheck(textid)
-        log.info("rechecked project {}: {} indicators".format(textid, num))
 
         if num is None:
             log.error('api_recheck for {} / {} returned None'.format(rs.name, p.get_textid()))
@@ -269,6 +268,9 @@ def cmd_recheck(message):
                 text='Server {} for project {} unavailable at moment. Sorry. Try again later.'.format(rs.name,
                                                                                                       p.get_textid()))
             return
+
+
+        log.info("rechecked project {}: {} indicators".format(textid, len(l)))
 
         if l:
             # not empty list
