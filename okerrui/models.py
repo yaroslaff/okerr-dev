@@ -2537,7 +2537,8 @@ class Indicator(TransModel):
 
         if total > 0:
             for p in ['OK', 'ERR', 'maintenance']:
-                uptime[p] = "{:.3f}".format(uptime[p] * 100 / total)
+                # uptime[p] = "{:.3f}".format(uptime[p] * 100 / total)
+                uptime[p] = uptime[p] * 100 / total
         else:
             # no data, use current
             if self.maintenance:
