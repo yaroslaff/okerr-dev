@@ -44,7 +44,6 @@ IMPORT_PATH = 'demo' # from settings.BASE_DIR
 
 PROCSLEEP = 10
 
-
 TPROC_GET_MAX = 100
 
 # cleaning old data

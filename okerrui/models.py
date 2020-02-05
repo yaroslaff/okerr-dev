@@ -5153,7 +5153,7 @@ class Group(models.Model):
     def reinit_groups(delete=False, readonly=False, quiet=False):
 
         goodargs = ['maxindicators', 'settextname', 'mintextidlen', 'minperiod', 'teamsize', 'maxprojects', 'maxstatus',
-                    'login',
+                    'login', 'maxdyndns', 'status_maxsubscribers',
                     'add_maxindicators', 'add_teamsize', 'add_maxprojects', 'minperiod:1', 'minperiod:60',
                     '_price', '_autorenew', '_weight']
 

@@ -53,9 +53,9 @@ SITE_JSON_DIRS = ['/etc/okerr/json/']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+IMPORT_VERBOSITY = 0
+
 def import_config_file(path):
-    verbose = False
-    verbose_file = False
 
     # site-specific overrides
     try:
@@ -63,6 +63,9 @@ def import_config_file(path):
         loader = importlib.machinery.SourceFileLoader(path, path)
         m = loader.load_module()
         load = True
+
+        verbosity = IMPORT_VERBOSITY
+
 
         # check if we should load this file
         for sym in dir(m):
@@ -73,10 +76,12 @@ def import_config_file(path):
 
                 if localsymval != symval:
                     load = False
+                    break
 
         if load:
-            if verbose or verbose_file:
-                print("Load", path)
+            if verbosity >= 1:
+                print("Load {}".format(path))
+
             for sym in dir(m):
                 # skip modules, functions etc.
                 if type(m.__dict__[sym]) not in [str, list, dict, datetime.timedelta, tuple, bool, int, type(None)]:
@@ -88,10 +93,12 @@ def import_config_file(path):
 
                 symval = m.__dict__[sym]
                 globals()[sym] = symval
-                if verbose:
-                    print("{} imported {} = {}".format(path, sym, repr(symval)))
+                if verbosity == 2:
+                    print("    {}".format(sym))
+                if verbosity >= 3:
+                    print("    {} = {}".format(sym, repr(symval)))
         else:
-            if verbose or verbose_file:
+            if verbosity >= 1:
                 print("Skip loading {} ( {} = {!r} != {!r})".format(path, sym, symval, localsymval))
             pass
 
