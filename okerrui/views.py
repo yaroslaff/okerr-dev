@@ -5275,7 +5275,9 @@ def oauth2_callback(request):
     except KeyError:
         return HttpResponse(status=400)
 
-    redirect_url = p['redirect_url'].format(SITEURL=settings.SITEURL)
+    # redirect_url = p['redirect_url'].format(SITEURL=settings.SITEURL)
+    redirect_url = p['redirect_url'].format(SITEURL=settings.SITEURL, HOSTNAME=settings.HOSTNAME)
+
     redirect_url = re.sub('(?<!:)/+','/', redirect_url)
     oauth =  requests_oauthlib.OAuth2Session(p['client_id'], state=state, redirect_uri=redirect_url)
 
