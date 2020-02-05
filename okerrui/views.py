@@ -5213,7 +5213,7 @@ def oauth2_login(request, provider, suffix):
     # log.info("OAUTH login {} type {}".format(remoteip, provider))
     # log.info("redirect from {} (to me): {}".format(request.get_host(), p['redirect_url']))
 
-    redirect_url = p['redirect_url'].format(SITEURL=settings.SITEURL)
+    redirect_url = p['redirect_url'].format(SITEURL=settings.SITEURL, HOSTNAME=settings.HOSTNAME)
     redirect_url = re.sub('(?<!:)/+','/', redirect_url)
     print("redirect_url:", redirect_url)
 
