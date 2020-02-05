@@ -296,13 +296,13 @@ def sredir(request, name, path):
     print("sredir", name, path)
 
     if name.endswith('.okerr.com'):
-        url = urllib.parse.urljoin('https://{}/'.format(name), path)
+        url = urljoin('https://{}/'.format(name), path)
     elif name == 'localhost:8000':
-        url = urllib.parse.urljoin('http://localhost:8000/', path)
+        url = urljoin('http://localhost:8000/', path)
     else:
         try:
             rs = RemoteServer(name = name)
-            url = urllib.parse.urljoin(rs.url, path)
+            url = urljoin(rs.url, path)
         except KeyError:
             return HttpResponse(u'bad cluster name "{}"'.format(name), status=400)
 
@@ -400,19 +400,19 @@ def UNUSED_relocate_moveauth(request, project, mkticket=True):
 
 
     if mkticket:
-        mkticket_url = urllib.parse.urljoin(base_url, "/moveauth/mkticket")
+        mkticket_url = urljoin(base_url, "/moveauth/mkticket")
         ticket = MoveAuthTicket.get_ticket(mkticket_url, request.user.email)
 
         if ticket is None:
             ctx = {'base_url': base_url}
             return render(request, 'okerrui/remote_unavailable.html', ctx)
 
-        land_url = urllib.parse.urljoin(base_url, "/moveauth/land/"+ticket+request.get_full_path())
+        land_url = urljoin(base_url, "/moveauth/land/"+ticket+request.get_full_path())
 
         log.info('move user {} to {} ticket {}'.format(request.user.email, base_url, ticket[:10]))
         return redirect(land_url)
     else:
-        land_url = urllib.parse.urljoin(base_url,request.get_full_path())
+        land_url = urljoin(base_url,request.get_full_path())
         return redirect(land_url)
 
 
