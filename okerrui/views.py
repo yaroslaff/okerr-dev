@@ -5215,6 +5215,7 @@ def oauth2_login(request, provider, suffix):
 
     redirect_url = p['redirect_url'].format(SITEURL=settings.SITEURL)
     redirect_url = re.sub('(?<!:)/+','/', redirect_url)
+    print("redirect_url:", redirect_url)
 
     oauth =  requests_oauthlib.OAuth2Session(p['client_id'],
         redirect_uri=redirect_url,

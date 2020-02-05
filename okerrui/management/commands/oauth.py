@@ -58,10 +58,10 @@ class Command(BaseCommand):
             print("add cluster url:", url)
             redirect_uris += url + '\r\n'
 
-        if hasattr(settings, 'OAUTH2_REDIRECT_URI'):
-            for url in settings.OAUTH2_REDIRECT_URI:
-                print("add custom url:", url)
-                redirect_uris += url + '\r\n'
+        #if hasattr(settings, 'OAUTH2_REDIRECT_URI'):
+        #    for url in settings.OAUTH2_REDIRECT_URI:
+        #        print("add custom url:", url)
+        #        redirect_uris += url + '\r\n'
 
         app.redirect_uris = redirect_uris
         app.save()
