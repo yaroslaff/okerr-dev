@@ -357,13 +357,12 @@ def afterlogin(request):
         return redirect("okerr:motd")
 
     if 'afterlogin_redirect' in request.session:
-        log.info(u'{} AFTERLOGIN got url in session: {}'.format(remoteip, request.session['afterlogin_redirect']))
+        log.info('{} AFTERLOGIN got url in session: {}'.format(remoteip, request.session['afterlogin_redirect']))
         url = request.session['afterlogin_redirect']
-        log.info(u'{} AFTERLOGIN to {} (delete)'.format(remoteip, url))
         del request.session['afterlogin_redirect']
         return redirect(url)
     else:
-        log.info(u'{} {} AFTERLOGIN no afterlogin_redirect. skey: {}'.format(remoteip, request.get_host(), request.session.session_key))
+        log.info('{} {} AFTERLOGIN no afterlogin_redirect. skey: {}'.format(remoteip, request.get_host(), request.session.session_key))
 
     return redirect('okerr:index')
 
@@ -376,9 +375,9 @@ def relocate(request, project, indicator = None):
 
     if indicator is None:
         # redirect to project
-        url = reverse('okerr:pi',kwargs = { 'textid': project.get_textid()} )
+        url = reverse('okerr:pi', kwargs={ 'textid': project.get_textid()})
     else:
-        url = reverse('okerr:ilocator', kwargs = {'pid': project.get_textid(), 'iid': indicator} )
+        url = reverse('okerr:ilocator', kwargs={'pid': project.get_textid(), 'iid': indicator})
 
     # log.info('RELOCATE url: {}'.format(url))
 
@@ -5215,7 +5214,6 @@ def oauth2_login(request, provider, suffix):
 
     redirect_url = p['redirect_url'].format(SITEURL=settings.SITEURL, HOSTNAME=settings.HOSTNAME)
     redirect_url = re.sub('(?<!:)/+','/', redirect_url)
-    print("redirect_url:", redirect_url)
 
     oauth =  requests_oauthlib.OAuth2Session(p['client_id'],
         redirect_uri=redirect_url,
