@@ -96,6 +96,8 @@ class Command(BaseCommand):
 
         # User = get_user_model()
         app_model = oauth2_provider.models.get_application_model()
+        app = None
+
         if options['app']:
             app = app_model.objects.get(name=options['app'])
 
@@ -107,7 +109,7 @@ class Command(BaseCommand):
             self.reinit()
         elif options['dump']:
             self.dump(app)
-        elif options['export']:
+        elif options['export'] and app:
             d = self.export(app)
             print(json.dumps(d, indent=4))
         elif options['exportall']:
