@@ -414,6 +414,7 @@ def test_apache(args):
 
 def test_deb_packages(args):
     packages=[
+        'git',
         'python3-dev',
         'python3-venv',
         'dialog',
@@ -460,13 +461,25 @@ def test_deb_packages(args):
     return True
 
 
+def test_okerrupdate(args):
+    okerrmod = os.path.join(args.venv, 'bin/okerrmod')
+
+    if os.path.exists('/etc/okerr/okerrupdate') and not args.overwrite:
+        print("already exists /etc/okerr/okerrupdate config")
+    elif args.fix:
+        cmd = [okerrmod, '--init', '--url', 'http://localhost/', '--direct', '--textid', 'okerr']
+        subprocess.run(cmd)
+    else:
+        print("missing okerrupdate config!")
+        return False
+
+    return True
+
+
 def test_postinstall(args):
     print("[POSTINSTALL]")
     python3 = os.path.join(args.venv, 'bin/python3')
-    okerrmod = os.path.join(args.venv, 'bin/okerrmod')
     manage = os.path.join(sys.path[0], 'manage.py')
-
-
 
     # check 1 okerr user
 
@@ -488,17 +501,6 @@ def test_postinstall(args):
         subprocess.run(cmd)
     else:
         print("User {} not exists!".format(args.email))
-        return False
-
-    # check 2 okerrupdate config
-
-    if os.path.exists('/etc/okerr/okerrupdate') and not args.overwrite:
-        print("already exists /etc/okerr/okerrupdate config")
-    elif args.fix:
-        cmd = [okerrmod, '--init', '--url', 'http://localhost/', '--direct', '--textid', 'okerr']
-        subprocess.run(cmd)
-    else:
-        print("missing okerrupdate config!")
         return False
 
     return True
@@ -568,7 +570,7 @@ def test_rabbitmq(args):
     return True
 
 
-tests = ['sanity', 'deb', 'user', 'venv', 'python', 'localconf', 'dbadmin', 'redis', 'rsyslogd', 'ca', 'rabbitmq',
+tests = ['sanity', 'deb', 'user', 'venv', 'python', 'okerrupdate', 'localconf', 'dbadmin', 'redis', 'rsyslogd', 'ca', 'rabbitmq',
          'bashrc', 'apache', 'uwsgi', 'systemd', 'postinstall']
 
 def_venv = '/opt/venv/okerr'
@@ -642,6 +644,7 @@ testmap = {
     'apache': test_apache,
     'ca': test_ca,
     'rabbitmq': test_rabbitmq,
+    'okerrupdate': test_okerrupdate,
     'postinstall': test_postinstall,
     # 'migrate': test_migrate
 }
