@@ -4,6 +4,7 @@ import logging, logging.handlers
 import argparse, json
 import datetime
 import pika
+import pika.exceptions
 import ssl
 from myutils import dt2unixtime, dhms, shorttime
 import traceback
@@ -236,82 +237,21 @@ def get_routing_key(i, data):
         return qprefix + i.location
 
 
-def main():
-    global log
-    global channel
-    global resultq
+def mainloop(args):
     global redis_conn
-
 
     pid = os.getpid()
     redis_conn = get_redis(settings.OKERR_REDIS_DB)
     assert(redis_conn)
 
-    def_pem = '/etc/okerr/ssl/client.pem'
-    def_capem = '/etc/okerr/ssl/ca.pem'
-
-    parser = argparse.ArgumentParser(description='okerr indicator MQ processor')
-
-    g = parser.add_argument_group('Options')
-    g.add_argument('-v', '--verbose', action='store_true', default=False, help='verbose mode')
-    g.add_argument('-u', '--unlock', action='store_true', default=False, help='unlock at start')
-    g.add_argument('--once', action='store_true', default=False, help='run just once')
-    g.add_argument('-s', '--sleep', type=int, default=1, help='sleep time between runs')
-
-
-    g = parser.add_argument_group('RabbitMQ options')
-    g.add_argument('--rmqhost', default=os.getenv('RMQ_HOST','localhost'), help='RabbitMQ host ($RMQ_HOST, localhost)')
-    g.add_argument('--rmqvhost', default=os.getenv('RMQ_VHOST','okerr'),
-                   help='RabbitMQ VirtualHost ($RMQ_VHOST, okerr)')
-    g.add_argument('--rmquser', default=os.getenv('RMQ_USER', 'okerr'), help='RabbitMQ username (okerr)')
-    g.add_argument('--rmqpass', default=os.getenv('RMQ_PASS', 'okerr_default_password'),
-                                                  help='RabbitMQ password (okerr_default_password)')
-    g.add_argument('--rmqttl', type=int, default=os.getenv('RMQ_TTL','60'), help='TTL (in seconds) for task message')
-    g.add_argument('--pem', default=def_pem,
-                   help='Client cert+key PEM file: {}'.format(def_pem))
-    g.add_argument('--capem', default=def_capem,
-                   help='CA cert PEM file: {}'.format(def_capem))
-
-
-
-    args = parser.parse_args()
-
-    log = logging.getLogger('mqsender')
-
-    err = logging.StreamHandler(sys.stderr)
-    err.setFormatter(logging.Formatter('%(asctime)s %(message)s',
-                                       datefmt='%Y/%m/%d %H:%M:%S'))
-    err.setLevel(logging.DEBUG)
-    log.addHandler(err)
-
-    if args.verbose:
-        log.setLevel(logging.DEBUG)
-        log.debug('Verbose mode')
-    else:
-        log.setLevel(logging.INFO)
-
-    properties=pika.BasicProperties(
-        expiration=str(args.rmqttl*1000),
-    )
-
-    log.debug("Important settings:")
-    log.debug("settings.MQ_QUICK_TIME = {}".format(settings.MQ_QUICK_TIME))
-    log.debug("settings.MQ_PROCESS_TIME = {}".format(settings.MQ_PROCESS_TIME))
-    log.debug("settings.MQ_THROTTLE_TIME = {}".format(settings.MQ_THROTTLE_TIME))
-
-    log.debug('Connect to RMQ host {!r}:5671 vhost: {!r} user: {!r} ca: {!r} client: {!r}'.format(
-        args.rmqhost, args.rmqvhost, args.rmquser,
-        args.capem, args.pem
-    ))
-
-
-    if args.unlock:
-        unlockold()
-
     credentials = pika.PlainCredentials(args.rmquser, args.rmqpass)
     context = ssl.create_default_context(cafile=args.capem)
     context.load_cert_chain(args.pem)
     ssl_options = pika.SSLOptions(context, "rabbitmq")
+
+    properties=pika.BasicProperties(
+        expiration=str(args.rmqttl*1000),
+    )
 
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
@@ -445,6 +385,85 @@ def main():
         time.sleep(args.sleep)
 
     connection.close()
+
+
+def main():
+    global log
+    global channel
+    global resultq
+    stop = False
+
+    def_pem = '/etc/okerr/ssl/client.pem'
+    def_capem = '/etc/okerr/ssl/ca.pem'
+
+    parser = argparse.ArgumentParser(description='okerr indicator MQ processor')
+
+    g = parser.add_argument_group('Options')
+    g.add_argument('-v', '--verbose', action='store_true', default=False, help='verbose mode')
+    g.add_argument('-u', '--unlock', action='store_true', default=False, help='unlock at start')
+    g.add_argument('--once', action='store_true', default=False, help='run just once')
+    g.add_argument('-s', '--sleep', type=int, default=1, help='sleep time between runs')
+
+
+    g = parser.add_argument_group('RabbitMQ options')
+    g.add_argument('--rmqhost', default=os.getenv('RMQ_HOST','localhost'), help='RabbitMQ host ($RMQ_HOST, localhost)')
+    g.add_argument('--rmqvhost', default=os.getenv('RMQ_VHOST','okerr'),
+                   help='RabbitMQ VirtualHost ($RMQ_VHOST, okerr)')
+    g.add_argument('--rmquser', default=os.getenv('RMQ_USER', 'okerr'), help='RabbitMQ username (okerr)')
+    g.add_argument('--rmqpass', default=os.getenv('RMQ_PASS', 'okerr_default_password'),
+                                                  help='RabbitMQ password (okerr_default_password)')
+    g.add_argument('--rmqttl', type=int, default=os.getenv('RMQ_TTL','60'), help='TTL (in seconds) for task message')
+    g.add_argument('--pem', default=def_pem,
+                   help='Client cert+key PEM file: {}'.format(def_pem))
+    g.add_argument('--capem', default=def_capem,
+                   help='CA cert PEM file: {}'.format(def_capem))
+
+
+
+    args = parser.parse_args()
+
+    log = logging.getLogger('mqsender')
+
+    err = logging.StreamHandler(sys.stderr)
+    err.setFormatter(logging.Formatter('%(asctime)s %(message)s',
+                                       datefmt='%Y/%m/%d %H:%M:%S'))
+    err.setLevel(logging.DEBUG)
+    log.addHandler(err)
+
+    if args.verbose:
+        log.setLevel(logging.DEBUG)
+        log.debug('Verbose mode')
+    else:
+        log.setLevel(logging.INFO)
+
+
+    log.debug("Important settings:")
+    log.debug("settings.MQ_QUICK_TIME = {}".format(settings.MQ_QUICK_TIME))
+    log.debug("settings.MQ_PROCESS_TIME = {}".format(settings.MQ_PROCESS_TIME))
+    log.debug("settings.MQ_THROTTLE_TIME = {}".format(settings.MQ_THROTTLE_TIME))
+
+    log.debug('Connect to RMQ host {!r}:5671 vhost: {!r} user: {!r} ca: {!r} client: {!r}'.format(
+        args.rmqhost, args.rmqvhost, args.rmquser,
+        args.capem, args.pem
+    ))
+
+
+    if args.unlock:
+        unlockold()
+
+    while not stop:
+        try:
+            print("")
+            mainloop(args)
+        except (pika.exceptions.AMQPError) as e:
+            if type(e) == pika.exceptions.AMQPConnectionError:
+                print("Connection error: {}".format(str(e)))
+            elif(type(e)) == pika.exceptions.ProbableAuthenticationError:
+                print("Auth error: {}".format(e))
+            else:
+                print("Caught exception {}: {}".format(type(e), e))
+
+            time.sleep(10)
 
 main()
 
