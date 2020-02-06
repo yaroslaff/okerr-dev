@@ -623,7 +623,7 @@ def add(request,tid):
             return redirect('okerr:index')
 
         if not Indicator.validname(iname):
-            notify(request, _(u"Bad indicator name"))
+            notify(request, _("Bad indicator name"))
             create=False
             return redirect('okerr:index')
 
@@ -677,7 +677,7 @@ def add(request,tid):
             return redirect('okerr:ilocator', i.project.get_textid(), i.name)
 
     else:
-        notify(request, _(u"You dont have permission to manage indicators in project {}").format(project.name))
+        notify(request, _("You dont have permission to manage indicators in project {}").format(project.name))
 
     return redirect('okerr:index')
 
@@ -747,7 +747,7 @@ def doop(request, textid):
                 i.delete()
                 return HttpResponse('{"deleted": true}', status=200)
             else:
-                notify(request,_(u"Only disabled indicator can be deleted. Indicator {} not disabled.").format(i.name))
+                notify(request,_("Only disabled indicator can be deleted. Indicator {} not disabled.").format(i.name))
                 return HttpResponse('{"deleted": false}', status=200)
 
         elif cmd=='enable':
@@ -772,7 +772,7 @@ def doop(request, textid):
 #            i.disable()
 #            i.save()
         else:
-            return HttpResponse(u"unknown masscmd '{}'".format(masscmd), status=400)
+            return HttpResponse("unknown masscmd '{}'".format(masscmd), status=400)
 
         Indicator.update_tproc_sleep()
 
@@ -1063,7 +1063,7 @@ def project(request, pid):
         if ntid>=2:
             tid = ProjectTextID.objects.filter(pk=dtid,project=project).first()
             if tid:
-                log.info(u"u: {} p: {} delete textid {} '{}' (total: {})".\
+                log.info("u: {} p: {} delete textid {} '{}' (total: {})".\
                     format(request.user.username, project.name,
                         request.POST['deltextid'],
                         tid.textid,ntid))
@@ -1076,7 +1076,7 @@ def project(request, pid):
                             tid.project.name.encode('utf8'))
                 else:
                     tidline='tid id: {} (not found at all)'.format(dtid)
-                log.info(u"u: {} p: #{}:'{}' failed to delete textid: {})"\
+                log.info("u: {} p: #{}:'{}' failed to delete textid: {})"\
                     .format(
                         request.user.username, project.id,
                         project.name.encode('utf8'),
@@ -1246,7 +1246,7 @@ def acceptinvite(request):
 
     if 'accept' in request.POST:
         for pi in ProjectInvite.objects.filter(email=request.user.username, left__gt=0).all():
-            log.info(u"u: {} ACCEPT: {}".format(request.user.email, pi))
+            log.info("u: {} ACCEPT: {}".format(request.user.email, pi))
             acc, err = pi.accept(request.user)
             # no need to save now (accept saves if needed)
             #if acc:
@@ -1550,7 +1550,7 @@ def indicator(request,iid):
         for cmd in iadmin_commands:
             if request.POST.get(cmd,False):
                 notify(request,"You dont have iadmin role, sorry.")
-                log.info(u"noiadmin user {} tries to make command {} for"\
+                log.info("noiadmin user {} tries to make command {} for"\
                 "indicator {}".format(request.user.username,cmd,i.id))
                 return redirect(request.path)
 
@@ -1693,7 +1693,7 @@ def indicator(request,iid):
 
             # if changed checkmethod, set default args
             if 'cm' in changed.keys():
-                i.log(u"u: {} ip: {} changed cm to {}".format(
+                i.log("u: {} ip: {} changed cm to {}".format(
                     request.user.username, remoteip,i.cm.name),
                     typecode="indicator")
                 i.setdefargs()
@@ -1709,7 +1709,7 @@ def indicator(request,iid):
                     oldval = Indicator.fixarg(i.getarg(argname))
 
                     if oldval != newval:
-                        i.log(u"u: {} ip: {} Set {}='{}'".format(
+                        i.log("u: {} ip: {} Set {}='{}'".format(
                             request.user.username,
                             remoteip,argname,shortstr(newval)
                             ),
@@ -2235,7 +2235,7 @@ def update(request):
         )
 
     # calculate update line
-    u = u"{} {}@{} = {} e:{}".format(remoteip,
+    u = "{} {}@{} = {} e:{}".format(remoteip,
         idname,textid, status, error)
 
 
@@ -3683,13 +3683,13 @@ def api_delete(request,pid,iname):
     try:
         i = p.get_indicator(iname)
     except Indicator.DoesNotExist:
-        return HttpResponseNotFound(u"Project {} has no indicator {}\n".format(p.get_textid(), iname))
+        return HttpResponseNotFound("Project {} has no indicator {}\n".format(p.get_textid(), iname))
     #i.set_delete()
     #i.tsave()
     i.log(u'deleted via API user {} from IP: {}'.format(who, remoteip))
     i.predelete()
     i.delete()
-    return HttpResponse(u"Deleted indicator {} from project {}\n".format(iname, p.get_textid()))
+    return HttpResponse("Deleted indicator {} from project {}\n".format(iname, p.get_textid()))
 
 
 @csrf_exempt
@@ -3714,9 +3714,9 @@ def api_create(request,pid,iname):
         i.startmaintenance()
         i.tsave()
         i.log(u'created via API {} from IP: {}'.format(who, remoteip))
-        log.info(u"APICREATE {} {} ({}) created i#{} '{}'".format(
+        log.info("APICREATE {} {} ({}) created i#{} '{}'".format(
             who, pid, p.name, i.id, i.name))
-        return HttpResponse(u"Created {}\n".format(i))
+        return HttpResponse("Created {}\n".format(i))
     except ValueError as e:
         return HttpResponse(str(e)+'\n', status = 400, content_type='text/plain; charset=utf-8')
 
@@ -3946,7 +3946,7 @@ def api_set(request,pid,iid):
             try:
                 ival = int(sval)
             except ValueError:
-                return HttpResponseNotFound(u"{} can be only 0 or 1\n".format(bname))
+                return HttpResponseNotFound("{} can be only 0 or 1\n".format(bname))
             if ival==0:
                 bval = False
             else:
@@ -4122,7 +4122,7 @@ def api_partner_create(request):
     # template = request.POST.get('template',None)
 
     if not validate_email(email):
-        return HttpResponse(u"Invalid email {}".format(email), status=400, content_type='text/plain; charset=utf-8')
+        return HttpResponse("Invalid email {}".format(email), status=400, content_type='text/plain; charset=utf-8')
 
 
     if not partner['create']:
@@ -4676,7 +4676,7 @@ def api_tproc_set(request):
     for textid in res.keys():
         p = Project.get_by_textid(textid)
         if p is None:
-            log.error(u'tproc_set not found project {}'.format(textid))
+            log.error('tproc_set not found project {}'.format(textid))
             continue
 
         for r in res[textid]:
@@ -4684,7 +4684,7 @@ def api_tproc_set(request):
             try:
                 i = p.get_indicator(r['name'])
             except Indicator.DoesNotExist:
-                log.error(u'!!! not found indicator {} in project {}'.format(r['name'], r['textid']))
+                log.error('!!! not found indicator {} in project {}'.format(r['name'], r['textid']))
                 continue
 
             if r['code'] is None:
@@ -4696,7 +4696,7 @@ def api_tproc_set(request):
                     if i.expected <= timezone.now() or simulation:
                         tsr['applied'].append(fullname)
 
-                        log.info(u'apply_tproc {}@{} {} {}:"{}" {}@{} = {}'.format(
+                        log.info('apply_tproc {}@{} {} {}:"{}" {}@{} = {}'.format(
                             name, location, remoteip,
                             r['code'], r['code_message'],
                             r['name'], r['textid'], r['status']))
@@ -4705,20 +4705,20 @@ def api_tproc_set(request):
                         i.usave()
                         c+=1
                     else:
-                        log.info(u'apply_tproc_early {}@{} {} {}:"{}" {}@{} = {}'.format(
+                        log.info('apply_tproc_early {}@{} {} {}:"{}" {}@{} = {}'.format(
                             name, location, remoteip,
                             r['code'], r['code_message'],
                             r['name'], r['textid'], r['status']))
                         tsr['not applied'].append(fullname)
                 else:
-                        log.info(u'apply_tproc_mtime {}@{} {} {}:"{}" {}@{} = {}'.format(
+                        log.info('apply_tproc_mtime {}@{} {} {}:"{}" {}@{} = {}'.format(
                             name, location, remoteip,
                             r['code'], r['code_message'],
                             r['name'], r['textid'], r['status']))
                         tsr['not applied'].append(fullname)
             else:
                 # code not 200
-                log.info(u'apply_tproc_fail {}@{} {} {}:"{}" {}@{} = {}'.format(
+                log.info('apply_tproc_fail {}@{} {} {}:"{}" {}@{} = {}'.format(
                     name, location, remoteip,
                     r['code'], r['code_message'],
                     r['name'], r['textid'], r['status']))
@@ -4928,12 +4928,12 @@ def api_admin_tglink(request):
     out = dict()
     out['sync'] = list()
 
-    # log.info(u'tglink tgname: {} email: {} chat_id: {}'.format(tgname, email, chat_id))
+    # log.info('tglink tgname: {} email: {} chat_id: {}'.format(tgname, email, chat_id))
 
     #try:
     #    chat_id = long(chat_id)
     #except (ValueError, TypeError):
-    #    out['msg'] = u'Need chat_id'
+    #    out['msg'] = 'Need chat_id'
     #    return HttpResponse(json.dumps(out, indent=4), status=400, content_type='text/plain')
 
 
@@ -4943,7 +4943,7 @@ def api_admin_tglink(request):
         for p in Profile.objects.filter(telegram_chat_id = chat_id):
             p.telegram_chat_id = None
             p.save()
-            msg += u'Unlinked from user {} @{}\n'.format(p.user.username, p.telegram_name)
+            msg += 'Unlinked from user {} @{}\n'.format(p.user.username, p.telegram_name)
             out['sync'].append(p.user.username)
         out['msg'] = msg
         return HttpResponse(json.dumps(out, indent=4), content_type='text/plain')
@@ -4955,14 +4955,14 @@ def api_admin_tglink(request):
             p = Profile.objects.get(ci = myci(), telegram_name = tgname)
 
     except Profile.DoesNotExist:
-        msg = u'No such user {} with telegran name {} on this ci {}'.format(email, tgname, myci())
+        msg = 'No such user {} with telegran name {} on this ci {}'.format(email, tgname, myci())
 
         log.debug(msg)
         out['msg'] = msg
         return HttpResponse(json.dumps(out, indent=4), content_type='text/plain')
 
     except Profile.MultipleObjectsReturned:
-        msg = u'More then one user with telegram name {}. Use /on <email>'.format(tgname)
+        msg = 'More then one user with telegram name {}. Use /on <email>'.format(tgname)
         log.debug(msg)
         out['msg'] = msg
         return HttpResponse(json.dumps(out, indent=4), content_type='text/plain')
@@ -4971,7 +4971,7 @@ def api_admin_tglink(request):
 
     p.telegram_chat_id = chat_id
     p.save()
-    out['msg'] = u'assigned to okerr user {} (@{})\n'.format(p.user.username, p.telegram_name)
+    out['msg'] = 'assigned to okerr user {} (@{})\n'.format(p.user.username, p.telegram_name)
     out['sync'].append(p.user.username)
     return HttpResponse(json.dumps(out), content_type='text/plain')
 
@@ -5046,7 +5046,7 @@ def api_admin_force_sync(request):
     email = request.POST.get('email', None)
     server = request.POST.get('server', None)
 
-    log.info(u'FORCESYNC {} {} from {}'.format(remoteip, email, server))
+    log.info('FORCESYNC {} {} from {}'.format(remoteip, email, server))
     # url = settings.CLUSTER_URL[server]
     rs = RemoteServer(name=server)
     data = rs.get_user(email)

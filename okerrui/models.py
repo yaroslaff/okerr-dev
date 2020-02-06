@@ -760,12 +760,12 @@ class Project(TransModel):
     def can_accept(self, user):
         # check if user is already in this group
         if ProjectMember.objects.filter(project=self, email=user.email).count() > 0:
-            return (False, u"User {u} already member of project {project}".format(u=user.username, project=self.name))
+            return (False, "User {u} already member of project {project}".format(u=user.username, project=self.name))
 
         tsize = self.owner.profile.getarg('teamsize')
 
         if self.nmembers() >= tsize:
-            return (False, u"Project already has {}/{} users".format(self.nmembers(), tsize))
+            return (False, "Project already has {}/{} users".format(self.nmembers(), tsize))
 
         # check if group is active
         # check if owner has permissions, e.g. group is not too big
@@ -834,7 +834,7 @@ class Project(TransModel):
     # project.sendsummary
     def sendsummary(self, remark=None):
 
-        log.info(u"sendsummary for project: {} remark: {}" \
+        log.info("sendsummary for project: {} remark: {}" \
                  .format(self.name, remark, 'utf-8'))
 
         from_email = settings.FROM
@@ -1311,7 +1311,7 @@ class Policy(TransModel):
         pass
 
     def __str__(self):
-        return u"{} ({})".format(self.name, self.period)
+        return "{} ({})".format(self.name, self.period)
 
     # policy.fix
     def fix(self, verbose=False):
@@ -1431,7 +1431,7 @@ class Policy(TransModel):
             wipe = p.wipe
             moment = timezone.now() - datetime.timedelta(seconds=wipe)
             for i in p.project.indicator_set.filter(updated__lt=moment):
-                log.info(u'wipe indicator {} from {}:{}, policy {} wipe {} '
+                log.info('wipe indicator {} from {}:{}, policy {} wipe {} '
                          'updated: {} age {}'.format(
                     i, p.project.owner.username, p.project.name, p.name, wipe, i.updated, timezone.now() - i.updated))
                 i.delete()
@@ -1552,7 +1552,7 @@ class PolicySubnet(models.Model):
         sn.save()
 
     def __str__(self):
-        return u"{}: {} ({})".format(self.policy.name, self.subnet, self.remark)
+        return "{}: {} ({})".format(self.policy.name, self.subnet, self.remark)
 
 
 class CheckMethod(models.Model):
@@ -2087,7 +2087,7 @@ class CheckArg(models.Model):
 class Indicator(TransModel):
     #    def validate_status(value):
     #        if value != 'OK' and value != 'ERR' and value != 'WARN':
-    #            raise ValidationError(u'status must be OK, ERR or WARN')
+    #            raise ValidationError('status must be OK, ERR or WARN')
 
     name = models.CharField(max_length=200, db_index=True)
     policy = models.ForeignKey(Policy, on_delete=models.PROTECT)
@@ -2139,7 +2139,7 @@ class Indicator(TransModel):
         ]
 
     def get_fullname(self):
-        return u'{}@{}'.format(self.name, self.project.get_textid())
+        return '{}@{}'.format(self.name, self.project.get_textid())
 
     @classmethod
     # indicator unlock_old
@@ -2329,7 +2329,7 @@ class Indicator(TransModel):
             else:
                 retry = None
 
-            # print u"schedule {}: {}".format(self.name, retry)
+            # print "schedule {}: {}".format(self.name, retry)
             if retry:
                 # retry needed
                 # no need to reschedule, schedule_retry() already did this
@@ -2445,7 +2445,7 @@ class Indicator(TransModel):
             # self.log("new status (%s -> %s)" % (self._status,newstatus))
             # do not check for maintenance flag here
             # alert() will do this
-            self.alert(u"Changed status {old} -> {new} ({details})".format(old=self._status, new=newstatus,
+            self.alert("Changed status {old} -> {new} ({details})".format(old=self._status, new=newstatus,
                                                                            details=self.details))
 
             self.changed = now
@@ -2728,7 +2728,7 @@ class Indicator(TransModel):
                 AlertRecord(user=user, indicator=self, proto='mail', message=message,
                             created=created, reduction=reduction, release_time=release).save()
                 if user.profile.telegram_chat_id:
-                    # self.log(u'make tg alert for {}: {}'.format(user.username, message))
+                    # self.log('make tg alert for {}: {}'.format(user.username, message))
                     AlertRecord(user=user, indicator=self, proto='telegram', message=message,
                                 created=created, reduction=reduction, release_time=release).save()
 
@@ -2796,7 +2796,7 @@ class Indicator(TransModel):
         # maybe too early. UNUSED?
         if self.retry and timezone.now() < self.expected:
             assert (False)
-            # print(u'too early update for {} (retry: {})'.format(self.name, self.retry))
+            # print('too early update for {} (retry: {})'.format(self.name, self.retry))
             return int((self.expected - timezone.now()).total_seconds())
 
         try:
@@ -3354,14 +3354,14 @@ class Indicator(TransModel):
         try:
             cm = CheckMethod.objects.get(codename=s['cm'])
         except CheckMethod.DoesNotExist:
-            log.error(u'indicator.restore cannot find cm codename "{}"'.format(s['cm']))
+            log.error('indicator.restore cannot find cm codename "{}"'.format(s['cm']))
             return None
 
         # create
         i = Indicator()
         p = Policy.objects.filter(project=project, name=s['policy']).first()
         if not p:
-            log.error(u'indicator.restore cannot find policy {}'.format(p))
+            log.error('indicator.restore cannot find policy {}'.format(p))
             return None
         i.policy = p
         i.cm = cm
@@ -3808,21 +3808,21 @@ class Indicator(TransModel):
 
         # checks first
         if not Indicator.validname(idname):
-            raise ValueError(u'Bad name {}'.format(idname))
+            raise ValueError('Bad name {}'.format(idname))
 
         # check unique name
         try:
             if project.get_indicator(idname):  # deleted=False by default
-                raise ValueError(u'Project {} already has indicator {}'.format(project.get_textid(), idname))
+                raise ValueError('Project {} already has indicator {}'.format(project.get_textid(), idname))
         except Indicator.DoesNotExist:
             pass
 
         if limits and not project.owner.profile.can_new_indicator():
-            raise ValueError(u'User already hit maxinidicator limit ({}). Indicator not created'.format(
+            raise ValueError('User already hit maxinidicator limit ({}). Indicator not created'.format(
                 project.owner.profile.getarg('maxindicators')))
 
         if project.limited:
-            raise ValueError(u'Project is limited. Indicator not created')
+            raise ValueError('Project is limited. Indicator not created')
 
         i = Indicator()
         i.name = idname
@@ -3834,18 +3834,18 @@ class Indicator(TransModel):
 
         cm = CheckMethod.objects.filter(codename=cmname).first()
         if not cm:
-            raise ValueError(u"ERROR! indicator.create has wrong cmname '{}'".format(cmname))
+            raise ValueError("ERROR! indicator.create has wrong cmname '{}'".format(cmname))
         i.cm = cm
 
         try:
             p = Policy.objects.get(project=project, name=policy)
         except ObjectDoesNotExist:
-            log.error(u"ERROR! indicator.create has wrong policy '{}'".format(policy))
+            log.error("ERROR! indicator.create has wrong policy '{}'".format(policy))
             return None
         i.policy = p
 
         i.save()
-        project.log(u'created indicator {}'.format(i.name))
+        project.log('created indicator {}'.format(i.name))
         set_rid(i)
         i.setdefargs()
         i.reschedule()
@@ -3929,7 +3929,7 @@ class Indicator(TransModel):
                         (k, v) = e.split('=')
                         cmdict[k.strip()] = v.strip()
                 except ValueError:
-                    log.info(u'Bad cm line: \'{}\' project: {}, i: {} source: {} ip: {} '. \
+                    log.info('Bad cm line: \'{}\' project: {}, i: {} source: {} ip: {} '. \
                              format(cmname, project.name, idname, source, remoteip))
                     return 'bad cm line\'{}\''.format(cmname)
 
@@ -3938,11 +3938,11 @@ class Indicator(TransModel):
 
                 cm = CheckMethod.objects.filter(codename=codename).first()
                 if not cm:
-                    log.warning(u"Cannot get {} method!".format(codename))
+                    log.warning("Cannot get {} method!".format(codename))
                     return "No such method '{}'".format(codename)
 
                 if not cm.enabled:
-                    log.warning(u"Method '{}' is disabled".format(codename))
+                    log.warning("Method '{}' is disabled".format(codename))
                     return "Method '{}' is disabled".format(codename)
 
                 # create new indicator
@@ -3966,7 +3966,7 @@ class Indicator(TransModel):
                 for argname, arg in allcm[codename]['args'].items():
                     # check if it exists in update and if yes - override
                     if argname in cmdict:
-                        i.log(u'Create arg {} = {}'.format(
+                        i.log('Create arg {} = {}'.format(
                             argname, cmdict[argname]),
                             typecode="indicator")
                         i.setarg(argname, cmdict[argname])
@@ -3975,35 +3975,35 @@ class Indicator(TransModel):
                         i.setarg(argname, arg['default'])
 
                 i.save()
-                i.alert(u'autocreated from {}'.format(remoteip))
+                i.alert('autocreated from {}'.format(remoteip))
 
                 if i.cm.active():
                     # this is active indicator, we create it, but no need to update it
                     return None
             else:
-                project.log(u"Cannot create indicator {} because policy {} has autocreate off".format(idname, p.name))
-                return u"Cannot create indicator %s because policy %s has autocreate off" % (idname, p.name)
+                project.log("Cannot create indicator {} because policy {} has autocreate off".format(idname, p.name))
+                return "Cannot create indicator %s because policy %s has autocreate off" % (idname, p.name)
 
         # now we have indicator (old, or created it)
 
         # check if wrong ci and warn
         if i.ci != myci():
             log.warning(
-                u"bad ci update i#{}: {} / {} i.ci: {} myci: {}".format(i.id, i.project.get_textid(), i.name, i.ci,
+                "bad ci update i#{}: {} / {} i.ci: {} myci: {}".format(i.id, i.project.get_textid(), i.name, i.ci,
                                                                         myci()))
 
         # check if this update method is allowed
         if source is not None:
             fieldname = source + 'update'
             if not getattr(i.policy, fieldname):
-                line = u"src:'{}' updates are not allowed".format(source)
+                line = "src:'{}' updates are not allowed".format(source)
                 i.log(line, typecode="indicator")
                 return line
 
         # check if this ip is allowed
         if remoteip:
             if not i.policy.checkip(remoteip):
-                line = u"updates from {} not allowed".format(remoteip)
+                line = "updates from {} not allowed".format(remoteip)
                 i.log(line, typecode="indicator")
                 return line
 
@@ -4019,17 +4019,17 @@ class Indicator(TransModel):
 
         if isecret:
             if not secret:
-                i.log(u"do not update, because secret required but not specified")
+                i.log("do not update, because secret required but not specified")
                 return "Require secret"
             if isecret != secret:
                 # have secret, but no match
-                i.log(u"do not update status, because secret does not match")
+                i.log("do not update status, because secret does not match")
                 return "Bad secret"
 
         # probably ok. log all update details
         src_line = "{}:{}".format(source, remoteip)
 
-        #        line = u"{} update from IP {}"\
+        #        line = "{} update from IP {}"\
         #            .format(source,remoteip)
         #        i.log(line, typecode="update")
 
@@ -4051,7 +4051,7 @@ class Indicator(TransModel):
 
         if error is not None:
             # error
-            i.log(u'Problem: {}'.format(error), typecode="indicator")
+            i.log('Problem: {}'.format(error), typecode="indicator")
             i.problem = True
 
         # changerec=IChange(indicator=i, oldstate=i._status, newstate=i._status)
@@ -4377,7 +4377,7 @@ class Profile(TransModel):
 
             if base_minperiod:
                 # only for non-none. just in case
-                # print u'qindicators for {} minperiod: {} qi: {}'.format(profile, base_minperiod, qi)
+                # print 'qindicators for {} minperiod: {} qi: {}'.format(profile, base_minperiod, qi)
 
                 for i in Indicator.objects.filter(project__in=profile.ownerprojects(), disabled=False,
                                                   policy__period__lt=base_minperiod):
@@ -4385,10 +4385,10 @@ class Profile(TransModel):
                         plimit = getminqi(qi, i.policy.get_period())
                     except ValueError:
                         i.log(
-                            u'[PATROL] inidicator disabled, because no available minperiod perks left (max: {})'.format(
+                            '[PATROL] inidicator disabled, because no available minperiod perks left (max: {})'.format(
                                 maxi))
                         log.warn(
-                            u'[PATROL] indicator disabled {}, because no available minperiod perks left (max: {})'.format(
+                            '[PATROL] indicator disabled {}, because no available minperiod perks left (max: {})'.format(
                                 i.get_fullname(), maxi))
                         i.disable()
                         i.save()
@@ -5612,7 +5612,7 @@ class ProjectMember(models.Model):
         uni_tsave(self)
 
     def __str__(self):
-        return u"user: {} project: {} {}{}".format(
+        return "user: {} project: {} {}{}".format(
             safe_getattr(self, 'email'),
             safe_getattr(self, 'project.name'),
             "[iadmin]" if self.iadmin else "",
@@ -5826,7 +5826,7 @@ class StatusPage(models.Model):
     desc = models.TextField(default='')
 
     def __str__(self):
-        return u'{}/{} pub: {} title: {} ({} indicators)'.format(self.project.get_textid(), self.addr, self.public,
+        return '{}/{} pub: {} title: {} ({} indicators)'.format(self.project.get_textid(), self.addr, self.public,
                                                                  self.title, self.statusindicator_set.count())
 
     def all_si(self):
@@ -5880,7 +5880,7 @@ class StatusIndicator(models.Model):
     desc = models.TextField(default='')  # e.g. servers
 
     def __str__(self):
-        return u'{}: {}'.format(self.status_page.addr, self.indicator.name)
+        return '{}: {}'.format(self.status_page.addr, self.indicator.name)
 
 
 class StatusSubscription(models.Model):
@@ -5890,7 +5890,7 @@ class StatusSubscription(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return u'{}: {}'.format(self.status_page.addr, self.email)
+        return '{}: {}'.format(self.status_page.addr, self.email)
 
 
 class StatusBlog(models.Model):
@@ -5920,7 +5920,7 @@ class StatusBlog(models.Model):
 
             # text_content = plaintext.render(d)
             html_content = htmly.render(d)
-            subject = u'{}'.format(self.status_page.title)
+            subject = '{}'.format(self.status_page.title)
 
             send_email(email, subject=subject, html=html_content, what="status blog update")
 
