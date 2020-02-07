@@ -221,7 +221,8 @@ def test_systemd(args):
 
             systemd('daemon-reload')
             systemd('enable', service)
-            systemd('restart', service)
+            # restarted in postinstall
+            # systemd('restart', service)
         else:
             print("No fix")
             ok = False
@@ -467,7 +468,7 @@ def test_okerrupdate(args):
     if os.path.exists('/etc/okerr/okerrupdate') and not args.overwrite:
         print("already exists /etc/okerr/okerrupdate config")
     elif args.fix:
-        cmd = [okerrmod, '--init', '--url', 'http://localhost/', '--direct', '--textid', 'okerr']
+        cmd = [okerrmod, '--init', '--url', 'http://localhost.okerr.com/', '--direct', '--textid', 'okerr']
         subprocess.run(cmd)
     else:
         print("missing okerrupdate config!")
@@ -481,27 +482,31 @@ def test_postinstall(args):
     python3 = os.path.join(args.venv, 'bin/python3')
     manage = os.path.join(sys.path[0], 'manage.py')
 
-    # check 1 okerr user
+    # check if user exists (optional)
 
-    # check if user exists
+    if args.email:
+        cmd = [python3, manage, 'profile', '--user', args.email]
+        user_exist = subprocess.run(cmd).returncode == 0
 
-    cmd = [python3, manage, 'profile', '--user', args.email]
-    user_exist = subprocess.run(cmd).returncode == 0
+        if user_exist:
+            print("postinstall: user {} already exists".format(args.email))
 
-    if user_exist:
-        print("postinstall: user {} already exists".format(args.email))
+        elif args.fix:
+            print("create okerr user", args.email)
+            cmd = [python3, manage, 'profile', '--create', args.email, '--pass', args.password, '--textid', 'okerr']
+            subprocess.run(cmd)
 
-    elif args.fix:
-        print("create okerr user", args.email)
-        cmd = [python3, manage, 'profile', '--create', args.email, '--pass', args.password, '--textid', 'okerr']
-        subprocess.run(cmd)
+            print("grant admin to user", args.email)
+            cmd = [python3, manage, 'group', '--assign', 'Admin', '--user', args.email, '--infinite']
+            subprocess.run(cmd)
+        else:
+            print("User {} not exists!".format(args.email))
+            return False
 
-        print("grant admin to user", args.email)
-        cmd = [python3, manage, 'group', '--assign', 'Admin', '--user', args.email, '--infinite']
-        subprocess.run(cmd)
-    else:
-        print("User {} not exists!".format(args.email))
-        return False
+    services_list = ['rabbitmq-server', 'okerr']
+    if args.fix:
+        for srv in services_list:
+            systemd('restart', srv)
 
     return True
 
@@ -616,7 +621,6 @@ if args.local:
     args.rmq = True
     args.fix = True
     args.overwrite = True
-    args.email = args.email or 'okerr@example.com'
     args.password = args.password or 'okerr_default_password'
 
 tokens = {

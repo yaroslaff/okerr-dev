@@ -1,6 +1,6 @@
 [Unit]
 Description=Okerr monitoring
-After=syslog.target redis-server.service
+After=syslog.target redis-server.service rabbitmq-server.service
 
 [Service]
 Type=oneshot
