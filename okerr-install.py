@@ -186,7 +186,7 @@ def test_confd(args):
 
     link = os.path.join('/etc/okerr/', os.path.basename(args.confd))
 
-    if os.path.exists(lname):
+    if os.path.exists(link):
         print("[CONFD {} exists]".format(link))
         return True
 
