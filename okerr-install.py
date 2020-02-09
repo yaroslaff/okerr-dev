@@ -141,6 +141,7 @@ def test_localconf(args):
     localconf_subdirs = ['json', 'local.d', 'env', 'ssl']
     localconf_path = os.path.join(localconf_dir, 'local.d','local.conf')
     copyfiles = [
+        ('contrib/etc/okerr/okerr.conf', 'okerr.conf'),
         ('contrib/etc/okerr/json/keys-template.json', 'json/keys-template.json'),
         ('contrib/etc/okerr/env/netprocess', 'env/netprocess'),
         ('contrib/etc/okerr/env/sensor', 'env/sensor'),
@@ -165,16 +166,6 @@ def test_localconf(args):
                     print("mkdir", path)
                     os.mkdir(path)
 
-            allowed_hosts = ['localhost', '127.0.0.1', 'localhost.okerr.com', 'dev.okerr.com']
-            allowed_hosts.extend(args.host)
-            data = """ALLOWED_HOSTS = {allowed_hosts}
-MYIP = '{myip}'
-HOSTNAME = 'localhost'
-SITEURL = 'http://{HOSTNAME}/'
-""".format(allowed_hosts = allowed_hosts, myip = myip(), HOSTNAME='localhost')
-
-            with open(localconf_path, "w") as f:
-                f.write(data)
         else:
             print("[LOCALCONF NO {}]".format(localconf_path))
             return False
@@ -402,7 +393,7 @@ def test_apache(args):
         if args.fix:
             print("[APACHE configure]")
             print(".. create virtual host")
-            shutil.copy(src, dst)
+            copy_template(src, dst, tokens)
             for cmd in commands:
                 print(' '.join(cmd))
                 rc = subprocess.run(cmd)
@@ -542,9 +533,9 @@ def test_ca(args):
     return True
 
 def test_sanity(args):
-    if args.run in ['all', 'postinstall'] and (args.email is None or args.password is None):
-        print("Need email and password for 'postinstall' check")
-        return False
+    #if args.run in ['all', 'postinstall'] and (args.email is None or args.password is None):
+    #    print("Need email and password for 'postinstall' check")
+    #    return False
 
     return True
 
@@ -600,6 +591,7 @@ g.add_argument('--dbpass', default='okerrpass')
 g.add_argument('--venv', default=def_venv, help='Path to virtualenv {}'.format(def_venv))
 g.add_argument('--varrun', default=def_varrun, metavar='DIR', help='path to /var/run/NAME directory. def: {}'.format(def_varrun))
 g.add_argument('--host', default=list(), nargs='+', help='my hostnames')
+g.add_argument('--cluster', default='LOCAL', help='Cluster name')
 
 g = parser.add_argument_group('Installation variants')
 g.add_argument('--local', default=False, action='store_true',
@@ -618,6 +610,7 @@ args = parser.parse_args()
 # process typical install method
 if args.local:
     args.apache = True
+    args.host = ['localhost.okerr.com', 'dev.okerr.com']
     args.rmq = True
     args.fix = True
     args.overwrite = True
@@ -628,7 +621,13 @@ tokens = {
     '%VENV%': args.venv,
     '%user%': args.user,
     '%group%': args.group,
-    '%varrun%': args.varrun
+    '%varrun%': args.varrun,
+    '%MYIP%': myip(),
+    '%CLUSTER%': args.cluster,
+    '%HOSTS%': str(args.host),
+    '%HOSTNAME%': args.host[0].split('.')[0],
+    '%FQDN%': args.host[0],
+    '%SERVERALIASES%': ' '.join(args.host[1:])
 }
 
 testmap = {
