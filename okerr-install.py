@@ -519,7 +519,11 @@ def test_ca(args):
         print("Certificates {} not found".format(code))
         return False
 
-    for code in ['client', 'rabbitmq']:
+    clientcode = ['client']
+    if args.rmq:
+        clientcode.append('rabbitmq')
+
+    for code in clientcode:
         if os.path.exists('/etc/okerr/ssl/{}.pem'.format(code)) and not args.overwrite:
             print("Already exists {}.pem".format(code))
         elif args.fix:
