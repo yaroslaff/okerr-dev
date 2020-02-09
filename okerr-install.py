@@ -194,7 +194,7 @@ def test_confd(args):
         else:
             if args.fix:
                 print("[CONFD {}]".format(link))
-                os.symlink(os.path.realpath(args.confd), link)
+                os.symlink(os.path.realpath(d), link)
             else:
                 return False
 
