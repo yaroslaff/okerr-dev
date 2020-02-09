@@ -543,7 +543,7 @@ def test_rabbitmq(args):
 
     rabbitmqctl = '/usr/sbin/rabbitmqctl'
 
-    if args.rmq is None:
+    if not args.rmq:
         print("[RABBITMQ skipped]")
         return True
 
@@ -566,8 +566,8 @@ def test_rabbitmq(args):
     return True
 
 
-tests = ['sanity', 'deb', 'user', 'venv', 'python', 'okerrupdate', 'localconf', 'dbadmin', 'redis', 'rsyslogd', 'ca', 'rabbitmq',
-         'bashrc', 'apache', 'uwsgi', 'systemd', 'postinstall']
+tests = ['sanity', 'deb', 'user', 'venv', 'python', 'okerrupdate', 'localconf', 'dbadmin', 'redis', 'rsyslogd', 'ca',
+         'rabbitmq', 'bashrc', 'apache', 'uwsgi', 'systemd', 'postinstall']
 
 def_venv = '/opt/venv/okerr'
 def_varrun = '/var/run/okerr'
