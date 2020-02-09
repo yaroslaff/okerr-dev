@@ -574,6 +574,13 @@ tests = ['sanity', 'deb', 'user', 'venv', 'python', 'okerrupdate', 'localconf', 
 def_venv = '/opt/venv/okerr'
 def_varrun = '/var/run/okerr'
 def_wwwgroup = 'www-data'
+
+def_rmquser = os.getenv('RMQ_USER', 'okerr')
+def_rmqpass = os.getenv('RMQ_PASS', 'okerr')
+def_rmqhost = os.getenv('RMQ_HOST', 'localhost')
+def_rmqvhost = os.getenv('RMQ_VHOST', 'okerr')
+
+
 parser = argparse.ArgumentParser(description='Okerr installer')
 
 parser.add_argument('--fix', default=False, action='store_true', help='Fix problems, not just report')
@@ -594,9 +601,18 @@ g.add_argument('--dbpass', default='okerrpass')
 g.add_argument('--venv', default=def_venv, help='Path to virtualenv {}'.format(def_venv))
 g.add_argument('--varrun', default=def_varrun, metavar='DIR',
                help='path to /var/run/NAME directory. def: {}'.format(def_varrun))
+
+
+g = parser.add_argument_group('Cluster-specific')
 g.add_argument('--host', default=list(), nargs='+', help='my hostnames')
 g.add_argument('--cluster', default='LOCAL', help='Cluster name')
 g.add_argument('--confd', nargs='*', help='Link to this configuration directory')
+g.add_argument('--sensor', default='okerr-dev@local.ru', help='sensor name')
+g.add_argument('--rmqhost', default=def_rmqhost, help='RabbitMQ host ({})'.format(def_rmqhost))
+g.add_argument('--rmqvhost', default=def_rmqvhost, help='RabbitMQ virtual host ({})'.format(def_rmqvhost))
+g.add_argument('--rmquser', default=def_rmquser, help='RabbitMQ user ({})'.format(def_rmquser))
+g.add_argument('--rmqpass', default=def_rmqpass, help='RabbitMQ pass ({})'.format(def_rmqpass))
+
 
 g = parser.add_argument_group('Installation variants')
 g.add_argument('--local', default=False, action='store_true',
@@ -626,12 +642,21 @@ tokens = {
     '%user%': args.user,
     '%group%': args.group,
     '%varrun%': args.varrun,
+
     '%MYIP%': myip(),
     '%CLUSTER%': args.cluster,
     '%HOSTS%': str(args.host),
+
     '%HOSTNAME%': args.host[0].split('.')[0],
     '%FQDN%': args.host[0],
-    '%SERVERALIASES%': ' '.join(args.host[1:])
+    '%SERVERALIASES%': ' '.join(args.host[1:]),
+
+    '%RMQ_USER%': args.rmquser,
+    '%RMQ_PASS%': args.rmqpass,
+    '%RMQ_HOST%': args.rmqhost,
+    '%RMQ_VHOST%': args.rmqvhost,
+
+    '%SENSOR%': args.sensor
 }
 
 testmap = {
