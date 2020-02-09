@@ -579,7 +579,7 @@ def_rmquser = os.getenv('RMQ_USER', 'okerr')
 def_rmqpass = os.getenv('RMQ_PASS', 'okerr')
 def_rmqhost = os.getenv('RMQ_HOST', 'localhost')
 def_rmqvhost = os.getenv('RMQ_VHOST', 'okerr')
-
+def_sensor = os.getenv('SENSOR_NAME', 'okerr-dev@local.ru')
 
 parser = argparse.ArgumentParser(description='Okerr installer')
 
@@ -607,7 +607,7 @@ g = parser.add_argument_group('Cluster-specific')
 g.add_argument('--host', default=list(), nargs='+', help='my hostnames')
 g.add_argument('--cluster', default='LOCAL', help='Cluster name')
 g.add_argument('--confd', nargs='*', help='Link to this configuration directory')
-g.add_argument('--sensor', default='okerr-dev@local.ru', help='sensor name')
+g.add_argument('--sensor', default=def_sensor, help='sensor name ({})'.format(def_sensor))
 g.add_argument('--rmqhost', default=def_rmqhost, help='RabbitMQ host ({})'.format(def_rmqhost))
 g.add_argument('--rmqvhost', default=def_rmqvhost, help='RabbitMQ virtual host ({})'.format(def_rmqvhost))
 g.add_argument('--rmquser', default=def_rmquser, help='RabbitMQ user ({})'.format(def_rmquser))
