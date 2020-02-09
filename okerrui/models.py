@@ -2137,6 +2137,7 @@ class Indicator(TransModel):
         index_together = [
             ["project", "name"],
         ]
+        unique_together = ('name', 'project')
 
     def get_fullname(self):
         return '{}@{}'.format(self.name, self.project.get_textid())
