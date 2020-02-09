@@ -137,7 +137,7 @@ def test_bashrc(args):
 
 def test_localconf(args):
     localconf_dir = '/etc/okerr'
-    localconf_subdirs = ['json', 'local.d', 'env', 'ssl']
+    localconf_subdirs = ['json', 'local.d', 'env']
     localconf_path = os.path.join(localconf_dir, 'local.d', 'local.conf')
     copyfiles = [
         ('contrib/etc/okerr/okerr.conf', 'okerr.conf'),
@@ -178,25 +178,27 @@ def test_localconf(args):
     return True
 
 def test_confd(args):
+
     if args.confd is None:
         # no confd
         return True
 
-    assert(os.path.isdir(args.confd))
+    for d in args.confd:
 
-    link = os.path.join('/etc/okerr/', os.path.basename(args.confd))
+        assert(os.path.isdir(d))
 
-    if os.path.exists(link):
-        print("[CONFD {} exists]".format(link))
-        return True
+        link = os.path.join('/etc/okerr/', os.path.basename(d))
 
-    if args.fix:
-        print("[CONFD {}]".format(link))
-        os.symlink(os.path.realpath(args.confd), link)
-        return True
-    else:
-        return False
+        if os.path.exists(link):
+            print("[CONFD {} exists]".format(link))
+        else:
+            if args.fix:
+                print("[CONFD {}]".format(link))
+                os.symlink(os.path.realpath(args.confd), link)
+            else:
+                return False
 
+    return True
 
 def test_systemd(args):
     services_dir = '/etc/systemd/system'
@@ -495,8 +497,12 @@ def test_postinstall(args):
 def test_ca(args):
     mkcert = os.path.join(sys.path[0], 'ca', 'mkcert.sh')
     cwd = os.path.join(sys.path[0], 'ca')
+    path = '/etc/okerr/ca'
 
     print("[CA]")
+
+    if not os.path.exists(path):
+        os.mkdir(path)
 
     code = 'ca'
     if os.path.exists('/etc/okerr/ssl/{}.pem'.format(code)) and not args.overwrite:
@@ -561,7 +567,8 @@ def test_rabbitmq(args):
     return True
 
 
-tests = ['sanity', 'deb', 'user', 'venv', 'python', 'okerrupdate', 'localconf', 'confd', 'dbadmin', 'redis', 'rsyslogd', 'ca',
+tests = ['sanity', 'deb', 'user', 'venv', 'python', 'okerrupdate', 'localconf', 'confd', 'dbadmin', 'redis',
+         'rsyslogd', 'ca',
          'rabbitmq', 'bashrc', 'apache', 'uwsgi', 'systemd', 'postinstall']
 
 def_venv = '/opt/venv/okerr'
@@ -589,7 +596,7 @@ g.add_argument('--varrun', default=def_varrun, metavar='DIR',
                help='path to /var/run/NAME directory. def: {}'.format(def_varrun))
 g.add_argument('--host', default=list(), nargs='+', help='my hostnames')
 g.add_argument('--cluster', default='LOCAL', help='Cluster name')
-g.add_argument('--confd', default=None, help='Link to this configuration directory')
+g.add_argument('--confd', nargs='*', help='Link to this configuration directory')
 
 g = parser.add_argument_group('Installation variants')
 g.add_argument('--local', default=False, action='store_true',
