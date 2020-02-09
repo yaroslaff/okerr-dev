@@ -177,6 +177,26 @@ def test_localconf(args):
 
     return True
 
+def test_confd(args):
+    if args.confd is None:
+        # no confd
+        return True
+
+    assert(os.path.isdir(args.confd))
+
+    link = os.path.join('/etc/okerr/', os.path.basename(args.confd))
+
+    if os.path.exists(lname):
+        print("[CONFD {} exists]".format(link))
+        return True
+
+    if args.fix:
+        print("[CONFD {}]".format(link))
+        os.symlink(os.path.realpath(args.confd), link)
+        return True
+    else:
+        return False
+
 
 def test_systemd(args):
     services_dir = '/etc/systemd/system'
@@ -321,45 +341,6 @@ def test_venv(args):
             print("[VENV]")
             print("no venv in {}, use --fix to create".format(args.venv))
             return False
-
-
-def UNUSED_test_varrun(args):
-    if os.path.isdir(args.varrun):
-        print("[VARRUN {} exists]".format(args.varrun))
-    else:
-        if args.fix:
-            print("[VARRUN create {}]".format(args.varrun))
-            os.mkdir(args.varrun)
-        else:
-            print("[VARRUN]")
-            print("No {} dir, use --fix to create".format(args.varrun))
-            return False
-
-    uid, gid = pwd.getpwnam(args.user).pw_uid, pwd.getpwnam(args.wwwgroup).pw_uid
-    stat_info = os.stat(args.varrun)
-    if stat_info.st_uid == uid and stat_info.st_gid == gid:
-        print("Owner/group OK")
-    else:
-        if args.fix:
-            shutil.chown(args.varrun, user=uid, group=gid)
-            print("fixed user/group to {}:{}".format(args.user, args.wwwgroup))
-        else:
-            print("User (need: {} real: {}). group ({}/{}) mismatch.".format(uid, stat_info.st_uid, gid,
-                                                                             stat_info.st_gid))
-            return False
-
-    if stat_info.st_mode & 0o777 == 0o775:
-        print("permissions are ok ({})".format(oct(stat_info.st_mode)))
-    else:
-        if args.fix:
-            print("fix wrong permissions {}".format(oct(stat_info.st_mode)))
-            os.chmod(args.varrun, 0o775)
-        else:
-            return False
-
-    # all tests passed, either OK or fixed
-    return True
-
 
 def test_uwsgi(args):
     conffile = '/etc/okerr/uwsgi.ini'
@@ -580,7 +561,7 @@ def test_rabbitmq(args):
     return True
 
 
-tests = ['sanity', 'deb', 'user', 'venv', 'python', 'okerrupdate', 'localconf', 'dbadmin', 'redis', 'rsyslogd', 'ca',
+tests = ['sanity', 'deb', 'user', 'venv', 'python', 'okerrupdate', 'localconf', 'confd', 'dbadmin', 'redis', 'rsyslogd', 'ca',
          'rabbitmq', 'bashrc', 'apache', 'uwsgi', 'systemd', 'postinstall']
 
 def_venv = '/opt/venv/okerr'
@@ -608,6 +589,7 @@ g.add_argument('--varrun', default=def_varrun, metavar='DIR',
                help='path to /var/run/NAME directory. def: {}'.format(def_varrun))
 g.add_argument('--host', default=list(), nargs='+', help='my hostnames')
 g.add_argument('--cluster', default='LOCAL', help='Cluster name')
+g.add_argument('--confd', default=None, help='Link to this configuration directory')
 
 g = parser.add_argument_group('Installation variants')
 g.add_argument('--local', default=False, action='store_true',
@@ -656,6 +638,7 @@ testmap = {
     'redis': test_redis,
     'bashrc': test_bashrc,
     'localconf': test_localconf,
+    'confd': test_confd,
     'rsyslogd': test_rsyslogd,
     # 'varrun': test_varrun,
     'uwsgi': test_uwsgi,
