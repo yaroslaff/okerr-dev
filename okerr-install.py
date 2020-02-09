@@ -10,7 +10,7 @@ import grp
 import pwd
 import urllib.request
 
-#mydir = os.path.dirname(os.path.realpath(__file__))
+# mydir = os.path.dirname(os.path.realpath(__file__))
 mydir = sys.path[0]
 
 """
@@ -26,9 +26,11 @@ disable netprocess
 mkdir /var/log/okerr
 """
 
+
 def myip():
     url = 'https://diagnostic.opendns.com/myip'
     return urllib.request.urlopen(url).read().decode('ascii')
+
 
 def copy_template(src, dst, tokens):
     with open(src, "r") as srcf:
@@ -40,14 +42,13 @@ def copy_template(src, dst, tokens):
 
 
 def systemd(command, daemon=None):
-
     if command in ['restart', 'start', 'stop', 'enable', 'disable']:
         rc = subprocess.run(['systemctl', command, daemon])
         if rc.returncode == 0:
             print("systemd {} {}".format(command, daemon))
         else:
             print("failed systemd {} {}".format(command, daemon))
-            assert(rc.returncode == 0)
+            assert (rc.returncode == 0)
 
     elif command in ['daemon-reload']:
         rc = subprocess.run(['systemctl', command])
@@ -55,12 +56,12 @@ def systemd(command, daemon=None):
             print("systemd {}".format(command))
         else:
             print("failed to systemd{}".format(command))
-            assert(rc.returncode == 0)
+            assert (rc.returncode == 0)
 
 
 def test_rsyslogd(args):
     basename = '20-okerr.conf'
-    srcpath = os.path.join(mydir,'contrib/etc/rsyslog.d/', basename)
+    srcpath = os.path.join(mydir, 'contrib/etc/rsyslog.d/', basename)
     dstpath = os.path.join('/etc/rsyslog.d/', basename)
 
     if os.path.exists(dstpath) and not args.overwrite:
@@ -79,7 +80,7 @@ def test_rsyslogd(args):
 
 def test_redis(args):
     confpath = '/etc/redis/redis.conf'
-    assert(os.path.exists(confpath))
+    assert (os.path.exists(confpath))
 
     with open(confpath) as f:
         conf = f.read()
@@ -87,7 +88,6 @@ def test_redis(args):
     if '\nunixsocket' in conf:
         print("[REDIS unixsocket configured]")
         return True
-
 
     if args.fix:
         print("[REDIS configure unixsocket]")
@@ -99,7 +99,7 @@ def test_redis(args):
 unixsocket /var/run/redis/redis.sock
 unixsocketperm 770
 """
-        with open(confpath,"a") as f:
+        with open(confpath, "a") as f:
             f.write(snippet)
 
         print("restart redis with new config")
@@ -114,17 +114,15 @@ def test_bashrc(args):
     rcpath = os.path.join(mydir, '.bash_profile')
     print("check {}".format(rcpath))
 
-
     if os.path.exists(rcpath) and not args.overwrite:
         print("[BASHRC SKIP {} already exists]".format(rcpath))
         return True
-
 
     if args.fix:
         print("[BASHRC CREATE {}]".format(rcpath))
         data = ". {venv}/bin/activate\n".format(venv=args.venv)
 
-        with open(rcpath,"w") as f:
+        with open(rcpath, "w") as f:
             f.write(data)
 
         # set owner
@@ -136,10 +134,11 @@ def test_bashrc(args):
         print("[BASHRC NO {}]".format(rcpath))
         return False
 
+
 def test_localconf(args):
     localconf_dir = '/etc/okerr'
     localconf_subdirs = ['json', 'local.d', 'env', 'ssl']
-    localconf_path = os.path.join(localconf_dir, 'local.d','local.conf')
+    localconf_path = os.path.join(localconf_dir, 'local.d', 'local.conf')
     copyfiles = [
         ('contrib/etc/okerr/okerr.conf', 'okerr.conf'),
         ('contrib/etc/okerr/json/keys-template.json', 'json/keys-template.json'),
@@ -176,25 +175,25 @@ def test_localconf(args):
             print("make local config", dst)
             copy_template(src, dst, tokens)
 
-
     return True
+
 
 def test_systemd(args):
     services_dir = '/etc/systemd/system'
     orig_services_dir = os.path.join(mydir, 'contrib/etc/systemd/system')
     services = ['okerr.service',
-                'okerr-netprocess.service', 'okerr-poster.service',	'okerr-process.service', 'okerr-smtpd.service',
+                'okerr-netprocess.service', 'okerr-poster.service', 'okerr-process.service', 'okerr-smtpd.service',
                 'okerr-telebot.service', 'okerr-ui.service', 'okerr-mqsender.service']
 
     services_custom = [
-        ('okerr-sensor.service', os.path.join(args.venv, 'okerrsensor/okerr-sensor-venv.service'), '/etc/systemd/system/okerr-sensor.service')
+        ('okerr-sensor.service', os.path.join(args.venv, 'okerrsensor/okerr-sensor-venv.service'),
+         '/etc/systemd/system/okerr-sensor.service')
     ]
 
     for service in services:
         src = os.path.join(orig_services_dir, service)
         dst = os.path.join(services_dir, service)
         services_custom.append((service, src, dst))
-
 
     ok = True
 
@@ -220,8 +219,8 @@ def test_systemd(args):
 
     return ok
 
-def test_dbadmin(args):
 
+def test_dbadmin(args):
     python3 = os.path.join(args.venv, 'bin/python3')
 
     def mysql_cmd(args, sql, dbname=None, stdout=None, stderr=None):
@@ -233,7 +232,7 @@ def test_dbadmin(args):
         return rc.returncode
 
     def mysql_root_cmd(args, sql, dbname=None):
-        cmdline = ['mariadb', '-u', 'root' ]
+        cmdline = ['mariadb', '-u', 'root']
         if args.rootpass:
             cmdline.append('-p')
             cmdline.append(args.rootpass)
@@ -257,14 +256,14 @@ def test_dbadmin(args):
                     "CREATE DATABASE {} CHARACTER SET utf8 COLLATE utf8_general_ci;".format(args.dbname),
                     "CREATE USER '{}'@'localhost' IDENTIFIED BY '{}';".format(args.dbuser, args.dbpass),
                     "GRANT ALL ON {}.* TO '{}'@'localhost';".format(args.dbname, args.dbuser)
-                    ]
+                ]
 
                 for sql in sql_commands:
                     print("SQL: {}".format(sql))
                     mysql_root_cmd(args, dbname=None, sql=sql)
 
                 # Apply migrations
-                manage = os.path.join(sys.path[0],'manage.py')
+                manage = os.path.join(sys.path[0], 'manage.py')
                 os.system('{} {} migrate'.format(python3, manage))
                 os.system('{} {} dbadmin --reinit --really'.format(python3, manage))
                 return True
@@ -276,6 +275,7 @@ def test_dbadmin(args):
             print("[DBADMIN already exists]")
             # already exists
             return True
+
 
 def test_python(args):
     reqs = os.path.join(mydir, 'requirements.txt')
@@ -290,6 +290,7 @@ def test_python(args):
     # os.system('{} install {}'.format(pip3, adns))
     return True
 
+
 def test_user(args):
     try:
         pwd.getpwnam(args.user)
@@ -297,7 +298,7 @@ def test_user(args):
         return True
     except KeyError:
         print("[USER {} not exists]".format(args.user))
-        if(args.fix):
+        if (args.fix):
             print("create user {} home {}".format(args.user, args.home))
             os.system('useradd -r -m -G redis -d {} -s /bin/bash {}'.format(args.home, args.user))
             os.system('passwd -l {}'.format(args.user))
@@ -321,6 +322,7 @@ def test_venv(args):
             print("no venv in {}, use --fix to create".format(args.venv))
             return False
 
+
 def UNUSED_test_varrun(args):
     if os.path.isdir(args.varrun):
         print("[VARRUN {} exists]".format(args.varrun))
@@ -340,9 +342,10 @@ def UNUSED_test_varrun(args):
     else:
         if args.fix:
             shutil.chown(args.varrun, user=uid, group=gid)
-            print("fixed user/group to {}:{}".format( args.user, args.wwwgroup ))
+            print("fixed user/group to {}:{}".format(args.user, args.wwwgroup))
         else:
-            print("User (need: {} real: {}). group ({}/{}) mismatch.".format(uid, stat_info.st_uid, gid, stat_info.st_gid))
+            print("User (need: {} real: {}). group ({}/{}) mismatch.".format(uid, stat_info.st_uid, gid,
+                                                                             stat_info.st_gid))
             return False
 
     if stat_info.st_mode & 0o777 == 0o775:
@@ -356,6 +359,7 @@ def UNUSED_test_varrun(args):
 
     # all tests passed, either OK or fixed
     return True
+
 
 def test_uwsgi(args):
     conffile = '/etc/okerr/uwsgi.ini'
@@ -373,13 +377,13 @@ def test_uwsgi(args):
 
 
 def test_apache(args):
-    src = os.path.join(mydir,'./contrib/etc/apache2/sites-available/okerr.conf')
+    src = os.path.join(mydir, './contrib/etc/apache2/sites-available/okerr.conf')
     dst = '/etc/apache2/sites-available/okerr.conf'
 
     commands = [
-        ['a2enmod','proxy'],
-        ['a2enmod','proxy_uwsgi'],
-        ['a2ensite','okerr'],
+        ['a2enmod', 'proxy'],
+        ['a2enmod', 'proxy_uwsgi'],
+        ['a2ensite', 'okerr'],
     ]
 
     if not args.apache:
@@ -397,22 +401,23 @@ def test_apache(args):
             for cmd in commands:
                 print(' '.join(cmd))
                 rc = subprocess.run(cmd)
-                assert(rc.returncode == 0)
-            systemd('restart','apache2')
+                assert (rc.returncode == 0)
+            systemd('restart', 'apache2')
         else:
             return False
 
     return True
 
+
 def test_deb_packages(args):
-    packages=[
+    packages = [
         'git',
         'python3-dev',
         'python3-venv',
         'dialog',
         'gcc',
-        #'libmysqlclient-dev',
-        'libmariadbclient-dev', # debian 9
+        # 'libmysqlclient-dev',
+        'libmariadbclient-dev',  # debian 9
         # 'libmariadb-dev-compat', # debian 10
         'libadns1-dev',
         'libffi-dev',
@@ -444,7 +449,7 @@ def test_deb_packages(args):
     else:
         cmdline = 'dpkg -l {} > /dev/null'.format(' '.join(packages))
         code = os.system(cmdline) >> 8
-        if(code):
+        if (code):
             print('Some packages are missing. Use --fix to install')
             return False
         else:
@@ -494,15 +499,19 @@ def test_postinstall(args):
             print("User {} not exists!".format(args.email))
             return False
 
-    services_list = ['rabbitmq-server', 'okerr']
+    services_list = ['okerr']
+
+    if args.rmq:
+        services_list.insert(0, 'rabbitmq-server')
+
     if args.fix:
         for srv in services_list:
             systemd('restart', srv)
 
     return True
 
-def test_ca(args):
 
+def test_ca(args):
     mkcert = os.path.join(sys.path[0], 'ca', 'mkcert.sh')
     cwd = os.path.join(sys.path[0], 'ca')
 
@@ -536,15 +545,16 @@ def test_ca(args):
 
     return True
 
+
 def test_sanity(args):
-    #if args.run in ['all', 'postinstall'] and (args.email is None or args.password is None):
+    # if args.run in ['all', 'postinstall'] and (args.email is None or args.password is None):
     #    print("Need email and password for 'postinstall' check")
     #    return False
 
     return True
 
-def test_rabbitmq(args):
 
+def test_rabbitmq(args):
     rabbitmqctl = '/usr/sbin/rabbitmqctl'
 
     if not args.rmq:
@@ -580,7 +590,8 @@ parser = argparse.ArgumentParser(description='Okerr installer')
 
 parser.add_argument('--fix', default=False, action='store_true', help='Fix problems, not just report')
 parser.add_argument('--skip', nargs='?', default=list())
-parser.add_argument('--run', metavar='CHECK', default='all', help='Run just one check. "all" or one of: {}'.format(str(tests)))
+parser.add_argument('--run', metavar='CHECK', default='all',
+                    help='Run just one check. "all" or one of: {}'.format(str(tests)))
 parser.add_argument('--overwrite', default=False, action='store_true', help='Overwrite (be careful)')
 
 g = parser.add_argument_group('Options')
@@ -593,7 +604,8 @@ g.add_argument('--dbname', default='okerr')
 g.add_argument('--dbuser', default='okerr')
 g.add_argument('--dbpass', default='okerrpass')
 g.add_argument('--venv', default=def_venv, help='Path to virtualenv {}'.format(def_venv))
-g.add_argument('--varrun', default=def_varrun, metavar='DIR', help='path to /var/run/NAME directory. def: {}'.format(def_varrun))
+g.add_argument('--varrun', default=def_varrun, metavar='DIR',
+               help='path to /var/run/NAME directory. def: {}'.format(def_varrun))
 g.add_argument('--host', default=list(), nargs='+', help='my hostnames')
 g.add_argument('--cluster', default='LOCAL', help='Cluster name')
 
@@ -607,7 +619,6 @@ g.add_argument('--rmq', default=False, action='store_true', help='install Rabbit
 g = parser.add_argument_group('Installation post-config option')
 g.add_argument('--email', default=None, metavar='EMAIL')
 g.add_argument('--pass', dest='password', default=None, metavar='PASSWORD')
-
 
 args = parser.parse_args()
 
