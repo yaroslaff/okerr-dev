@@ -584,7 +584,7 @@ def_sensor = os.getenv('SENSOR_NAME', 'okerr-dev@local.ru')
 parser = argparse.ArgumentParser(description='Okerr installer')
 
 parser.add_argument('--fix', default=False, action='store_true', help='Fix problems, not just report')
-parser.add_argument('--skip', nargs='?', default=list())
+parser.add_argument('--skip', nargs='*', default=list())
 parser.add_argument('--run', metavar='CHECK', default='all',
                     help='Run just one check. "all" or one of: {}'.format(str(tests)))
 parser.add_argument('--overwrite', default=False, action='store_true', help='Overwrite (be careful)')
