@@ -3,7 +3,15 @@ In last task, okerrclient executed set of standard checks and updated (created) 
 </p>
 
 <p>
-Create configuration template 'testconf' (or any other name starting with 'test') at <a href="{% url 'okerr:servers' project.get_textid %}">servers page</a> . Colon character not allowed in configuration name. Include any checks in your configuration template (for example: uptime and version). Then, create configuration for your server (with name of server) to link your server to this template. You can know it's name by command <code>hostname</code> or set it by argument <code>--name</code> when running okerrclient or option <code>name</code> in configuration file.
+Create configuration template 'testconf' (or any other name starting with 'test') at
+    <a href="{% url 'okerr:servers' project.get_textid %}">servers page</a> . Colon character not allowed in
+    configuration name. Include any checks in your configuration template (for example: uptime and version). Then,
+    create configuration for your server (with name of server) to link your server to this template.
+    You can know it's name by command <code>hostname -s</code> or set it by argument <code>--name</code> when running
+    okerrclient or option <code>name</code> in configuration file.
+
+    Server name (hostname) is one word (no dots). If full server name (fqdn) is myserver.example.com, default okerr
+    server name is myserver.
 </p>
 
 <p>

@@ -280,6 +280,8 @@ def training(request, code=None):
                 else:
                     return True
 
+            return False
+
         if code == 'policyactive':
             for i in p.indicator_set.filter(name__startswith='test:'):
                 policy = i.policy
