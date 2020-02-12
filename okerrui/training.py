@@ -270,6 +270,10 @@ def training(request, code=None):
 
         if code == 'serverconf':
             for i in p.indicator_set.all():
+
+                if i.keypath is None:
+                    continue
+
                 if not i.keypath.startswith('test'):
                     inotify(i, _("Indicator was not set from test* template"))
                     continue
