@@ -10,8 +10,6 @@ import json
 import time
 import logging
 
-from okerrui.remotecheck import check_result
-
 
 # log = logging.getLogger('okerr')                
 

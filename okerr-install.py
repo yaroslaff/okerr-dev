@@ -31,8 +31,11 @@ def myip():
 
     headers = {'User-Agent': 'curl/6.6.6'}
 
-    for url in ['https://cp.okerr.com/api/ip', 'https://diagnostic.opendns.com/myip', 'https://ifconfig.me/',
-                'https://ifconfig.io/']:
+    for url in ['https://cp.okerr.com/api/ip', 'https://diagnostic.opendns.com/myip',
+                'https://ifconfig.me/', 'https://ifconfig.io/',
+                'http://cp.okerr.com/api/ip', 'http://diagnostic.opendns.com/myip',
+                'http://ifconfig.me/', 'http://ifconfig.io/']:
+
         try:
             req = urllib.request.Request(
                 url,
@@ -43,10 +46,10 @@ def myip():
             ip = urllib.request.urlopen(req).read().decode('ascii')
 
             socket.inet_aton(ip)
+            print("Got my IP {} via {}".format(ip, url))
             return ip
 
         except Exception as e:
-            print("IP: {} failed: {}".format(url, e))
             continue
 
 
@@ -444,7 +447,7 @@ def test_deb_packages(args):
 
     if args.fix or args.overwrite:
         os.system('apt update')
-        cmdline = 'apt install {}'.format(' '.join(packages))
+        cmdline = 'DEBIAN_FRONTEND=noninteractive apt install -qy {}'.format(' '.join(packages))
         os.system(cmdline)
         return True
     else:
@@ -515,7 +518,7 @@ def test_postinstall(args):
 def test_ca(args):
     mkcert = os.path.join(sys.path[0], 'ca', 'mkcert.sh')
     cwd = os.path.join(sys.path[0], 'ca')
-    path = '/etc/okerr/ca'
+    path = '/etc/okerr/ssl'
 
     print("[CA]")
 
