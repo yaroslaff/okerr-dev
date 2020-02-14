@@ -6,7 +6,7 @@ import os
 import sys
 import subprocess
 import shutil
-import grp
+import socket
 import pwd
 import urllib.request
 
@@ -29,9 +29,25 @@ mkdir /var/log/okerr
 
 def myip():
 
-    url = 'https://diagnostic.opendns.com/myip'
-    ip = urllib.request.urlopen(url).read().decode('ascii')
-    return ip
+    headers = {'User-Agent': 'curl/6.6.6'}
+
+    for url in ['https://cp.okerr.com/api/ip', 'https://diagnostic.opendns.com/myip', 'https://ifconfig.me/',
+                'https://ifconfig.io/']:
+        try:
+            req = urllib.request.Request(
+                url,
+                data=None,
+                headers=headers
+            )
+
+            ip = urllib.request.urlopen(req).read().decode('ascii')
+
+            socket.inet_aton(ip)
+            return ip
+
+        except Exception as e:
+            print("IP: {} failed: {}".format(url, e))
+            continue
 
 
 def copy_template(src, dst, tokens):

@@ -226,50 +226,6 @@ class RemoteServer():
             return False
         return True
 
-    # get task processes name@location is for netprocess
-    def get_tproc(self, num=None, headers=None, textid=None, iname=None):
-
-        if num is None:
-            num = self.tasks_per_request                
-
-        crlist = list()
-
-        geturl = urllib.parse.urljoin(self.url,'/api/tproc/get')
-        reqdata = { 'name': self.client_name, 'location': self.client_location, 'numi': num }
-
-        # self.log.debug('get_tproc (cache: {} / sch: {})'.format(len(self.tcache), len(crlist) ))
-
-        if iname and textid:
-            reqdata['iname'] = iname
-            reqdata['textid'] = textid            
-
-        self.last_tproc_get = time.time()
-        
-        try:
-            r = requests.post(geturl, data = reqdata, headers = self.headers, timeout=15 )
-        except requests.exceptions.RequestException as e:
-            self.log.error("get_tproc ({}) from {} error: {}".format(num, self.name, str(e)))
-            return []
-
-        self.last_status_code = r.status_code
-
-        if r.status_code != 200:
-            msg = "{} code: {}".format(geturl, r.status_code)
-            self.log.info(msg)
-            return []
-            
-        for task in json.loads(r.text):
-            # remove it from cache (if it's there)
-            # fullname = task['name'] + '@' + task['textid']
-                        
-            cr = check_result.from_request(task, rs_name = self.name)
-            cr.msgtags['fetched'] = 1
-            crlist.append(cr)
-
-        self.log.debug("troc_get {} tasks from {}".format(len(crlist), self.name))
-        return crlist
-
-
     def tproc_empty(self):
         if len(self.tproc_results):
             return False
