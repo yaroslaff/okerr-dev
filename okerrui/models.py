@@ -4372,7 +4372,7 @@ class Profile(TransModel):
                 for i in Indicator.objects.filter(project__in=profile.ownerprojects(), disabled=False).order_by(
                         'created')[profile.get_maxindicators():]:
                     i.log('[PATROL] disabled, because enabled {} or {} maximum'.format(na, maxi))
-                    log.warn('[PATROL] disabled indicator {}, because enabled {}/{}'.format(i.get_fullname(), na, maxi))
+                    log.info('[PATROL] disabled indicator {}, because enabled {}/{}'.format(i.get_fullname(), na, maxi))
                     i.disable()
                     i.save()
                     # add to report
@@ -4396,7 +4396,7 @@ class Profile(TransModel):
                         i.log(
                             '[PATROL] inidicator disabled, because no available minperiod perks left (max: {})'.format(
                                 maxi))
-                        log.warn(
+                        log.info(
                             '[PATROL] indicator disabled {}, because no available minperiod perks left (max: {})'.format(
                                 i.get_fullname(), maxi))
                         i.disable()
@@ -4417,7 +4417,7 @@ class Profile(TransModel):
             for p in profile.user.project_set.filter(limited=False).all():
                 ts = p.nmembers()
                 if ts > maxts:
-                    log.warn(
+                    log.info(
                         "[PATROL] limit project {} owner {} teamsize {}/{}".format(p.get_textid(), p.owner.username, ts,
                                                                                    maxts))
                     p.limited = True
@@ -4433,7 +4433,7 @@ class Profile(TransModel):
             if nprojects > maxprojects:
                 lp = nprojects - maxprojects
                 for p in profile.user.project_set.filter(limited=False).order_by('-created')[:lp]:
-                    log.warn("[PATROL] limit project {} owner {} num {}/{}".format(p.get_textid(), p.owner.username,
+                    log.info("[PATROL] limit project {} owner {} num {}/{}".format(p.get_textid(), p.owner.username,
                                                                                    nprojects, maxprojects))
                     p.limited = True
                     p.save()
@@ -4454,7 +4454,7 @@ class Profile(TransModel):
                 for p in profile.user.project_set.filter(limited=True):
                     if p.nmembers() <= profile.getarg('teamsize'):
                         # unlimit it
-                        log.warn("[PATROL] UNlimit project {} owner {} np:{}/{} ts: {}/{}".format(
+                        log.info("[PATROL] UNlimit project {} owner {} np:{}/{} ts: {}/{}".format(
                             p.get_textid(), p.owner.username, nprojects, maxprojects, p.nmembers(),
                             profile.getarg('teamsize')))
                         p.limited = False
