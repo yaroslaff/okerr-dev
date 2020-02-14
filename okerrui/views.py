@@ -4741,6 +4741,11 @@ def api_listcluster(request):
 
     return HttpResponse(json.dumps(settings.MACHINES, indent=4, separators=(',',': '), sort_keys=True), content_type='text/plain')
 
+
+def api_ip(request):
+    remoteip = get_remoteip(request)
+    return HttpResponse(remoteip)
+
 def api_status(request):
 
     if not security_check(request):

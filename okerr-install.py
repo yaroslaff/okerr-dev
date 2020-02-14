@@ -28,8 +28,10 @@ mkdir /var/log/okerr
 
 
 def myip():
+
     url = 'https://diagnostic.opendns.com/myip'
-    return urllib.request.urlopen(url).read().decode('ascii')
+    ip = urllib.request.urlopen(url).read().decode('ascii')
+    return ip
 
 
 def copy_template(src, dst, tokens):

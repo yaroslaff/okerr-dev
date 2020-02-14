@@ -157,6 +157,7 @@ urlpatterns = [
     url(r'^api/tproc/set', views.api_tproc_set, name='api_tproc_set'),
     url(r'^api/listcluster', views.api_listcluster, name='api_listcluster'),
     url(r'^api/hostinfo', views.api_hostinfo, name='api_hostinfo'),
+    url('^api/ip', views.api_ip, name='api_ip'),
     url(r'^api/status', views.api_status, name='api_status'),
 #    url(r'^api/summary', views.api_summary, name='api_summary'),
     url(r'^api/setci$', views.api_setci, name='api_setci'),
