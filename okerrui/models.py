@@ -2389,14 +2389,22 @@ class Indicator(TransModel):
                         'url': self.policy.url_statuschange
                     }
 
-                    try:
-                        i = r.incr('http_post_cnt')
-                        keyname = "http_post:{}".format(i)
-                        r.hmset(keyname, task)
-                        r.lpush('http_post_list', keyname)
-                        log.info('created post req {} {}'.format(keyname, self.policy.url_statuschange))
-                    except redis.ConnectionError as e:
-                        log.error("redis http_post failed: " + str(e))
+                    tryn = 0
+                    success = False
+
+                    while not success:
+                        try:
+                            i = r.incr('http_post_cnt')
+                            keyname = "http_post:{}".format(i)
+                            r.hmset(keyname, task)
+                            r.lpush('http_post_list', keyname)
+                            log.info('created post req {} {}'.format(keyname, self.policy.url_statuschange))
+                            success = True
+                        except redis.ConnectionError as e:
+                            log.error("redis http_post failed ({}): {}".format(tryn, str(e)))
+                            tryn += 1
+                            time.sleep(0.5)
+
                 else:
                     log.error("no redis from get_redis()")
 
