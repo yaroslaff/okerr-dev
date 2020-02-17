@@ -27,7 +27,7 @@ class RemoteServer():
 
             assert machine is not None        
             
-            for attr in ['ci','name','url','netprocess']:
+            for attr in ['ci', 'name', 'url']:
                 setattr(self, attr, machine[attr])
         else:
             self.ci = ci

@@ -9,7 +9,6 @@ MACHINES = {
         'ci': 0,
         'name': HOSTNAME,
         'url': 'http://localhost.okerr.com/',
-        'netprocess': True
     }
 }
 
