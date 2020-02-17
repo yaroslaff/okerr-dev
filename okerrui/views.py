@@ -5097,6 +5097,7 @@ def get_oauth2_provider(name, request):
         p['info'] = urljoin(auth_base_url, "/api/myprofile")
         p['email'] = lambda x: x['email']
         p['id'] = provider.get('id', 'id')
+        p['autocreate'] = False
         return p
 
 
@@ -5176,7 +5177,7 @@ def oauth2_callback(request):
 
 
     try:
-        log.info("callback try to get provider from session {} {}".format(request.session.session_key, request.META['SERVER_NAME']))
+        # log.info("callback try to get provider from session {} {}".format(request.session.session_key, request.META['SERVER_NAME']))
         provider = request.session['oauth2_provider']
     except KeyError:
         log.info("not found provider")
@@ -5252,9 +5253,11 @@ def oauth2_callback(request):
                     user = User.objects.get(email=email)
                     user.backend = 'django.contrib.auth.backends.ModelBackend'
 
-                    Oauth2Binding.bind(user.profile, provider, user_id)
                     django_login(request, user)
-                    notify(request, _("Bound profile to {}").format(provider))
+
+                    if provider.get('autocreate', True):
+                        Oauth2Binding.bind(user.profile, provider, user_id)
+                        notify(request, _("Bound profile to {}").format(provider))
 
                     # set afterlogin_redirect if available
                     if afterlogin_redirect:
