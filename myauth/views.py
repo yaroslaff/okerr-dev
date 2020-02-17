@@ -546,7 +546,7 @@ def login(request):
         log.info('{} LOGIN redirect to {}'.format(remoteaddr, url))
         return redirect(url)
 
-    context['next'] = request.GET.get('next','')
+    context['next'] = request.GET.get('next', '')
 
     context['providers'] = dict()
 #    for provider, pstruct in okerr.settings_oauth.OAUTH2_ADV_PROVIDERS.items():

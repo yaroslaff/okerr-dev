@@ -43,9 +43,9 @@ class RemoteServer():
         self.last_status_code = None        
         
         # time, rate-limit
-        self.last_tproc_get = 0 # unixtime when we last time called /api/tproc_get
-        self.last_tproc_set = 0 # unixtime when we last time called /api/tproc_set
-        self.oldest_tproc_add = 0 # EARLIEST checkresult in queue
+        self.last_tproc_get = 0     # unixtime when we last time called /api/tproc_get
+        self.last_tproc_set = 0     # unixtime when we last time called /api/tproc_set
+        self.oldest_tproc_add = 0   # EARLIEST checkresult in queue
         
         self.tproc_period = 1
         self.last_check_process = 0
@@ -59,7 +59,7 @@ class RemoteServer():
         # cached (but not sent) tproc_results
         self.tproc_results = list()
     
-        self.tcache_enabled = True # set False to disable
+        self.tcache_enabled = True  # set False to disable
         # self.tcache = TaskCache()
                 
         self.cache = dict()                

@@ -2691,9 +2691,9 @@ def keystext(request,pid,parentpath=''):
             if not s.strip():       # skip empty lines
                 continue
             linestr = "%03d" % lineno
-            p.addkey(name=linestr,value=s.strip(),parentpath=parentpath)
+            p.addkey(name=linestr, value=s.strip(),parentpath=parentpath)
 
-            lineno+=10
+            lineno += 10
 
         return redirect('okerr:keys', pid, parentpath)
 
@@ -5096,6 +5096,7 @@ def get_oauth2_provider(name, request):
         p['token_url'] = urljoin(auth_base_url, "/o/token/")
         p['info'] = urljoin(auth_base_url, "/api/myprofile")
         p['email'] = lambda x: x['email']
+        p['id'] = provider.get('id', 'id')
         return p
 
 
@@ -5143,7 +5144,7 @@ def oauth2_login(request, provider, suffix):
     redirect_url = p['redirect_url'].format(SITEURL=settings.SITEURL, HOSTNAME=settings.HOSTNAME)
     redirect_url = re.sub('(?<!:)/+','/', redirect_url)
 
-    oauth =  requests_oauthlib.OAuth2Session(p['client_id'],
+    oauth = requests_oauthlib.OAuth2Session(p['client_id'],
         redirect_uri=redirect_url,
         scope=p['scope'])
 
@@ -5237,29 +5238,12 @@ def oauth2_callback(request):
         if not Oauth2Binding.bound(request.user.profile, provider):
             Oauth2Binding.bind(request.user.profile, provider, user_id)
             notify(request, _("Bound profile to {}").format(provider))
-            return redirect('okerr:afterlogin')
+        return redirect('okerr:afterlogin')
     else:
-        try:
-            bindings = Oauth2Binding.get_profiles(provider, user_id)
+        bindings = Oauth2Binding.get_profiles(provider, user_id)
 
-            if len(bindings) == 1:
-                profile = bindings[0].profile
-                profile.user.backend = 'django.contrib.auth.backends.ModelBackend'
-                if not profile.can_login():
-                    log.error('cannot login {} from {}'.format(user.email, remoteip))
-                    return HttpResponse('User {} can not login (oauth)'.format(user.email))
-                django_login(request, profile.user)
-                # set afterlogin_redirect if available
-                if afterlogin_redirect:
-                    request.session['afterlogin_redirect'] = afterlogin_redirect
-                return redirect('okerr:afterlogin')
-            else:
-                request.session['oauth_provider'] = provider
-                request.session['oauth_uid'] = user_id
-                return redirect('okerr:oauth2_select')
-
-        except ObjectDoesNotExist:
-            # not found bound profile. maybe auto-bind?
+        if not bindings:
+            # No binginds: Autocreate or signup
             if 'email' in p:
                 email = p['email'](data)
 
@@ -5279,10 +5263,28 @@ def oauth2_callback(request):
                     return redirect('okerr:afterlogin')
 
                 except User.DoesNotExist:
-                    notify(request, _('Not found user bound to this {} account. Link it in profile.').format(provider))
+                    notify(request,
+                           _('Not found user bound to this {} account. Link it in profile.').format(provider))
                     return redirect('myauth:signup')
             else:
                 return redirect('myauth:signup')
+        elif len(bindings) == 1:
+            # 1 binding: just log in
+            profile = bindings[0].profile
+            profile.user.backend = 'django.contrib.auth.backends.ModelBackend'
+            if not profile.can_login():
+                log.error('cannot login {} from {}'.format(user.email, remoteip))
+                return HttpResponse('User {} can not login (oauth)'.format(user.email))
+            django_login(request, profile.user)
+            # set afterlogin_redirect if available
+            if afterlogin_redirect:
+                request.session['afterlogin_redirect'] = afterlogin_redirect
+            return redirect('okerr:afterlogin')
+        else:
+            # 2+ bindings: select
+            request.session['oauth_provider'] = provider
+            request.session['oauth_uid'] = user_id
+            return redirect('okerr:oauth2_select')
 
 
 def oauth2_select(request):
