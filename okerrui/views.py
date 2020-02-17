@@ -84,6 +84,7 @@ from okerrui.models import (
     Group,
     DynDNSRecord,
     DynDNSRecordValue,
+    Oauth2Binding
     )
 
 # import okerr.settings_oauth
@@ -304,7 +305,7 @@ def sredir(request, name, path):
             rs = RemoteServer(name = name)
             url = urljoin(rs.url, path)
         except KeyError:
-            return HttpResponse(u'bad cluster name "{}"'.format(name), status=400)
+            return HttpResponse('bad cluster name "{}"'.format(name), status=400)
 
     if request.META['QUERY_STRING']:
         url = url + '?' + request.META['QUERY_STRING']
@@ -333,7 +334,6 @@ def motd(request, return_url=None):
 
         return redirect(request.POST['return_url'])
 
-
     ctx = {}
     # get motd
     motd = requests.get('http://okerr.com/motd/motd.txt')
@@ -353,7 +353,7 @@ def afterlogin(request):
 
     remoteip = get_remoteip(request)
 
-    if request.user.is_authenticated and not seen_motd(request):
+    if settings.ENABLE_MOTD and request.user.is_authenticated and not seen_motd(request):
         return redirect("okerr:motd")
 
     if 'afterlogin_redirect' in request.session:
@@ -390,29 +390,6 @@ def relocate(request, project, indicator = None):
 
 
 
-
-def UNUSED_relocate_moveauth(request, project, mkticket=True):
-
-    """ relocate to same url of other server in cluster """
-
-    base_url = relocate_url(project)
-
-
-    if mkticket:
-        mkticket_url = urljoin(base_url, "/moveauth/mkticket")
-        ticket = MoveAuthTicket.get_ticket(mkticket_url, request.user.email)
-
-        if ticket is None:
-            ctx = {'base_url': base_url}
-            return render(request, 'okerrui/remote_unavailable.html', ctx)
-
-        land_url = urljoin(base_url, "/moveauth/land/"+ticket+request.get_full_path())
-
-        log.info('move user {} to {} ticket {}'.format(request.user.email, base_url, ticket[:10]))
-        return redirect(land_url)
-    else:
-        land_url = urljoin(base_url,request.get_full_path())
-        return redirect(land_url)
 
 
 # Create your views here.
@@ -503,11 +480,11 @@ def pi(request, textid):
 
 
     if 'danger' in request.session:
-        danger=request.session['danger']
+        danger = request.session['danger']
     else:
-        danger=False
+        danger = False
 
-    context={'profile': profile,'msg': msg, 'pid': project.id, 'project': project, 'danger': danger }
+    context = {'profile': profile,'msg': msg, 'pid': project.id, 'project': project, 'danger': danger }
 
     resp = render(request,'okerrui/index.html',context)
 
@@ -618,7 +595,7 @@ def add(request,tid):
         iname = str(request.POST.get('name',''))
 
         if len(iname)==0:
-            notify(request, _(u'Cannot create indicator without name'))
+            notify(request, _('Cannot create indicator without name'))
             create=False
             return redirect('okerr:index')
 
@@ -634,11 +611,11 @@ def add(request,tid):
             # good, available name
             pass
         except Indicator.MultipleObjectsReturned:
-            notify(request, _(u'Indicator "{}" already exists in project "{}"'\
+            notify(request, _('Indicator "{}" already exists in project "{}"'\
                 .format(iname, project.name)))
             create=False
         else:
-            notify(request, _(u'Indicator "{}" already exists in project "{}"'\
+            notify(request, _('Indicator "{}" already exists in project "{}"'\
                 .format(iname, project.name)))
             create=False
 
@@ -772,7 +749,7 @@ def doop(request, textid):
 #            i.disable()
 #            i.save()
         else:
-            return HttpResponse("unknown masscmd '{}'".format(masscmd), status=400)
+            return HttpResponse("unknown masscmd '{}'".format(request.POST['masscmd']), status=400)
 
         Indicator.update_tproc_sleep()
 
@@ -780,7 +757,6 @@ def doop(request, textid):
         return HttpResponse(content, content_type='text/plain')
     else:
         return HttpResponse('not iadmin', status=404)
-
 
 
 @login_required(login_url="myauth:login")
@@ -2263,59 +2239,6 @@ def tview(request):
     context={}
     return render(request,'invite-email.html',context)
 
-
-
-@login_required(login_url="myauth:login")
-def email_backup(request,pid):
-
-    context={}
-    try:
-        project = Project.objects.get(id=pid)
-    except ObjectDoesNotExist:
-        return HttpResponse('no such project')
-
-    if not project.tadmin(request.user):
-        return HttpResponse('not project admin')
-
-
-    content = json.dumps(project.backup(),sort_keys=True,indent=4, separators=(',', ': '))
-    today = datetime.date.today()
-
-    subject = 'okerr backup :: {} :: {}'.format(project.name, today)
-    from_email = 'noreply@okerr.com'
-    text_content = 'Hello!\nThis is backup of project {}\nDate: {}\n\n--\nokerr robot\n'.format(project.name,today)
-    filename="okerr-backup-p{}-{}.json".format(pid,today)
-
-    msg = EmailMultiAlternatives(subject, text_content, from_email, [request.user.email])
-    msg.attach(filename, content, 'text/plain')
-
-    msg.send()
-
-    return HttpResponse('backup sent to '+request.user.email+' subject: '+subject)
-
-
-@login_required(login_url="myauth:login")
-def project_backup(request,pid):
-    context={}
-    try:
-        project = Project.objects.get(id=pid)
-    except ObjectDoesNotExist:
-        return HttpResponse('')
-
-    if not project.tadmin(request.user):
-        return HttpResponse('')
-
-    # very good
-    content = json.dumps(project.backup(),sort_keys=True,indent=4, separators=(',', ': '))
-    resp = HttpResponse(content, content_type="text/plain" )
-    today = datetime.date.today()
-
-    #filename='project-{}-{}-backup.json'.format(project.id,datetime.date.today.isoformat())
-    filename="okerr-backup-p{}-{}.json".format(pid,today)
-    resp['Content-Disposition'] = "attachment; filename=\"{}\"".format(filename)
-
-    return resp
-
 def exportkeyval(request, pid, path):
 
     p=Project.get_by_textid(pid)
@@ -2612,7 +2535,7 @@ def getkeyval(request,textid,path):
             auth = base64.b64decode(auth).decode('utf-8')
             username, password = auth.split(':')
 
-            log.info("GETKEYVAL u: {} p: {} ip: {} project: {}".format(username, password, remoteip, textid))
+            # log.info("GETKEYVAL u: {} p: {} ip: {} project: {}".format(username, password, remoteip, textid))
             if not username in access:
                 # no such user at all
                 return noauth
@@ -4987,7 +4910,7 @@ def api_admin_export(request,email):
     if not security_check(request):
         return HttpResponse(status = 401)
 
-    log.info('EXPORT request for {} from {}'.format(email, remoteip))
+    # log.info('EXPORT request for {} from {}'.format(email, remoteip))
 
     try:
         profile = Profile.objects.get(user__email = email)
@@ -5282,7 +5205,7 @@ def oauth2_callback(request):
     redirect_url = p['redirect_url'].format(SITEURL=settings.SITEURL, HOSTNAME=settings.HOSTNAME)
 
     redirect_url = re.sub('(?<!:)/+','/', redirect_url)
-    oauth =  requests_oauthlib.OAuth2Session(p['client_id'], state=state, redirect_uri=redirect_url)
+    oauth = requests_oauthlib.OAuth2Session(p['client_id'], state=state, redirect_uri=redirect_url)
 
     try:
         token = oauth.fetch_token(
@@ -5304,45 +5227,90 @@ def oauth2_callback(request):
     try:
         data = json.loads(r.text)
     except ValueError as e:
-        return HttpResponse('Cannot parse JSON at callback from {} (http status: {}): {}'.format(provider, r.status_code, r.text))
+        return HttpResponse('Cannot parse JSON at callback from {} (http status: {}): {}'.format(
+            provider, r.status_code, r.text))
 
-    #print json.dumps(data, indent=4)
+    id_field = p.get('id', 'id')
+    user_id = data[id_field]
 
-    email = None
+    if request.user.is_authenticated:
+        if not Oauth2Binding.bound(request.user.profile, provider):
+            Oauth2Binding.bind(request.user.profile, provider, user_id)
+            notify(request, _("Bound profile to {}").format(provider))
+            return redirect('okerr:afterlogin')
+    else:
+        try:
+            bindings = Oauth2Binding.get_profiles(provider, user_id)
 
-    try:
-        email = p['email'](data)
-    except KeyError as e:
-        return HttpResponse('Cannot get email. {}'.format(json.dumps(data, indent=4)))
+            if len(bindings) == 1:
+                profile = bindings[0].profile
+                profile.user.backend = 'django.contrib.auth.backends.ModelBackend'
+                if not profile.can_login():
+                    log.error('cannot login {} from {}'.format(user.email, remoteip))
+                    return HttpResponse('User {} can not login (oauth)'.format(user.email))
+                django_login(request, profile.user)
+                # set afterlogin_redirect if available
+                if afterlogin_redirect:
+                    request.session['afterlogin_redirect'] = afterlogin_redirect
+                return redirect('okerr:afterlogin')
+            else:
+                request.session['oauth_provider'] = provider
+                request.session['oauth_uid'] = user_id
+                return redirect('okerr:oauth2_select')
 
-    if not email:
-        return HttpResponse('Email not set. Sorry. Set email at your profile at {} '.format(provider))
+        except ObjectDoesNotExist:
+            # not found bound profile. maybe auto-bind?
+            if 'email' in p:
+                email = p['email'](data)
 
-    # log.info('OAUTH callback {} got email: {}'.format(remoteip, email))
+                User = get_user_model()
+                try:
+                    user = User.objects.get(email=email)
+                    user.backend = 'django.contrib.auth.backends.ModelBackend'
 
-    request.session['oauth2_email'] = email
+                    Oauth2Binding.bind(user.profile, provider, user_id)
+                    django_login(request, user)
+                    notify(request, _("Bound profile to {}").format(provider))
 
-    try:
-        user = User.objects.get(email=email)
-    except User.DoesNotExist:
-        log.info('not registered email {}'.format(email))
-        return redirect('myauth:signup') 
-        # return HttpResponse('User with email {} not registered. Please register first.'.format(email))
+                    # set afterlogin_redirect if available
+                    if afterlogin_redirect:
+                        request.session['afterlogin_redirect'] = afterlogin_redirect
 
-    log.info('oauth2 callback login user {} on {} provider: {}'.format(user, request.META['SERVER_NAME'], provider))
+                    return redirect('okerr:afterlogin')
 
-    user.backend = 'django.contrib.auth.backends.ModelBackend'
+                except User.DoesNotExist:
+                    notify(request, _('Not found user bound to this {} account. Link it in profile.').format(provider))
+                    return redirect('myauth:signup')
+            else:
+                return redirect('myauth:signup')
 
-    if not user.profile.can_login():
-        log.error('cannot login {} from {}'.format(user.email, remoteip))
-        return HttpResponse('User {} can not login (oauth)'.format(user.email))
 
-    django_login(request, user)
-    # set afterlogin_redirect if available
-    if afterlogin_redirect:
-        request.session['afterlogin_redirect'] = afterlogin_redirect
+def oauth2_select(request):
+    provider = request.session['oauth_provider']
+    user_id = request.session['oauth_uid']
 
-    return redirect('okerr:afterlogin')
+    selected = request.POST.get('selected', None)
+
+    bindings = Oauth2Binding.get_profiles(provider, user_id)
+
+    if selected:
+        for b in bindings:
+            if b.profile.user.email == selected:
+
+                profile = b.profile
+                profile.user.backend = 'django.contrib.auth.backends.ModelBackend'
+                if not profile.can_login():
+                    log.error('cannot login {} from {}'.format(user.email, remoteip))
+                    return HttpResponse('User {} can not login (oauth)'.format(user.email))
+                django_login(request, profile.user)
+                # set afterlogin_redirect if available
+                #if afterlogin_redirect:
+                #    request.session['afterlogin_redirect'] = afterlogin_redirect
+                return redirect('okerr:afterlogin')
+
+    ctx = dict(bindings=bindings, provider=provider)
+    return render(request, 'okerrui/oauth2_select.html', ctx)
+
 
 @login_required(login_url='myauth:login')
 def api_myprofile(request):

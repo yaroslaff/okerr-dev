@@ -13,13 +13,14 @@ from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect, HttpResponseBadRequest, HttpResponseForbidden, HttpResponse, HttpResponseNotFound
 from django.urls import resolve, reverse
 from django.template.loader import get_template
+import requests
 from pprint import pprint
 
 from django_markup.markup import formatter
 
 from validate_email import validate_email
 
-from okerrui.models import Policy, Profile, LogRecord, Throttle
+from okerrui.models import Policy, Profile, LogRecord, Throttle, Oauth2Binding
 from okerrui.bonuscode import BonusCode
 from okerrui.views import notify
 from okerrui.cluster import RemoteServer
@@ -45,7 +46,6 @@ afterlogin='okerr:afterlogin'
 #log=myutils.openlog()
 log = logging.getLogger('okerr')
 logger = logmessage.models.Logger()
-
 
 
 
@@ -181,7 +181,16 @@ def profile(request):
     context['perks']=profile.perkstext()
     context['args']=profile.groupargs()
     context['qi'] = profile.get_qindicators()    
-    
+    context['oauth2_bound'] = list()
+    context['oauth2_notbound'] = list()
+
+    if hasattr(settings, 'OAUTH2_ADV_LIST'):
+        for p in settings.OAUTH2_ADV_LIST:
+            if Oauth2Binding.bound(profile, p['code']):
+                context['oauth2_bound'].append(p)
+            else:
+                context['oauth2_notbound'].append(p)
+
     remoteip=get_remoteip(request)
 
     sync = False
@@ -193,8 +202,11 @@ def profile(request):
     
     if request.COOKIES.get('noredirect',''):
         msg.append('noredirect is set')
- 
-    if request.POST.get('change',None):
+
+    if request.POST.get('oauth_clean', None):
+        Oauth2Binding.rmprofile(profile)
+
+    if request.POST.get('change', None):
         # context['error_message']='submitted'
         request.user.first_name=request.POST.get('first_name','')
         request.user.last_name=request.POST.get('last_name','')
@@ -311,7 +323,7 @@ def profile(request):
             iamsure=request.POST.get('iamsure','')
             if iamsure == u'Да, я уверен!' or iamsure == 'Yes, I am sure!':
                 # delete user
-                log.warning('suicide u: {} ip: {}'.\
+                log.info('suicide u: {} ip: {}'.\
                     format(request.user.username, remoteip))
                 # profile.set_delete()
                 # profile.touch()
@@ -324,7 +336,7 @@ def profile(request):
                 user.delete() 
                 return redirect(mainpage)
             else:
-                notify(request,'bad delete confirmation phrase')
+                notify(request, 'bad delete confirmation phrase')
 
         if request.POST.get('telegram_name','') != profile.telegram_name:
             profile.telegram_name = request.POST.get('telegram_name')
@@ -335,6 +347,7 @@ def profile(request):
                 notify(request, _('Cleared telegram username. No messages will be send.'))
             sync = True
 
+
         request.user.save()
         profile.save()
         
@@ -343,7 +356,7 @@ def profile(request):
                 
         return redirect(request.path)       
 
-    return render(request,'myauth/profile.html',context)
+    return render(request, 'myauth/profile.html', context)
 
 
 
@@ -371,7 +384,7 @@ def signup(request):
                 return redirect(afterlogin)
 
                 
-                return render(request,'myauth/registered.html',context)                
+                return render(request,'myauth/registered.html',context)
         
             # check, maybe already recently signed up
             if SignupRequest.objects.filter(email=email).count() > 0:
@@ -551,11 +564,12 @@ def login(request):
         pd['logo'] = provider['logo']
         context['oauth2_providers'].append(pd)
 
-    if request.POST.get('username',False) and request.POST.get('password',False):
+    if request.POST.get('username', False) and request.POST.get('password', False):
 
         if not validate_email(request.POST['username']):
-            context['error_message']="Bad email address"
-            return render(request,'myauth/login.html',context)
+            # context['error_message'] = "Bad email address"
+            notify(request, _('Bad email address'))
+            return render(request, 'myauth/login.html', context)
 
         username = request.POST['username']
            
@@ -575,9 +589,9 @@ def login(request):
 
                 if not profile.can_login():        
                     log.error('cannot login {} {} (web login)'.format(user.email, remoteaddr))
-                    return HttpResponse('User {} can not login (web login)'.format(user.email))
+                    return HttpResponse(_('User {} can not login (web login)').format(user.email))
 
-                django_login(request,user)
+                django_login(request, user)
 
                 if afterlogin_redirect:
                     request.session['afterlogin_redirect'] = afterlogin_redirect
@@ -585,13 +599,20 @@ def login(request):
                 return redirect(afterlogin)
             else:
                 log.info("no login, acount disabled {}".format(username))
-                context['error_message']="Account disabled"
+                notify(request, _("Account disabled"))
         else:
 
-            log.warn("failed login {} {}".format(remoteaddr,username))
-            context['error_message']="Wrong login/password"
+            log.info("failed login {} {}".format(remoteaddr,username))
+            notify(request, _("Wrong login/password"))
 
-    return render(request,'myauth/login.html',context)
+    context['prelogin'] = None
+
+    if settings.ENABLE_PRELOGIN:
+        r = requests.get('http://okerr.com/motd/prelogin.txt')
+        if r.status_code == 200:
+            context['prelogin'] = r.text
+
+    return render(request,'myauth/login.html', context)
 
 def demologin(request):
     demouser = "okerrdemo@maildrop.cc"

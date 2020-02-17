@@ -9,8 +9,9 @@ app_name = 'okerrui'
 
 urlpatterns = [
 
-    url(r'^oauth2/login/(?P<provider>[^/]+)(?P<suffix>.*)', views.oauth2_login, name='oauth2_login'),
-    url(r'^oauth2/callback', views.oauth2_callback, name='oauth2_callback'),
+    url('^oauth2/login/(?P<provider>[^/]+)(?P<suffix>.*)', views.oauth2_login, name='oauth2_login'),
+    url('^oauth2/callback', views.oauth2_callback, name='oauth2_callback'),
+    url('^oauth2/select', views.oauth2_select, name='oauth2_select'),
     # url(r'oauth2/info/(<?P<provider>[^/]+)', views.oauth2_info, name='oauth2_info'),
 
 

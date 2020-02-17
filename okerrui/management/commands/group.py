@@ -182,10 +182,8 @@ class Command(BaseCommand):
 
         if options['user']:                                               
             user = User.objects.filter(username=options['user']).first()
-            if user:
-                print(user)
-            else:
-                print("no such user!")
+            if not user:
+                raise CommandError("no such user!")
             p = Profile.objects.filter(user=user).first()
             
             if p: 

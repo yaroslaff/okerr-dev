@@ -1,0 +1,35 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load markup_tags %}
+
+{% block title %}{% trans 'Select account' %}{% endblock %}
+
+{% block content %}
+
+<center>
+{% trans 'Please select account:' %}
+    <ul>
+    {% for b in bindings %}
+        <li>
+            <form method=post style="display: inline" name="signin{{b.profile.id}}">
+            <input type=hidden name=selected value="{{b.profile.user.email}}">
+            {% csrf_token %}
+            </form>
+            <a href="javascript:document.signin{{b.profile.id}}.submit();" style="ztext-decoration:none">
+                {{b.profile.user.email}}</a>
+        </li>
+
+    {% endfor %}
+    </ul>
+
+
+<p>
+
+    <form method=post>
+        {% csrf_token %}
+        <input type=hidden name="return_url" value="{{return_url}}">
+        <input type=hidden name="hash" value="{{hash}}">
+        <input type=submit name="continue" value='{% trans 'Continue' %}'>
+    </form>
+
+{% endblock %}

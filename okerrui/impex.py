@@ -36,7 +36,7 @@ class Impex():
     modelconf = {
         'Profile': {
             'user': 'ignore',
-            '__children': ['Membership','Project','ProfileArg','BonusActivation'], # ProfileArg? or reapply?
+            '__children': ['Membership', 'Project', 'ProfileArg', 'BonusActivation', 'Oauth2Binding'],  # ProfileArg? or reapply?
             '__addparent': ['user'],                        
         },
         'BonusActivation': {
@@ -155,6 +155,7 @@ class Impex():
             m.StatusSubscription,
             m.DynDNSRecord,
             m.DynDNSRecordValue,
+            m.Oauth2Binding,
             bc.BonusActivation
         ]
         self.learn_all()

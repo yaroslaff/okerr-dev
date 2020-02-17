@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+
+from django.core import management
 from django.core.management.base import BaseCommand, CommandError
 from okerrui.models import Profile,Group,Membership, ProjectMember
 from okerrui.training import tasks
@@ -23,13 +25,18 @@ class Command(BaseCommand):
         parser.add_argument('--delete', action='store_true', default=False, help='delete selected profile (or profilearg)')
         parser.add_argument('--create', default=None, metavar='username', help='create user (with --pass)')
         parser.add_argument('--user', default=None, help='user email')
-        parser.add_argument('--pass', default=None, help='user pass')
-        parser.add_argument('--textid', default=None, help='first project textid')
         parser.add_argument('--rename', default=None, metavar='NEW-EMAIL', help='New email')
         parser.add_argument('--patrol', action='store_true', default=False, help='patrol profiles')
         parser.add_argument('--tstage', default=None, help='set training stage (magic codes: prev, next, first)')
         parser.add_argument('-b',dest='batch', default=False,action='store_true', help='brief output for batch mode')
         parser.add_argument('--really', default=False,action='store_true', help='really. (for dangerous operations)')
+
+        g = parser.add_argument_group('New profile options')
+        g.add_argument('--pass', default=None, help='user pass')
+        g.add_argument('--textid', default=None, help='first project textid')
+        g.add_argument('--group', default=None, help='group name (to assign, list, view or alter)')
+        g.add_argument('--days', type=int, default=0)
+        g.add_argument('--infinite', action='store_true', default=False)
 
     def handle(self, *args, **options):
         #print "options:",options
@@ -64,7 +71,20 @@ class Command(BaseCommand):
             profile.inits(textid = options['textid'])
 
             print("created user {} pass {}".format(email, password))
-            print("dont forget to add to groups")
+
+
+            if options['group']:
+                cmd = ['group', '--assign', options['group'], '--user', email]
+
+                if options['days']:
+                    cmd.extend(['--days', options['days']])
+                elif options['infinite']:
+                    cmd.append('--infinite')
+                else:
+                    raise CommandError('--group requires either --days NNN or --infinite')
+                management.call_command(*cmd)
+            else:
+                print("do not forget to add to groups")
 
             return
 

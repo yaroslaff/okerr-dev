@@ -6274,3 +6274,35 @@ class DynDNSRecordValue(models.Model):
 
     def __str__(self):
         return "{}({}) = {} ({})".format(self.indicator.name, self.indicator.status, self.value, self.priority)
+
+class Oauth2Binding(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, db_index=True)
+    provider = models.CharField(max_length=200)  # e.g. gmail
+    uid = models.CharField(max_length=200, db_index=True)  # e.g. unique id of this user on provider
+
+    class Meta:
+        unique_together = ('profile', 'provider')
+
+    def __str__(self):
+        return 'Oauth2Binding:{}:{}'.format(self.provider, self.profile.user.email)
+
+    @classmethod
+    def bind(cls, profile, provider, uid):
+        b = Oauth2Binding(profile=profile, provider=provider, uid=uid)
+        b.save()
+
+    @classmethod
+    def rmprofile(cls, profile):
+        return cls.objects.filter(profile=profile).delete()
+
+    @classmethod
+    def bound(cls, profile, provider):
+        try:
+            bind = Oauth2Binding.objects.get(profile=profile, provider=provider)
+            return True
+        except cls.DoesNotExist:
+            return False
+
+    @classmethod
+    def get_profiles(cls, provider, uid):
+        return cls.objects.filter(provider=provider, uid=uid)

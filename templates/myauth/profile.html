@@ -120,6 +120,42 @@
     </tr>
 
 
+
+        {% if oauth2_bound or oauth2_notbound %}
+
+    <tr class='title'><td></td><td>{% trans 'OAuth authentication' %}</td></tr>
+
+    <tr>
+    <td>
+        <ul>
+
+        {% for p in oauth2_bound %}
+                <li>{{p.title}} ({% trans 'Bound' %})</li>
+        {% endfor %}
+
+        {% for p in oauth2_notbound %}
+                <li>{{p.title}} <a href="{% url "okerr:oauth2_login" p.code '/profile' %}">
+                    {% trans 'Bind' %}
+                    </a></li>
+        {% endfor %}
+
+        </ul>
+
+    </td>
+    </tr>
+        {% if oauth2_bound%}
+    <tr>
+    <td><input type=checkbox name="oauth_clean"> {% trans 'Clean all OAuth binding' %}</td>
+    </tr>
+        {% endif %}
+
+
+
+        {% endif %}
+
+
+
+
     <tr class='title'><td></td><td>{% trans 'Outgoing emails' %}</td></tr>
 
     <tr>

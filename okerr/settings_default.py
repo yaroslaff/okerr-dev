@@ -30,6 +30,9 @@ TPROC_MAXSLEEP = 30
 JKEYS_TPL = "{}"
 OAUTH2_ADV_LIST = list()
 
+ENABLE_PRELOGIN = False
+ENABLE_MOTD = False
+
 # MAIL settings
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25

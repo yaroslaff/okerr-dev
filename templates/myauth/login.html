@@ -1,9 +1,17 @@
 {% extends "okerrui/base.html" %}
 {% load i18n %}
+{% load markup_tags %}
 
 {% block content %}
+
+    {% if prelogin %}
     <div style="text-align: center;">
-        
+        <div class="motd">{{prelogin|apply_markup:"markdown"}}</div>
+    </div>
+    {% endif %}
+
+    <div style="text-align: center;">
+
         <div class="loginpass">
             <form action="{% url 'myauth:login' %}" method="post">
             {% csrf_token %}
