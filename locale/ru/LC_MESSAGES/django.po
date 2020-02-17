@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-14 18:13+0000\n"
+"POT-Creation-Date: 2020-02-17 13:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -414,13 +414,15 @@ msgstr "Уже используется такой индикатор"
 msgid "Already has this priority in this record"
 msgstr "Уже используется такой приоритет"
 
-#: okerrui/views.py:5239 okerrui/views.py:5268
+#: okerrui/views.py:5239 okerrui/views.py:5273
 msgid "Bound profile to {}"
 msgstr "Профиль привязан к {}"
 
-#: okerrui/views.py:5277
+#: okerrui/views.py:5282
 msgid "Not found user bound to this {} account. Link it in profile."
-msgstr "Не найден пользователь привязанный к этому аккаунту {}.\nПривяжите его в профиле после входа."
+msgstr ""
+"Не найден пользователь привязанный к этому аккаунту {}.\n"
+"Привяжите его в профиле после входа."
 
 #: templates/admin/base_site.html:4
 msgid "Django site admin"
@@ -622,6 +624,7 @@ msgid "Completed"
 msgstr "Завершен"
 
 #: templates/myauth/profile.html:52 templates/okerrui/motd.html:21
+#: templates/okerrui/oauth2_select.html:32
 msgid "Continue"
 msgstr "Продолжить"
 
@@ -1213,6 +1216,16 @@ msgstr "У вас нет собственных проектов и нет до�
 #, python-format
 msgid "You can <a href=\"%(projectlist)s\">create your project</a>."
 msgstr "Вы можете <a href=\"%(projectlist)s\">создать свой проект</a>."
+
+#: templates/okerrui/oauth2_select.html:5
+#, fuzzy
+#| msgid "Delete account"
+msgid "Select account"
+msgstr "Удалить учетную запись"
+
+#: templates/okerrui/oauth2_select.html:10
+msgid "Please select account:"
+msgstr "Выберите учетную запись"
 
 #: templates/okerrui/policy.html:18
 msgid "indicator(s) uses this policy"

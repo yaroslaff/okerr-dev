@@ -21,15 +21,5 @@
 
     {% endfor %}
     </ul>
-
-
-<p>
-
-    <form method=post>
-        {% csrf_token %}
-        <input type=hidden name="return_url" value="{{return_url}}">
-        <input type=hidden name="hash" value="{{hash}}">
-        <input type=submit name="continue" value='{% trans 'Continue' %}'>
-    </form>
-
+</center>
 {% endblock %}
