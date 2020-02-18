@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth import get_user_model
+from okerrui.models import Oauth2Binding, Profile
 from django.conf import settings
 
 import oauth2_provider
@@ -23,6 +24,8 @@ class Command(BaseCommand):
         parser.add_argument('--export', default=False, action='store_true', help='export --app')
         parser.add_argument('--exportall', default=False, action='store_true', help='export all apps')
         parser.add_argument('--reinit', default=False, action='store_true', help='reinit from from OAUTH2_CLIENTS')
+        parser.add_argument('--user', metavar='EMAIL', default=None, help='view/edit oauth binding for this user')
+        parser.add_argument('--reset', default=False, action='store_true', help='reset bindings for this user')
 
         #        parser.add_argument('--user', default=None, help='list all applications')
         parser.add_argument('--app', default=None, help='application name')
@@ -118,3 +121,9 @@ class Command(BaseCommand):
             app.skip_authorization = options['skip']
             app.save()
             self.dump(app)
+        elif options['user']:
+            for b in Oauth2Binding.objects.filter(profile__user__email=options['user']):
+                print(b)
+                if options['reset']:
+                    b.delete()
+
