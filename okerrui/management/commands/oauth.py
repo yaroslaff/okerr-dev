@@ -25,7 +25,7 @@ class Command(BaseCommand):
         parser.add_argument('--exportall', default=False, action='store_true', help='export all apps')
         parser.add_argument('--reinit', default=False, action='store_true', help='reinit from from OAUTH2_CLIENTS')
         parser.add_argument('--user', metavar='EMAIL', default=None, help='view/edit oauth binding for this user')
-        parser.add_argument('--reset', default=False, action='store_true', help='reset bindings for this user')
+        parser.add_argument('--delete', default=False, action='store_true', help='delete bindings for this user')
 
         #        parser.add_argument('--user', default=None, help='list all applications')
         parser.add_argument('--app', default=None, help='application name')
@@ -122,8 +122,13 @@ class Command(BaseCommand):
             app.save()
             self.dump(app)
         elif options['user']:
-            for b in Oauth2Binding.objects.filter(profile__user__email=options['user']):
+            if options['user'] in ['all', 'any', '*']:
+                qs = Oauth2Binding.objects.all()
+            else:
+                qs = Oauth2Binding.objects.filter(profile__user__email=options['user'])
+
+            for b in qs:
                 print(b)
-                if options['reset']:
+                if options['delete']:
                     b.delete()
 
