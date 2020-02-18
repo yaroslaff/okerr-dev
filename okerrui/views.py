@@ -5255,7 +5255,7 @@ def oauth2_callback(request):
 
                     django_login(request, user)
 
-                    if provider.get('autocreate', True):
+                    if p.get('autocreate', True):
                         Oauth2Binding.bind(user.profile, provider, user_id)
                         notify(request, _("Bound profile to {}").format(provider))
 
