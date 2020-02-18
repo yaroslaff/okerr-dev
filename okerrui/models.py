@@ -4663,6 +4663,12 @@ class Profile(TransModel):
         print("Profile: {} {}".format(self.user.username, del_suffix))
         print("ci:", self.ci)
         print("partner: {} : {}".format(self.partner_name, self.partner_id))
+        bindings = list()
+        for b in Oauth2Binding.objects.filter(profile=self):
+            bindings.append(b.provider)
+        if bindings:
+            print("OAuth:", ' '.join(bindings))
+
         print("telegram: {} ({})".format(self.telegram_name, self.telegram_chat_id))
         print("traning stage: {}".format(repr(self.training_stage)))
         print("sendalert:", self.sendalert)
