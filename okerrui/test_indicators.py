@@ -57,7 +57,7 @@ class IndicatorTestCase(TestCase):
         i = Indicator.create(self.project,iname,silent=True)
         i.copy(i2name)
         i2 = self.project.get_indicator(i2name)
-        print i2
+        print(i2)
         self.assertIsInstance(i2, Indicator)
 
     def test_heartbeat(self):
@@ -91,7 +91,7 @@ class IndicatorTestCase(TestCase):
         # usual update
         Indicator.update(project,iname,status='22')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
 
 
@@ -101,13 +101,13 @@ class IndicatorTestCase(TestCase):
         i.save()
         Indicator.update(project,iname,status='99')
         i = project.get_indicator(iname)
-        print i,i.getarg('current'), i.getarg('minlim')
+        print(i,i.getarg('current'), i.getarg('minlim'))
         
         self.assertEqual(i.status,'ERR')
 
         Indicator.update(project,iname,status='100')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
 
         # maxlim check
@@ -116,11 +116,11 @@ class IndicatorTestCase(TestCase):
         i.save()
         Indicator.update(project,iname,status='1000')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
         Indicator.update(project,iname,status='1001')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'ERR')
 
 
@@ -131,26 +131,26 @@ class IndicatorTestCase(TestCase):
         
         Indicator.update(project,iname,status='1000')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
         
         Indicator.update(project,iname,status='1001')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
         
         # step 100, exactly OK
         Indicator.update(project,iname,status='1000')
         Indicator.update(project,iname,status='1100')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
                                        
         # step 101, ERR
         Indicator.update(project,iname,status='1000')
         Indicator.update(project,iname,status='1101')
         i = project.get_indicator(iname)        
-        print i, i.getarg('current')
+        print(i, i.getarg('current'))
         self.assertEqual(i.status,'ERR')
                                       
                                       
@@ -160,18 +160,18 @@ class IndicatorTestCase(TestCase):
         
         Indicator.update(project,iname,status='1000')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
                                        
         Indicator.update(project,iname,status='1100')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
                                        
         Indicator.update(project,iname,status='1000')
         Indicator.update(project,iname,status='1101')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'ERR')
                                        
                                        
@@ -181,19 +181,19 @@ class IndicatorTestCase(TestCase):
         i.save()
         Indicator.update(project,iname,status='1000')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
         
         Indicator.update(project,iname,status='990')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
         
         # step 101, ERR
         Indicator.update(project,iname,status='1000')
         Indicator.update(project,iname,status='989')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'ERR')
 
         # devdown %% check
@@ -202,18 +202,18 @@ class IndicatorTestCase(TestCase):
         i.save()
         Indicator.update(project,iname,status='1000')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
         
         Indicator.update(project,iname,status='900')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'OK')
 
         Indicator.update(project,iname,status='1000')
         Indicator.update(project,iname,status='899')
         i = project.get_indicator(iname)
-        print i,i.getarg('current')
+        print(i,i.getarg('current'))
         self.assertEqual(i.status,'ERR')
 
 
