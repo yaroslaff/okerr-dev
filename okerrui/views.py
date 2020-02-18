@@ -5218,7 +5218,7 @@ def oauth2_callback(request):
             )
     except requests.exceptions.ConnectionError as e:
         return HttpResponse(str(e), status = 400 )
-    except  oauthlib.oauth2.rfc6749.errors.MissingCodeError as e:
+    except oauthlib.oauth2.rfc6749.errors.MissingCodeError as e:
         return HttpResponse(type(e), str(e), status = 400 )
     except Exception as e:
         return HttpResponse(type(e), str(e), status = 400 )
@@ -5232,8 +5232,7 @@ def oauth2_callback(request):
         return HttpResponse('Cannot parse JSON at callback from {} (http status: {}): {}'.format(
             provider, r.status_code, r.text))
 
-    id_field = p.get('id', 'id')
-    user_id = data[id_field]
+    user_id = p['get_id'](data)
 
     if request.user.is_authenticated:
         if not Oauth2Binding.bound(request.user.profile, provider):
@@ -5246,7 +5245,7 @@ def oauth2_callback(request):
         if not bindings:
             # No binginds: Autocreate or signup
             if 'email' in p:
-                email = p['email'](data)
+                email = p['get_email'](data)
 
                 User = get_user_model()
                 try:
