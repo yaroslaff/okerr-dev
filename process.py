@@ -379,7 +379,7 @@ def maincode(ci, send_mail=True, lifetime=None):
             if time.time() > started + lifetime:
                 log.warning('Lifetime {} sec passed. Suicide.'.format(lifetime))
                 stop = True
-        
+
     log.info("stop: {}, quitting".format(stop))
 
 

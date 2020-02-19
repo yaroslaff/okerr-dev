@@ -1409,29 +1409,19 @@ def policy(request, textid, pname):
         minperiod = project.owner.profile.getarg('minperiod')
 
         fields = {
-#            'period': {
-#                'type': 'int',
-#                'min': minperiod,
-#                'max': 2*86400,
-#            },
-            'wipe': {
-                'type': 'int',
-                'min': 120,
-                'max': 60*86400,
-            },
-            'patience': { 'type': 'str' },
-            'period': { 'type': 'str' },
-            'secret': {'type': 'str' },
-            'retry_schedule': {'type': 'str' },
-            'recovery_retry_schedule': {'type': 'str' },
+            'patience': {'type': 'str'},
+            'period': {'type': 'str'},
+            'secret': {'type': 'str'},
+            'retry_schedule': {'type': 'str'},
+            'recovery_retry_schedule': {'type': 'str'},
             'reduction': {'type': 'str'},
-            'url_statuschange': {'type': 'str' },
+            'url_statuschange': {'type': 'str'},
             'autocreate':{'type':'bool'},
             'httpupdate':{'type':'bool'},
             'smtpupdate':{'type':'bool'},
        }
 
-        changed = post2obj(policy,fields,request,msg)
+        changed = post2obj(policy, fields, request, msg)
         policy.touch(True)
         policy.save()
         # cannot redirect to request.path, because name can be changed
