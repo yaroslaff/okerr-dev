@@ -885,10 +885,10 @@ def project(request, pid):
         return redirect(request.path)
 
     if request.POST.get('addpolicy', False):
-        name = request.POST.get('name','')
+        name = request.POST.get('name', '')
         # maybe already exists?
-        if project.policy_set.filter(name = name).count():
-            notify(request,_('Policy name must be unique'))
+        if project.policy_set.filter(name=name).count():
+            notify(request, _('Policy name must be unique'))
             return redirect(request.path)
 
 
@@ -897,6 +897,7 @@ def project(request, pid):
         p.recovery_retry_schedule = ''
         p.name = name
         p.project = project
+        p.reduction = '0'
         p.tsave()
 
         ps = PolicySubnet()
@@ -1333,7 +1334,7 @@ def post2obj(x,fields,request,msg):
 
 
 @login_required(login_url='myauth:login')
-def policy(request,textid,pname):
+def policy(request, textid, pname):
 
     project = Project.get_by_textid(textid)
 
@@ -5132,7 +5133,7 @@ def oauth2_login(request, provider, suffix):
         # log.info('{} OAUTH {} login set suffix to {} skey: {}'.format(remoteip, request.get_host(), suffix, request.session.session_key))
         request.session['afterlogin_redirect'] = suffix
     else:
-        log.info('no suffix in oauth2_login. redirect: {}'.format(request.session.get('afterlogin_redirect',None)))
+        log.info('no suffix in oauth2_login. redirect: {}'.format(request.session.get('afterlogin_redirect', None)))
 
     p = get_oauth2_provider(provider, request)
 

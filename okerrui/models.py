@@ -297,6 +297,7 @@ class Project(TransModel):
                 patience=1200,
                 wipe=86400 * 60,
                 autocreate=True,
+                reduction='0',
                 retry_schedule="",
                 recovery_retry_schedule="",
                 secret="")
@@ -1289,7 +1290,7 @@ class Policy(TransModel):
     #    patience = models.IntegerField(default=1200) # 1h + 20min, used only for passive
     patience = models.CharField(default='300s', max_length=200)  # 1h + 20min, used only for passive
 
-    wipe = models.IntegerField(default=86400 * 60)
+    # wipe = models.IntegerField(default=86400 * 60)
     autocreate = models.BooleanField(default=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     secret = models.CharField(max_length=200, default="", blank=True)
@@ -1367,7 +1368,7 @@ class Policy(TransModel):
         try:
             ts = TimeStr(reduction, validator=lambda x: isinstance(timesuffix2sec(x), int))
         except (ValueError, IndexError):
-            raise (ValueError(_("Incorrect alert reduction. Example:\n0s 00:30-02:00 5m 14:00-14:30 10s")))
+            raise (ValueError(_("Incorrect alert reduction. Example:\n0s or\n0s 00:30-02:00 5m 14:00-14:30 10s")))
 
     def validate_patience(self, pstr):
         timesuffix2sec(pstr)
@@ -1392,25 +1393,10 @@ class Policy(TransModel):
             self.save()
             self.project.touch(touchall)
 
-    # policy.set_ci
-    def UNUSED_set_ci(self, ci, force=False):
-        """ set cluster index """
-        if self.ci == ci and not force:
-            return
-
-        print("Policy {} set to ci {}".format(self, ci))
-        self.ci = ci
 
     # policy.tsave
     def tsave(self):
         uni_tsave(self)
-
-    # policy.syncbackup
-    def UNUSED_syncbackup(self, sync, tstamp):
-
-        backup = sync.backup_helper(self)
-
-        return backup
 
     def checkip(self, ipstr):
         try:
@@ -1481,9 +1467,6 @@ class Policy(TransModel):
 
         return d
 
-    def UNUSED_post_export(self, d):
-        return self.transaction_postdump(d)
-
     # policy.transaction_postload
     def transaction_postload(self, d):
         super(Policy, self).transaction_postload(d)
@@ -1493,13 +1476,6 @@ class Policy(TransModel):
             sn = json.loads(d['subnets'])
             self.policysubnet_set.all().delete()
             for psn in sn:
-                PolicySubnet.restore(self, psn)
-
-    # policy.post_import
-    def UNUSED_post_import(self, d):
-        self.save()
-        if 'subnets' in d:
-            for psn in d['subnets']:
                 PolicySubnet.restore(self, psn)
 
     # policy.numindicators_total
