@@ -5245,7 +5245,7 @@ def oauth2_callback(request):
 
         if not bindings:
             # No binginds: Autocreate or signup
-            if 'email' in p:
+            if 'get_email' in p:
                 email = p['get_email'](data)
 
                 User = get_user_model()
