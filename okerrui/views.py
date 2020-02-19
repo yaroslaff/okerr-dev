@@ -384,8 +384,8 @@ def relocate(request, project, indicator = None):
     rs = RemoteServer(ci = project.ci)
     land_url = rs.land_url(url, request.META['HTTP_HOST'])
 
-    log.info(u"RELOCATE {} relocate {} to {}".format(remoteip, request.META['HTTP_HOST'], land_url))
-
+    log.info("RELOCATE {} relocate {} to {}".format(remoteip, request.META['HTTP_HOST'], land_url))
+    django_logout(request)
     return redirect(land_url)
 
 
