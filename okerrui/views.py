@@ -5236,7 +5236,7 @@ def oauth2_callback(request):
     user_id = p['get_id'](data)
 
     if request.user.is_authenticated:
-        if not Oauth2Binding.bound(request.user.profile, provider):
+        if not Oauth2Binding.bound(request.user.profile, provider) and request.user.profile.ci == myci():
             Oauth2Binding.bind(request.user.profile, provider, user_id)
             notify(request, _("Bound profile to {}").format(provider))
         return redirect('okerr:afterlogin')
@@ -5255,7 +5255,7 @@ def oauth2_callback(request):
 
                     django_login(request, user)
 
-                    if p.get('autocreate', True):
+                    if p.get('autocreate', True) and request.user.profile.ci == myci():
                         Oauth2Binding.bind(user.profile, provider, user_id)
                         notify(request, _("Bound profile to {}").format(provider))
 
