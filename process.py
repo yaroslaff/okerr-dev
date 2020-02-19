@@ -361,11 +361,11 @@ def maincode(ci, send_mail=True, lifetime=None):
             try:
                 myindicator.update(totalu, '{} indicators in {:.2f}s'.format(totalu, time.time() - last_iupdated ))
             except okerrupdate.OkerrExc as e:
-                log.error(u'myindicator {} update error: {}'.format(myindicator.name, e)) 
+                log.error('myindicator {} update error: {}'.format(myindicator.name, e))
             totalu = 0
             last_iupdated = time.time()
             
-        if u==0:
+        if u == 0:
             time.sleep(settings.PROCSLEEP)                    
         else:
             # no sleep, we did something, maybe there is other work
@@ -379,7 +379,6 @@ def maincode(ci, send_mail=True, lifetime=None):
             if time.time() > started + lifetime:
                 log.warning('Lifetime {} sec passed. Suicide.'.format(lifetime))
                 stop = True
-        
         
     log.info("stop: {}, quitting".format(stop))
 
