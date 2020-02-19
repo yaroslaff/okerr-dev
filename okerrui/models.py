@@ -1412,15 +1412,16 @@ class Policy(TransModel):
     # policy.cron
     @staticmethod
     def cron():
+        pass
         # walk over all policies
-        for p in Policy.objects.all():
-            wipe = p.wipe
-            moment = timezone.now() - datetime.timedelta(seconds=wipe)
-            for i in p.project.indicator_set.filter(updated__lt=moment):
-                log.info('wipe indicator {} from {}:{}, policy {} wipe {} '
-                         'updated: {} age {}'.format(
-                    i, p.project.owner.username, p.project.name, p.name, wipe, i.updated, timezone.now() - i.updated))
-                i.delete()
+        # for p in Policy.objects.all():
+        #    wipe = p.wipe
+        #    moment = timezone.now() - datetime.timedelta(seconds=wipe)
+        #    for i in p.project.indicator_set.filter(updated__lt=moment):
+        #        log.info('wipe indicator {} from {}:{}, policy {} wipe {} '
+        #                 'updated: {} age {}'.format(
+        #            i, p.project.owner.username, p.project.name, p.name, wipe, i.updated, timezone.now() - i.updated))
+        #        i.delete()
 
     # policy.backup
     def backup(self):
