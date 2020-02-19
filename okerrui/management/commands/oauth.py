@@ -124,7 +124,7 @@ class Command(BaseCommand):
             self.dump(app)
         elif options['user'] or options['provider']:
             qs = Oauth2Binding.objects.all()
-            if options['user'] not in ['all', 'any', '*']:
+            if options['user'] not in [None, 'all', 'any', '*']:
                 qs = qs.filter(profile__user__email=options['user'])
             if options['provider']:
                 qs = qs.filter(provider=options['provider'])
