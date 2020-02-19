@@ -1272,33 +1272,32 @@ def invitations(request):
     return render(request, 'okerrui/invitations.html',context)
 
 
-def post2obj(x,fields,request,msg):
-    changed={}
+def post2obj(x, fields, request, msg):
+    changed = {}
 
-
-    for f,p in fields.items():
+    for f, p in fields.items():
 
         oldval = getattr(x,f)
         newval = request.POST.get(f,None)
 
-        if p['type']=='str':
-            if oldval!=newval:
-                changed[f]=newval
-            setattr(x,f,request.POST.get(f,''))
-        elif p['type']=='int':
+        if p['type'] == 'str':
+            if oldval != newval:
+                changed[f] = newval
+            setattr(x, f, request.POST.get(f, ''))
+        elif p['type'] == 'int':
             try:
-                val = int(request.POST.get(f,''))
+                val = int(request.POST.get(f, ''))
                 # min
                 if 'min' in p:
-                    if val<p['min']:
+                    if val < p['min']:
                         raise ValueError
                 if 'max' in p:
-                    if val>p['max']:
+                    if val > p['max']:
                         raise ValueError
                 # everything fine!
-                if oldval!=newval:
-                    changed[f]=newval
-                setattr(x,f,val)
+                if oldval != newval:
+                    changed[f] = newval
+                setattr(x, f, val)
             except ValueError:
                 errline = '{} must be integer.'.format(f)
                 if 'min' in p:
@@ -1306,19 +1305,19 @@ def post2obj(x,fields,request,msg):
                 if 'max' in p:
                     errline += ' max: {}.'.format(p['max'])
                 msg.append(errline)
-        elif p['type']=='bool':
-            if request.POST.get(f,False):
+        elif p['type'] == 'bool':
+            if request.POST.get(f, False):
                 if oldval==False:
-                    changed[f]=True
-                setattr(x,f,True)
+                    changed[f] = True
+                setattr(x, f, True)
             else:
                 if oldval:
                     changed[f]=False
-                setattr(x,f,False)
+                setattr(x, f, False)
         elif p['type'].startswith('fk:'):
             keyname = p['type'].split(':')[1]
 
-            if request.POST.get(f,False):
+            if request.POST.get(f, False):
                 kw = dict()
                 kw[keyname] = request.POST[f]
 
@@ -1329,7 +1328,7 @@ def post2obj(x,fields,request,msg):
                 else:
                     if oldval != v:
                         changed[f]=v
-                    setattr(x,f,v)
+                    setattr(x, f, v)
     return changed
 
 
@@ -1605,16 +1604,16 @@ def indicator(request,iid):
                 'location': {
                     'type': 'str',
                 },
-                'disabled':{'type':'bool'},
-                'problem':{'type':'bool'},
-                'silent':{'type':'bool'},
-                'policy':{
-                    'type':'fk:name',
+                'disabled': {'type': 'bool'},
+                'problem': {'type': 'bool'},
+                'silent': {'type': 'bool'},
+                'policy': {
+                    'type': 'fk:name',
                     'qs': Policy.objects.filter(project=i.project)
                     },
-                'cm':{
+                'cm': {
                     'type': 'fk:codename',
-                    'qs':CheckMethod.objects.all()
+                    'qs': CheckMethod.objects.all()
                     },
             }
 
@@ -1632,14 +1631,13 @@ def indicator(request,iid):
                     notify(request,u'indicator {} already exists in this project'.format(request.POST['name']))
                     return redirect(request.path)
 
-
             if Indicator.validname(request.POST.get('name')):
-                changed = post2obj(i,fields,request,msg)
+                changed = post2obj(i, fields, request, msg)
             else:
-                changed=dict()
+                changed = dict()
 
             for chi, val in changed.items():
-                msg = u'CHANGE_INDICATOR u: {user} ip: {ip} changed {iname}@{textid} {chi} = {val} from web form'\
+                msg = 'CHANGE_INDICATOR u: {user} ip: {ip} changed {iname}@{textid} {chi} = {val} from web form'\
                     .format(
                         user=request.user.username,
                         ip=remoteip,
@@ -1651,7 +1649,7 @@ def indicator(request,iid):
                 i.log(msg, typecode="indicator")
                 i.touch()
 
-            i.fix() # to fix location
+            i.fix()  # to fix location
 
 
             # change args if cm changed

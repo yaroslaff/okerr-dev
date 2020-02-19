@@ -163,9 +163,9 @@
                 <td><select name='policy'>
                 {% for policy in i.project.policy_set.all %}
                     {% if i.policy == policy %}
-                    <option value={{policy.name}} selected>{{policy}}
+                    <option value='{{policy.name}}' selected>{{policy}}
                     {% else %}
-                    <option value={{policy.name}}>{{policy}}
+                    <option value='{{policy.name}}'>{{policy}}
                     {% endif %}
                 {% endfor %}
                 </select>
