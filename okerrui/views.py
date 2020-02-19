@@ -5121,7 +5121,8 @@ def get_oauth2_provider(name, request):
 
 
 def oauth2_bind(request, provider, suffix):
-    pass
+    request.session['oauth2_bind'] = True
+    return oauth2_login(request, provider, suffix)
 
 def oauth2_login(request, provider, suffix):
     remoteip = get_remoteip(request)
@@ -5242,7 +5243,7 @@ def oauth2_callback(request):
 
     user_id = p['get_id'](data)
 
-    if request.user.is_authenticated and p.get('autocreate', True):
+    if request.user.is_authenticated and p.get('autocreate', True) and request.session.get('oauth2_bind', False):
         if not Oauth2Binding.bound(request.user.profile, provider) and request.user.profile.ci == myci():
             Oauth2Binding.bind(request.user.profile, provider, user_id)
             notify(request, _("Bound profile to {}").format(provider))

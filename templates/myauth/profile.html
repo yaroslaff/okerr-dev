@@ -134,7 +134,7 @@
         {% endfor %}
 
         {% for p in oauth2_notbound %}
-                <li>{{p.title}} <a href="{% url "okerr:oauth2_login" p.code '/profile' %}">
+                <li>{{p.title}} <a href="{% url "okerr:oauth2_bind" p.code '/profile' %}">
                     {% trans 'Bind' %}
                     </a></li>
         {% endfor %}
