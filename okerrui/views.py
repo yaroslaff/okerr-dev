@@ -5096,8 +5096,8 @@ def get_oauth2_provider(name, request):
         p['oauth_url'] = urljoin(auth_base_url, "/o/authorize/")
         p['token_url'] = urljoin(auth_base_url, "/o/token/")
         p['info'] = urljoin(auth_base_url, "/api/myprofile")
-        p['email'] = lambda x: x['email']
-        p['id'] = provider.get('id', 'id')
+        p['get_email'] = lambda x: x['email']
+        p['get_id'] = lambda x: x['email']
         p['autocreate'] = False
         return p
 
