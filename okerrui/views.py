@@ -4723,6 +4723,10 @@ def api_hostinfo(request):
     out['sensors']=list()
     out['siteurl'] = settings.SITEURL
 
+    if request.user.is_authenticated:
+        out['user'] = request.user.email
+    else:
+        out['user'] = None
 
     for k in redis.keys('okerr:remote_netprocess:*'):
         rnp_name = k.split(':',3)[2] 
@@ -5114,6 +5118,9 @@ def get_oauth2_provider(name, request):
                 return p
 
     raise Http404("No such oauth2 provider {}".format(repr(name)))
+
+
+def oauth2_bind(request, provider, suffix):
 
 
 def oauth2_login(request, provider, suffix):
