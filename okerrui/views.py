@@ -5121,7 +5121,7 @@ def get_oauth2_provider(name, request):
 
 
 def oauth2_bind(request, provider, suffix):
-
+    pass
 
 def oauth2_login(request, provider, suffix):
     remoteip = get_remoteip(request)
