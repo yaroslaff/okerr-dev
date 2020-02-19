@@ -295,7 +295,6 @@ class Project(TransModel):
                 name="Default",
                 period=3600,
                 patience=1200,
-                wipe=86400 * 60,
                 autocreate=True,
                 reduction='0',
                 retry_schedule="",
@@ -325,7 +324,6 @@ class Project(TransModel):
                     name="Daily",
                     period=86400,
                     patience=7200,
-                    wipe=86400 * 60,
                     autocreate=True,
                     retry_schedule="",
                     recovery_retry_schedule="",
@@ -1428,7 +1426,7 @@ class Policy(TransModel):
         s = {}
         s['mtime'] = dt2unixtime(self.mtime)
 
-        for attr in ['name', 'period', 'patience', 'wipe', 'autocreate', 'secret', 'smtpupdate', 'httpupdate']:
+        for attr in ['name', 'period', 'patience', 'autocreate', 'secret', 'smtpupdate', 'httpupdate']:
             s[attr] = getattr(self, attr)
         s['subnets'] = []
         for sn in self.policysubnet_set.all():
@@ -1446,7 +1444,7 @@ class Policy(TransModel):
         policy = Policy()
         policy.project = project
 
-        for attr in ['name', 'period', 'patience', 'wipe', 'autocreate', 'secret', 'smtpupdate', 'httpupdate']:
+        for attr in ['name', 'period', 'patience', 'autocreate', 'secret', 'smtpupdate', 'httpupdate']:
             if attr in s:
                 setattr(policy, attr, s[attr])
             else:
