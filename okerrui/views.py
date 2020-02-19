@@ -5225,11 +5225,11 @@ def oauth2_callback(request):
 #            proxies = {'https': 'http://127.0.0.1:8080'}, verify = False
             )
     except requests.exceptions.ConnectionError as e:
-        return HttpResponse(str(e), status = 400 )
+        return HttpResponse(str(e), status=400)
     except oauthlib.oauth2.rfc6749.errors.MissingCodeError as e:
-        return HttpResponse(type(e), str(e), status = 400 )
+        return HttpResponse(type(e), str(e), status=400)
     except Exception as e:
-        return HttpResponse(type(e), str(e), status = 400 )
+        return HttpResponse(type(e), str(e), status=400)
 
 #    log.info('got token: {}'.format(token))
 
@@ -5242,7 +5242,7 @@ def oauth2_callback(request):
 
     user_id = p['get_id'](data)
 
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and p.get('autocreate', True):
         if not Oauth2Binding.bound(request.user.profile, provider) and request.user.profile.ci == myci():
             Oauth2Binding.bind(request.user.profile, provider, user_id)
             notify(request, _("Bound profile to {}").format(provider))
