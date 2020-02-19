@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as django_login, logout as django_logout
+from django.contrib.auth import authenticate, login as django_login
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.forms.models import modelformset_factory
@@ -385,7 +385,7 @@ def relocate(request, project, indicator = None):
     land_url = rs.land_url(url, request.META['HTTP_HOST'])
 
     log.info("RELOCATE {} relocate {} to {}".format(remoteip, request.META['HTTP_HOST'], land_url))
-    django_logout(request)
+
     return redirect(land_url)
 
 
