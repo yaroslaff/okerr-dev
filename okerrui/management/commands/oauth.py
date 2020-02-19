@@ -122,7 +122,7 @@ class Command(BaseCommand):
             app.skip_authorization = options['skip']
             app.save()
             self.dump(app)
-        elif options['user']:
+        elif options['user'] or options['provider']:
             qs = Oauth2Binding.objects.all()
             if options['user'] not in ['all', 'any', '*']:
                 qs = qs.filter(profile__user__email=options['user'])
