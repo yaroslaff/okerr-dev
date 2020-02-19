@@ -80,7 +80,7 @@ def unlockold(td=None):
     uc = uq.update(lockpid=None,lockat=None)
     log.debug("unlocked {} records".format(uc))
 
-def lock(pid, numi=5):
+def lock(pid, numi=50):
     """
         lock numi records.
         we lock by setting lockpid to non-null (random) value.
