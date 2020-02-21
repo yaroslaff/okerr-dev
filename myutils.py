@@ -432,7 +432,7 @@ def get_redis(dbindex=0):
     if 'REDIS_HOST' in os.environ:
         return redis.Redis(host=os.environ['REDIS_HOST'], port=6379, db=dbindex)
     else:    
-        rsocks = [ '/var/run/redis/redis-server.sock', '/var/run/redis/redis.sock' ]    
+        rsocks = ['/var/run/redis/redis-server.sock', '/var/run/redis/redis.sock']
         for rs in rsocks:
             if os.path.exists(rs):
                 return redis.Redis(unix_socket_path=rs, decode_responses=True, db=dbindex)

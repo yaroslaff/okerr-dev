@@ -157,7 +157,7 @@ def get_other_machine_queue(name):
         # first direct queue for other machine
         return qname
 
-def process_tproc_reply(data):
+def process_tproc_reply(channel, data):
 
     name = data['_machine']['name']
     remoteip = data['_machine']['ip']
@@ -335,7 +335,7 @@ def mainloop(args):
                 if '_task' in data:
                     if data['_task'] == 'tproc.reply':
                         try:
-                            process_tproc_reply(data)
+                            process_tproc_reply(channel,data)
                         except TProcExc as e:
                             log.debug("TProcException: {}".format(e))
                             send_kill(channel, data['_machine'],

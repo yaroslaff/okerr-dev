@@ -2376,7 +2376,7 @@ class Indicator(TransModel):
                             log.info('created post req {} {}'.format(keyname, self.policy.url_statuschange))
                             success = True
                         except redis.ConnectionError as e:
-                            log.error("redis http_post failed ({}): {}".format(tryn, str(e)))
+                            log.error("redis http_post failed ({}): {} (cwd: {})".format(tryn, str(e), os.getcwd()))
                             tryn += 1
                             time.sleep(0.5)
 
