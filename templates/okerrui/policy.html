@@ -20,8 +20,13 @@
     <form action="{% url 'okerr:policy' project.get_textid p.name %}" method="post">
     <table border=0 align=center>
         <tr>
-            <td>{% trans 'Policy' %}
-            <td><input type=text name="name" value="{{ p.name }}">
+            <td>{% trans 'Policy' %}</td>
+            <td><input type=text name="name" value="{{ p.name }}"></td>
+            <td>
+                <a href="https://gitlab.com/yaroslaff/okerr-dev/-/wikis/Policies"  target="_blank">
+                    <img src="{% static 'help.png' %}"></a>
+            </td>
+
         </tr>
 
         <tr>

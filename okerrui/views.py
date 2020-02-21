@@ -1331,7 +1331,6 @@ def post2obj(x, fields, request, msg):
                     setattr(x, f, v)
     return changed
 
-
 @login_required(login_url='myauth:login')
 def policy(request, textid, pname):
 

@@ -73,9 +73,6 @@ class Command(BaseCommand):
 
     def add_arguments(self,parser):
         parser.add_argument('--list', nargs='?', default=None, const='all',help='list all groups or one --group')
-        parser.add_argument('--days', type=int, default=0)
-        parser.add_argument('--infinite', action='store_true', default=False)
-        parser.add_argument('--assign', default=None, metavar='GROUP', help='assign --user to this group [for --days]')
         parser.add_argument('--force', default=False, action='store_true', help='force (e.g. to add to 2nd group)')
         parser.add_argument('--revoke', default=None, metavar='GROUP', help='revoke --user from this GROUP')        
         parser.add_argument('--refill', default=False, action='store_true', help='refill --user')        
@@ -83,17 +80,32 @@ class Command(BaseCommand):
         parser.add_argument('--wipe', default=None, action='store_true')
         parser.add_argument('--group', default=None, help='group name (to assign, list, view or alter)')
         parser.add_argument('--all', default=False, action='store_true', help='all users (for refill)')
-        parser.add_argument('--setvar', default=False, nargs=2, metavar=('VarName','Value'), help='')
-        parser.add_argument('--delvar', metavar='VarName',default=False, help='')
-        parser.add_argument('--reinit', action='store_true', default=False, help='reinit all groups')
-        parser.add_argument('--delete', action='store_true', default=False, help='reinit can delete groups and group args')
         parser.add_argument('--ro', action='store_true', default=False, help='reinit read only')
         parser.add_argument('-b', dest='batch',action='store_true',default=False, help='brief output for batch mode')
         parser.add_argument('--table', dest='table',action='store_true',default=False, help='output as table')
 
+        g = parser.add_argument_group('Assign users')
+        g.add_argument('--assign', default=None, metavar='GROUP', help='assign --user to this group [for --days]')
+        g.add_argument('--days', type=int, default=0)
+        g.add_argument('--infinite', action='store_true', default=False)
 
-    
-    
+        g = parser.add_argument_group('Manage groups')
+        g.add_argument('--create', metavar='GROUP', default=None, help='create group')
+        g.add_argument('--delete', action='store_true', default=False, help='reinit can delete groups and group args')
+        g.add_argument('--reinit', action='store_true', default=False, help='reinit all groups')
+        g.add_argument('--setvar', default=False, nargs=2, metavar=('VarName','Value'), help='')
+        g.add_argument('--delvar', metavar='VarName',default=False, help='')
+
+
+    def create(self, name):
+        try:
+            g = Group.objects.get(name=name)
+            print("Group {} already exists")
+        except ObjectDoesNotExist:
+            print("Group {} Not found. Create".format(name))
+            g = Group.objects.create(name=name)
+            g.save()
+
 
     def handle(self, *args, **options):
         #print "options:",options
@@ -107,11 +119,16 @@ class Command(BaseCommand):
 
         
         User = get_user_model()
-        
+
         if options['reinit']:
-            Group.reinit_groups(delete=options['delete'], readonly=options['ro'])
+            print("Skip reinit groups (obsolete?)")
+            # Group.reinit_groups(delete=options['delete'], readonly=options['ro'])
             return
-    
+
+        if options['create']:
+            self.create(options['create'])
+            return
+
         if options['refill']:            
             # prepare user QuerySet        
             if options['all']:
@@ -129,7 +146,6 @@ class Command(BaseCommand):
                     print(".. refill user {} membership {}".format(user,m))
                     m.group.refill(m.profile,m.expires) 
             return
-
 
         if options['table']:
             table()

@@ -49,8 +49,12 @@
             <td>
                 <div style="float:left;width:90%;">{% trans "Indicator" %} {{ i.name }}</div>
             </td>
+            <td>
+                <a href="https://gitlab.com/yaroslaff/okerr-dev/-/wikis/Indicators"  target="_blank">
+                    <img src="{% static 'help.png' %}"></a>
+            </td>
         </tr>
-        <tr><td>            
+        <tr><td>
             <form method=post>                
             {% csrf_token %}
             <input type=hidden name=autosubmit value="">
