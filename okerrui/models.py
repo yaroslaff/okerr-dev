@@ -5223,7 +5223,16 @@ class Membership(models.Model):
         return None
 
     def get_weight(self):
-        return settings.PLANS[self.groupname].get('_weight', 0)
+        w = self.get_static_arg('_weight')
+        if w:
+            return w
+
+        w = self.get_static_arg('_price')
+        if w:
+            return w
+
+        return 1
+        # return settings.PLANS[self.groupname].get('_weight', 0)
 
 
     # membership.cron
