@@ -5238,20 +5238,20 @@ class Membership(models.Model):
 
         # renew _autorenew groups
 
-        for group in Group.objects.all():
-            if group.get_static_arg('_autorenew'):
-                r = group.membership_set.filter(expires__lt=fixexpire).update(expires=newexpire)
-                log.info("_autorenew updated: {}".format(r))
+        #for group in Group.objects.all():
+        #    if group.get_static_arg('_autorenew'):
+        #        r = group.membership_set.filter(expires__lt=fixexpire).update(expires=newexpire)
+        #        log.info("_autorenew updated: {}".format(r))
 
         # renew variables in group
-        for m in Membership.objects.all():
-            renewtime = m.refilled + datetime.timedelta(seconds=m.group.refillperiod)
-            if timezone.now() > renewtime:
-                log.info("renew membership {} in group {}".format(
-                    m.profile.user.username, m.group.name))
-                m.group.refill(m.profile, m.expires)
-                m.refilled = timezone.now()
-                m.save()
+        #for m in Membership.objects.all():
+        #    renewtime = m.refilled + datetime.timedelta(seconds=m.group.refillperiod)
+        #    if timezone.now() > renewtime:
+        #        log.info("renew membership {} in group {}".format(
+        #            m.profile.user.username, m.group.name))
+        #        m.group.refill(m.profile, m.expires)
+        #        m.refilled = timezone.now()
+        #        m.save()
 
         # expire expired arguments and groups
         ProfileArg.expire()

@@ -490,8 +490,5 @@ if not SITEURL.endswith("/"):
 
 assert(len(HOSTNAME) > 3)
 
-# groups assigned after registration
-START_GROUP = 'Space'
-
 # Basic sanity check: hostname must be in cluster
 assert(any( MACHINES[mi]['name'] == HOSTNAME for mi in MACHINES.keys() ))

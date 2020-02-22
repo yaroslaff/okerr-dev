@@ -86,3 +86,7 @@ PLANS = {
         '_weight': 100000
     }
 }
+
+
+# groups assigned after registration
+START_GROUP = 'Admin'

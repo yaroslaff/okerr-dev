@@ -70,17 +70,17 @@ def create_user(request, email, password=None):
     profile.inits()
     
     # add to group User 
-    profile.assign(group=settings.START_GROUP, time=datetime.timedelta(days=30))
+    profile.assign(group=settings.START_GROUP, time=None)
                     
-    context['username']=email
-    context['password']=password
+    context['username'] = email
+    context['password'] = password
     context['user'] = user
     
     # send email
-    subj='Okerr registration information'
+    subj = 'Okerr registration information'
 
     plaintext = get_template('afterreg.txt')
-    htmly     = get_template('afterreg.html')
+    htmly = get_template('afterreg.html')
 
     mail_ctx = { 
         'username': email, 
