@@ -85,7 +85,7 @@ class Impex():
             '__deleted': 'deleted_at'
         },
         'Membership': {
-            'group': 'trans:group.name',
+            # 'group': 'trans:group.name',
             '__bulk': True,
         },
         'ProfileArg': {

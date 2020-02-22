@@ -4195,15 +4195,15 @@ class Profile(TransModel):
     def groups(self):
         g = {}
         for m in Membership.objects.filter(profile=self):
-            g[m.group.name] = m.expires
+            g[m.groupname] = m.expires
         return g
 
     # profile.groupstext (only groups, not perks)
     def groupstext(self):
         g = list()
-        for m in self.membership_set.exclude(group__name__startswith='perk'):
+        for m in self.membership_set.exclude(groupname__startswith='perk'):
             d = dict()
-            d['name'] = m.group.name
+            d['name'] = m.groupname
             if m.expires:
                 d['expires'] = shortdate(m.expires)
                 d['left'] = dhms(m.expires - timezone.now())
@@ -4216,9 +4216,9 @@ class Profile(TransModel):
     # profile.perkstext (perks, not groups)
     def perkstext(self):
         g = list()
-        for m in self.membership_set.filter(group__name__startswith='perk'):
+        for m in self.membership_set.filter(groupname__startswith='perk'):
             d = dict()
-            d['name'] = m.group.name
+            d['name'] = m.groupname
             if m.expires:
                 d['expires'] = shortdate(m.expires)
                 d['left'] = dhms(m.expires - timezone.now())
@@ -4543,6 +4543,8 @@ class Profile(TransModel):
     # profile.assign
     def assign(self, group=None, time=None, add=False, force_assign=False):
 
+        assert(isinstance(group, str))
+
         #
         #
         # if 'add':
@@ -4553,14 +4555,14 @@ class Profile(TransModel):
         #
         # if force_assign - user will be assigned to group even 2nd time
 
-        if isinstance(group, str):
-            # groupname => group
-            group = Group.objects.filter(name=group).get()
+        #if isinstance(group, str):
+        #    # groupname => group
+        #    group = Group.objects.filter(name=group).get()
 
         if isinstance(time, int):
             time = datetime.timedelta(seconds=time)
 
-        m = Membership.objects.filter(group=group, profile=self).first()
+        m = Membership.objects.filter(groupname=group, profile=self).first()
 
         if m and not force_assign:
             # renew
@@ -4569,7 +4571,7 @@ class Profile(TransModel):
             if m.expires is None:
                 # no need to renew, just refill
                 m.refilled = timezone.now()
-                group.fill(self, m.expires)
+                # group.fill(self, m.expires)
                 m.save()
                 return
 
@@ -4582,7 +4584,7 @@ class Profile(TransModel):
             m.expires = exptime
 
             m.refilled = timezone.now()
-            group.fill(self, m.expires)
+            # group.fill(self, m.expires)
 
             m.save()
             return
@@ -4595,10 +4597,10 @@ class Profile(TransModel):
 
         log.info("Assign user {user} to group {group} until {exptime}".format(
             user=self.user.username,
-            group=group.name, exptime=exptime))
+            group=group, exptime=exptime))
 
-        m = Membership(group=group, profile=self, expires=exptime, refilled=timezone.now())
-        group.fill(self, exptime)
+        m = Membership(groupname=group, profile=self, expires=exptime, refilled=timezone.now())
+        # group.fill(self, exptime)
         m.refilled = timezone.now()
         m.save()
 
@@ -4767,7 +4769,7 @@ class Profile(TransModel):
 
         for m in self.membership_set.all():
 
-            r = m.group.get_static_arg_prefix("minperiod:", None)
+            r = m.get_static_arg_prefix("minperiod:", None)
             if r is None:
                 continue
             argname, value = r
@@ -4811,7 +4813,7 @@ class Profile(TransModel):
         mm = None
 
         for m in self.membership_set.all():
-            if m.group.name.startswith('perk:'):
+            if m.groupname.startswith('perk:'):
                 yield m
             elif mm is None or mm.group.get_weight() < m.group.get_weight():
                 mm = m
@@ -4871,9 +4873,9 @@ class Profile(TransModel):
 
         values = list()
         for m in self.get_emembership():
-            values.append(m.group.get_static_arg(name, None))
+            values.append(m.get_static_arg(name, None))
             if 'suffix' in control and not strict:
-                t = m.group.get_static_arg_prefix(name + ':', None)
+                t = m.get_static_arg_prefix(name + ':', None)
                 if t is not None:
                     try:
                         values.append(int(t[0].split(':')[1]))
@@ -4965,179 +4967,13 @@ class Group(models.Model):
     refillperiod = models.IntegerField(default=30 * 86400)
 
     @staticmethod
-    def get_gconf(name=None):
-
+    def get_groups(name=None):
         # https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D0%B9_%D0%B7%D0%B2%D1%91%D0%B7%D0%B4
         # Список названий звезд
 
-        gconf = {
-            'Admin': {
-                'maxindicators': 5000,
-                'settextname': 1,
-                'mintextidlen': 3,
-                'minperiod': 1,
-                'teamsize': 100,
-                'maxprojects': 100,
-                'maxstatus': 100,
-                'maxdyndns': 100,
-                'status_maxsubscribers': 50000,
-                'login': 1,
-                '_weight': 100000
-            },
-
-            'Electra': {
-                'maxindicators': 1005,
-                'minperiod': 600,
-                'minperiod:20': 5,
-                'settextname': 1,
-                'maxprojects': 10,
-                'maxstatus': 25,
-                'maxdyndns': 25,
-                'status_maxsubscribers': 25000,
-                'teamsize': 20,
-                'login': 1,
-                '_price': 49000,
-            },
-
-            'Diadem': {
-                'maxindicators': 255,
-                'minperiod': 600,
-                'minperiod:20': 5,
-                'settextname': 1,
-                'maxprojects': 10,
-                'maxstatus': 10,
-                'maxdyndns': 10,
-                'status_maxsubscribers': 5000,
-                'teamsize': 20,
-                'login': 1,
-                '_price': 19500,
-            },
-
-            'Cursa': {
-                'maxindicators': 102,
-                'minperiod': 1200,
-                'minperiod:30': 2,
-                'settextname': 1,
-                'maxprojects': 3,
-                'maxstatus': 5,
-                'maxdyndns': 5,
-                'status_maxsubscribers': 1000,
-                'teamsize': 5,
-                'login': 1,
-                '_price': 4500,
-            },
-
-            'Bellatrix': {
-                'maxindicators': 22,
-                'minperiod': 1200,
-                'minperiod:300': 2,
-                'settextname': 1,
-                'maxprojects': 1,
-                'maxstatus': 3,
-                'maxdyndns': 3,
-                'status_maxsubscribers': 100,
-                'teamsize': 1,
-                'login': 1,
-                '_price': 900,
-            },
-
-            'Alcor': {
-                'maxindicators': 21,
-                'minperiod': 3600,
-                'minperiod:600': 1,
-                'maxprojects': 1,
-                'maxstatus': 3,
-                'maxdyndns': 3,
-                'status_maxsubscribers': 0,
-                'login': 1,
-                '_price': 290
-            },
-
-            'AlcorPromo': {
-                'maxindicators': 21,
-                'minperiod': 3600,
-                'minperiod:600': 1,
-                'maxprojects': 1,
-                'maxstatus': 3,
-                'maxdyndns': 3,
-                'status_maxsubscribers': 0,
-                'login': 1,
-                '_weight': 290
-            },
-
-            'Space': {
-                'maxindicators': 5,
-                'minperiod': 3600,
-                'maxprojects': 1,
-                'maxstatus': 1,
-                'maxdyndns': 1,
-                'status_maxsubscribers': 0,
-                'login': 1,
-                '_autorenew': 1
-            },
-
-            # perks
-
-            # projects
-            'perk:project:1': {
-                'maxprojects': 1,
-                '_price': 150
-            },
-
-            # team size
-            'perk:teamsize:1': {
-                'teamsize': 1,
-                '_price': 500
-            },
-
-            # quick indicators
-            # 1h
-
-            'perk:qindicator:1h:10': {
-                'minperiod:3600': 10,
-                'maxindicators': 10,
-                '_price': 140
-            },
-
-            'perk:qindicator:20m:10': {
-                'minperiod:1200': 10,
-                'maxindicators': 10,
-                '_price': 400
-            },
-
-            # 10 min
-            'perk:qindicator:10m:10': {
-                'minperiod:600': 10,
-                'maxindicators': 10,
-                '_price': 700
-            },
-
-            # 1min
-            'perk:qindicator:1m:10': {
-                'minperiod:60': 10,
-                'maxindicators': 10,
-                '_price': 6500
-            },
-
-            # 20sec
-            'perk:qindicator:20s:10': {
-                'minperiod:20': 10,
-                'maxindicators': 10,
-                '_price': 16000
-            },
-
-            # 1sec
-            'perk:qindicator:1s:1': {
-                'minperiod:1': 1,
-                'maxindicators': 1,
-                '_price': 25000
-            },
-
-        }
-
         if name is None:
-            return gconf
-        return gconf[name]
+            return settings.PLANS
+        return settings.PLANS[name]
 
     @staticmethod
     def reinit_groups(delete=False, readonly=False, quiet=False):
@@ -5147,7 +4983,7 @@ class Group(models.Model):
                     'add_maxindicators', 'add_teamsize', 'add_maxprojects', 'minperiod:1', 'minperiod:60',
                     '_price', '_autorenew', '_weight']
 
-        gconf = Group.get_gconf()
+        gconf = Group.get_groups()
 
         if readonly:
             # readonly means no delete
@@ -5212,21 +5048,21 @@ class Group(models.Model):
 
     @staticmethod
     def group_names():
-        gconf = Group.get_gconf()
+        gconf = Group.get_groups()
         for name in gconf.keys():
             if not name.startswith('perk:'):
                 yield name
 
     @staticmethod
     def perk_names():
-        gconf = Group.get_gconf()
+        gconf = Group.get_groups()
         for name in gconf.keys():
             if name.startswith('perk:'):
                 yield name
 
     @staticmethod
     def get_calculated():
-        gconf = Group.get_gconf()
+        gconf = Group.get_groups()
 
         def get_checks(period, time=3600 * 24 * 30):
             return time / period
@@ -5269,21 +5105,21 @@ class Group(models.Model):
         return gconf
 
     # group.get_static_arg
-    def get_static_arg(self, argname, default=None):
-        gconf = Group.get_gconf(self.name)
+    def UNUSED_get_static_arg(self, argname, default=None):
+        gconf = Group.get_groups(self.name)
         if argname in gconf:
             return gconf[argname]
         return default
 
     # group.get_static_arg_prefix
-    def get_static_arg_prefix(self, argprefix, default=None):
-        gconf = Group.get_gconf(self.name)
+    def UNUSED_get_static_arg_prefix(self, argprefix, default=None):
+        gconf = Group.get_groups(self.name)
         for argname in gconf:
             if argname.startswith(argprefix):
                 return (argname, gconf[argname])
         return None
 
-    def get_weight(self):
+    def UNUSED_get_weight(self):
         w = self.get_static_arg('_weight')
         if w:
             return w
@@ -5295,12 +5131,12 @@ class Group(models.Model):
         return 1
 
     # group.fill
-    def fill(self, profile, expires):
+    def UNUSED_fill(self, profile, expires):
         # self.refill(profile,expires)
         pass
 
     # group.refill
-    def refill(self, profile, expires):
+    def UNUSED_refill(self, profile, expires):
         counters = []  # ['numalerts']
         log.info("refill {name} for user {user}".format(name=self.name, user=profile.user.username))
         # !!! update if available, not create
@@ -5352,7 +5188,9 @@ class Group(models.Model):
 
 class Membership(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    # group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    groupname = models.CharField(max_length=200)
+
     granted = models.DateTimeField(default=timezone.now)  # when user got this userlevel first
     expires = models.DateTimeField(null=True, blank=True)
     refilled = models.DateTimeField(default=timezone.now)  # when last time refilled (e.g. always not more then 30d old)
@@ -5364,14 +5202,27 @@ class Membership(models.Model):
 
     def __str__(self):
         username = safe_getattr(self, 'profile.user.username')
-        gname = safe_getattr(self, 'group.name')
 
-        return "Membership {u} in {g} exp {exp}".format(u=username, g=gname,
+        return "Membership {u} in {g} exp {exp}".format(u=username, g=self.groupname,
                                                         exp=self.expires if self.expires else "NEVER")
 
     def getdec(profile, name):
         print("getdec {}".format(name))
         pass
+
+    # membership.get_static_arg
+    def get_static_arg(self, name, default=None):
+        return settings.PLANS[self.groupname].get(name, default)
+
+
+    # membership.get_static_arg_prefix
+    def get_static_arg_prefix(self, argprefix, default=None):
+        gconf = settings.PLANS[self.groupname]
+        for argname in gconf:
+            if argname.startswith(argprefix):
+                return argname, gconf[argname]
+        return None
+
 
     # membership.cron
     @classmethod
@@ -5495,6 +5346,7 @@ class SystemVariable(models.Model):
             return default
 
     @staticmethod
+    # systemvariable.assign
     def assign(name, value):
         try:
             sv = SystemVariable.objects.get(name=name)

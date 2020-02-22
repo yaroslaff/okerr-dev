@@ -1767,8 +1767,8 @@ def indicator(request,iid):
             copyname = str(request.POST.get('copyname','noname'))
 
             # must not have such indicator
-            log.warning('u: {} i: {} copy to {}'
-                .format(request.user.username, i.name, copyname))
+            log.info('u: {} i: {} copy to {}'.format(
+                request.user.username, i.name, copyname))
             i.log('u: {} ({}) copied to {}'.format(request.user.username, remoteip, copyname),
                 typecode='indicator')
             try:
@@ -5020,7 +5020,7 @@ def api_groups(request):
     #if not security_check(request):
     #    return HttpResponse(status = 401)
 
-    gconf = Group.get_gconf()
+    gconf = Group.get_groups()
 
     gconf.pop('Admin',None) # hide admin
 

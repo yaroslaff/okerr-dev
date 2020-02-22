@@ -66,3 +66,23 @@ assert(MQ_THROTTLE_TIME >= MQ_QUICK_TIME)
 SYNC_MAP = {
     HOSTNAME: []
 }
+
+#
+# Plans
+#
+
+PLANS = {
+    'Admin': {
+        'maxindicators': 5000,
+        'settextname': 1,
+        'mintextidlen': 3,
+        'minperiod': 1,
+        'teamsize': 100,
+        'maxprojects': 100,
+        'maxstatus': 100,
+        'maxdyndns': 100,
+        'status_maxsubscribers': 50000,
+        'login': 1,
+        '_weight': 100000
+    }
+}

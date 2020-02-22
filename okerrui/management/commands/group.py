@@ -89,14 +89,6 @@ class Command(BaseCommand):
         g.add_argument('--days', type=int, default=0)
         g.add_argument('--infinite', action='store_true', default=False)
 
-        g = parser.add_argument_group('Manage groups')
-        g.add_argument('--create', metavar='GROUP', default=None, help='create group')
-        g.add_argument('--delete', action='store_true', default=False, help='reinit can delete groups and group args')
-        g.add_argument('--reinit', action='store_true', default=False, help='reinit all groups')
-        g.add_argument('--setvar', default=False, nargs=2, metavar=('VarName','Value'), help='')
-        g.add_argument('--delvar', metavar='VarName',default=False, help='')
-
-
     def create(self, name):
         try:
             g = Group.objects.get(name=name)
@@ -111,8 +103,7 @@ class Command(BaseCommand):
         #print "options:",options
         
         def dump_group(name, data):
-            group = Group.objects.get(name=name)
-            nm = group.membership_set.count()
+            nm = Membership.objects.filter(groupname=name).count()
             print("Group {} ({} membership)".format(name, nm))
             print(json.dumps(data, indent=4))
             print()
@@ -120,32 +111,6 @@ class Command(BaseCommand):
         
         User = get_user_model()
 
-        if options['reinit']:
-            print("Skip reinit groups (obsolete?)")
-            # Group.reinit_groups(delete=options['delete'], readonly=options['ro'])
-            return
-
-        if options['create']:
-            self.create(options['create'])
-            return
-
-        if options['refill']:            
-            # prepare user QuerySet        
-            if options['all']:
-                qs = User.objects.all()
-            elif options['user']:
-                qs = User.objects.filter(username=options['user'])
-            else:
-                print("need --user or --all")
-
-            for user in qs:                     
-                print("refill user", user)
-                profile = user.profile
-                profile.profilearg_set.all().delete()
-                for m in Membership.objects.filter(profile=profile):
-                    print(".. refill user {} membership {}".format(user,m))
-                    m.group.refill(m.profile,m.expires) 
-            return
 
         if options['table']:
             table()
@@ -153,7 +118,7 @@ class Command(BaseCommand):
 
         if options['list']:
 
-            gconf = Group.get_gconf()
+            gconf = settings.PLANS
 
             if options['group']:
                 print(json.dumps(gconf[options['group']], indent=4))
@@ -168,34 +133,6 @@ class Command(BaseCommand):
                         dump_group(gname, gdata) 
             return
 
-        if options['setvar']:
-            g = Group.objects.get(name=options['group'])
-            varname = options['setvar'][0]
-            varval = int(options['setvar'][1])
-            print("set {} = {} in {}".format(varname,varval,g))
-            
-            try:
-                ga = g.grouparg_set.get(name=varname)
-                ga.value=varval
-            except ObjectDoesNotExist:
-                print("No such group argument {} in group {}, create".format(varname,options['group']))
-                ga = GroupArg(group=g, name=varname, value=varval)
-            ga.save()
-                
-            return
-        
-        if options['delvar']:
-            g = Group.objects.get(name=options['group'])
-
-            x = GroupArg.objects.filter(group=g, name=options['delvar']).delete()        
-            if x[0]:
-                print("deleted {} grouparg '{}' in group '{}'".format(x[0],options['delvar'],options['group']))
-            else:
-                print("nothing deleted")
-                
-            return
-
-
         if options['user']:                                               
             user = User.objects.filter(username=options['user']).first()
             if not user:
@@ -207,42 +144,34 @@ class Command(BaseCommand):
                     print("delete {} from all groups".format(p.user.username))
                     p.wipe()           
                 elif options['assign']:
-                    print("assign to group {}".format(options['assign']))
-                    g = Group.objects.filter(name=options['assign']).first()
-                    if not g:
-                        print("No such group",options['assign'])
-                        return
-                    kwa={}
-
+                    groupname = options['assign']
+                    print("assign to group {}".format(groupname))
+                    g = Group.get_groups(groupname)
+                    kwa = {}
 
                     if options['infinite']:
-                        days=0
+                        days = 0
                     elif options['days']:
-                        days=options['days']
+                        days = options['days']
                     else:
                         print("need --days NNN or --infinite")
                         return
 
-                        
-                    kwa['days']=days
+                    kwa['days'] = days
                     if days:
                         exp = timedelta(**kwa)
                     else:
-                        exp=None
+                        exp = None
 
-                    p.assign(group=g,time=exp, force_assign = options['force'])
+                    p.assign(group=groupname, time=exp, force_assign=options['force'])
                 elif options['revoke']:
-                    g = Group.objects.filter(name=options['revoke']).first()
-                    if not g:
-                        print("No such group",options['revoke'])
-                        return
-                    print("revoke user {} from group {}".format(user.username, g.name))
-                    rc = Membership.objects.filter(profile=p,group=g)[0].delete()
+                    groupname = options['revoke']
+                    print("revoke user {} from group {}".format(user.username, groupname))
+                    rc = Membership.objects.filter(profile=p, groupname=groupname)[0].delete()
                     print(rc)
                     # rc = ProfileArg.objects.filter(profile=p,group=g).delete()
                     # print rc
-                    
-                                         
+
                 else:              
                     # if no command for user, then just dump
                     p.dumpgroupinfo()

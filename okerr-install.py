@@ -665,6 +665,7 @@ tokens = {
     '%varrun%': args.varrun,
 
     '%MYIP%': myip(),
+    '%EMAIL%': args.email,
     '%CLUSTER%': args.cluster,
     '%HOSTS%': str(args.host),
 
