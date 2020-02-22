@@ -5223,7 +5223,7 @@ class Membership(models.Model):
         return None
 
     def get_weight(self):
-        return settings.PLANS[self.groupname]['_weight']
+        return settings.PLANS[self.groupname].get('_weight', 0)
 
 
     # membership.cron
