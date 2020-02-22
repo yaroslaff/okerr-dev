@@ -4815,7 +4815,7 @@ class Profile(TransModel):
         for m in self.membership_set.all():
             if m.groupname.startswith('perk:'):
                 yield m
-            elif mm is None or mm.group.get_weight() < m.group.get_weight():
+            elif mm is None or mm.get_weight() < m.get_weight():
                 mm = m
 
         if mm:
@@ -5214,7 +5214,6 @@ class Membership(models.Model):
     def get_static_arg(self, name, default=None):
         return settings.PLANS[self.groupname].get(name, default)
 
-
     # membership.get_static_arg_prefix
     def get_static_arg_prefix(self, argprefix, default=None):
         gconf = settings.PLANS[self.groupname]
@@ -5222,6 +5221,9 @@ class Membership(models.Model):
             if argname.startswith(argprefix):
                 return argname, gconf[argname]
         return None
+
+    def get_weight(self):
+        return settings.PLANS[self.groupname]['_weight']
 
 
     # membership.cron
