@@ -1514,13 +1514,13 @@ def indicator(request,iid):
     if request.POST and not i.project.iadmin(request.user):
         for cmd in iadmin_commands:
             if request.POST.get(cmd,False):
-                notify(request,"You dont have iadmin role, sorry.")
-                log.info("noiadmin user {} tries to make command {} for"\
-                "indicator {}".format(request.user.username,cmd,i.id))
+                notify(request, "You dont have iadmin role, sorry.")
+                log.info("noiadmin user {} tries to make command {} for" \
+                    "indicator {}".format(request.user.username, cmd, i.id))
                 return redirect(request.path)
 
     if request.POST and i.project.limited:
-        notify(request,"Project is limited, changes are not applied.")
+        notify(request, "Project is limited, changes are not applied.")
         return redirect(request.path)
 
     msg=[]
@@ -3278,10 +3278,10 @@ def statuspage(request, textid, addr):
         sp.delete()
         return redirect('okerr:project',textid)
 
-    if request.POST and request.POST.get('statuspage_edit',False):
+    if request.POST and request.POST.get('statuspage_edit', False):
 
         if not project.iadmin(request.user):
-            notify(request,"Not indicator admin")
+            notify(request, "Not indicator admin")
             return redirect(request.path)
 
         sp.title = request.POST.get('title', '')
@@ -3292,14 +3292,13 @@ def statuspage(request, textid, addr):
         sp.save()
         return redirect(request.path)
 
-    if request.POST and request.POST.get('newindicator_add',False):
+    if request.POST and request.POST.get('newindicator_add', False):
 
         if not project.iadmin(request.user):
-            notify(request,"Not indicator admin")
+            notify(request, "Not indicator admin")
             return redirect(request.path)
 
         i = project.get_indicator(request.POST['newindicator'])
-
 
         try:
             si = sp.statusindicator_set.get(indicator=i)
@@ -3310,27 +3309,29 @@ def statuspage(request, textid, addr):
             return redirect(request.path)
 
 
-        project.log(u'user: {} ip: {} added indicator {} to statuspage {}'.format(request.user.username, remoteip, i.name, addr))
+        project.log('user: {} ip: {} added indicator {} to statuspage {}'.format(request.user.username, remoteip, i.name, addr))
 
-        si = StatusIndicator(status_page = sp, indicator = i, title=i.name, weight=1000)
+        si = StatusIndicator(status_page=sp, indicator=i, title=i.name,
+                             weight=1000, chapter=request.POST.get('chapter', ''))
+        request.session['statuspage_last_chapter'] = request.POST.get('chapter', '')
         si.save()
 
         return redirect(request.path)
 
-    if request.POST and request.POST.get('chsi',False):
+    if request.POST and request.POST.get('chsi', False):
 
         if not project.iadmin(request.user):
-            notify(request,"Not indicator admin")
+            notify(request, "Not indicator admin")
             return redirect(request.path)
 
         si = sp.statusindicator_set.get(indicator__name = request.POST['indicator'])
-        si.weight = int(request.POST.get('weight',0))
-        si.title = request.POST.get('title','')
-        si.desc = request.POST.get('desc','')
-        si.chapter = request.POST.get('chapter','')
-        si.details = request.POST.get('details','') == '1'
+        si.weight = int(request.POST.get('weight', 0))
+        si.title = request.POST.get('title', '')
+        si.desc = request.POST.get('desc', '')
+        si.chapter = request.POST.get('chapter', '')
+        si.details = request.POST.get('details', '') == '1'
 
-        project.log(u'user: {} ip: {} changed indicator {} in statuspage {}'.format(request.user.username, remoteip, si.indicator.name, addr))
+        project.log('user: {} ip: {} changed indicator {} in statuspage {}'.format(request.user.username, remoteip, si.indicator.name, addr))
         si.save()
 
         return redirect(request.path)
@@ -3348,11 +3349,10 @@ def statuspage(request, textid, addr):
 
         return redirect(request.path)
 
-
     if request.POST and request.POST.get('blogpost',False) and request.POST.get('add',False):
 
         if not project.iadmin(request.user):
-            notify(request,"Not indicator admin")
+            notify(request, "Not indicator admin")
             return redirect(request.path)
 
         blog = StatusBlog(status_page = sp, text = request.POST['blogpost'])
@@ -3362,7 +3362,7 @@ def statuspage(request, textid, addr):
 
         return redirect(request.path)
 
-    if request.POST and request.POST.get('delblog',False):
+    if request.POST and request.POST.get('delblog', False):
 
         if not project.iadmin(request.user):
             notify(request,"Not indicator admin")
@@ -3382,6 +3382,7 @@ def statuspage(request, textid, addr):
     ctx['blogrecord'] = sp.statusblog_set.order_by('-created').first()
     ctx['draft'] = request.POST.get('blogpost','')
     ctx['now'] = timezone.now()
+    ctx['last_chapter'] = request.session.get('statuspage_last_chapter', '')
     return render(request, 'okerrui/statuspage.html', ctx)
 
 
@@ -5108,7 +5109,7 @@ def get_oauth2_provider(name, request):
 
 
 def oauth2_bind(request, provider, suffix):
-    request.session['oauth2_bind'] = True
+    request.session['oauth2_bind'] = provider
     return oauth2_login(request, provider, suffix)
 
 def oauth2_login(request, provider, suffix):
@@ -5230,7 +5231,7 @@ def oauth2_callback(request):
 
     user_id = p['get_id'](data)
 
-    if request.user.is_authenticated and p.get('autocreate', True) and request.session.get('oauth2_bind', False):
+    if request.user.is_authenticated and request.session.get('oauth2_bind', False) == provider:
         if not Oauth2Binding.bound(request.user.profile, provider) and request.user.profile.ci == myci():
             Oauth2Binding.bind(request.user.profile, provider, user_id)
             notify(request, _("Bound profile to {}").format(provider))

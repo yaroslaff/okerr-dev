@@ -11,6 +11,7 @@
         <link rel="shortcut icon" type="image/png" href="{% block favicon %}https://static.okerr.com/favicon.ico{% endblock %}"/>
 </head>
 <body>
+    <p>
     <table class=header>
         <tr>
             <td>
@@ -45,6 +46,7 @@
             </span>
             </td>
         </tr>
+        <tr>
             <td colspan=2>
                     {% if user.is_authenticated %}
                         <a href="{% url 'okerr:index' %}">{% trans "Indicators" %}</a>

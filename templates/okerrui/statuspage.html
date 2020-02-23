@@ -21,7 +21,9 @@
         <tr>
             <td>{% trans 'Address' %}</td>
             <td><input type=text name="addr" value="{{ sp.addr }}"></td>
-            <td><a href="https://cp.okerr.com{% url 'okerr:status' project.get_textid sp.addr %}">https://cp.okerr.com{% url 'okerr:status' project.get_textid sp.addr %}</a></td>
+            <td>
+                <a href="{% url 'okerr:status' project.get_textid sp.addr %}">{% url 'okerr:status' project.get_textid sp.addr %}</a>
+            </td>
         </tr>
 
         <tr>
@@ -71,13 +73,10 @@
         <button class='massButton' name='apply' value='1'>{% trans 'Apply' %}</button>
         <button class='massButton' name='delete' value='1' onclick="return confirm('Are you sure?')">{% trans 'Delete' %}</button>
 
-
     </form>
-    
-    <tr>
-        <td colspan=2><h2>{% trans 'Indicators' %}</h2></td>
-    </tr>
-    
+
+        <h2>{% trans 'Indicators' %}</h2>
+
     {% for chapter, silist in chapters.items %}
         {% if chapter %}
             <h3>{{chapter}}</h3>
@@ -86,17 +85,15 @@
         {% endif %}
     
         {% for si in silist %}
-        <tr>
-        <td colspan=2>
             <details>
                 <summary><b>{{si.title}}</b> ({{si.indicator.name}})</summary>
                     <form action="{% url 'okerr:statuspage' project.get_textid sp.addr %}" method="post">
                     {% csrf_token %}
+                    <input type=hidden name=indicator value="{{si.indicator.name}}">
                     <table>
                     <tr>
                         <td>{% trans 'Indicator' %}:</td>
                         <td><a href="{% url 'okerr:ilocator' sp.project.get_textid si.indicator.name %}">{{ si.indicator.name }}</a></td>
-                        <input type=hidden name=indicator value="{{si.indicator.name}}"> 
                     </tr>
                     <tr>
                         <td>{% trans 'Title' %}:</td>
@@ -140,25 +137,46 @@
                     <button class='massButton' name='delsi' value='1' onclick="return confirm('Are you sure?')">{% trans 'Delete' %}</button>
                     </form>
             </details>
-        </td>
-        </form>
-        </tr>
         {% endfor %}
     
     {% endfor %} <!-- chapters -->
-    
+
+    <!-- add new indicator -->
+
     <br>
     <form action="{% url 'okerr:statuspage' project.get_textid sp.addr %}" method="post">
         {% csrf_token %}
-        {% trans 'Add indicator' %}:
-        <select name="newindicator">
-        {% for i in project.indicator_set.all %}
-        <option value="{{i.name}}">{{i.name}}</option>
-        {% endfor %}
-        </select>
-    
-        <input type="hidden" name="newindicator_add" value="1" />    
-        <button class='massButton' name='Add' value='1'>{% trans 'Add' %}</button>
+        <table>
+            <tr>
+                <td>
+                    {% trans 'Add indicator' %}:
+                </td>
+                <td>
+                    <select name="newindicator">
+                    {% for i in project.indicator_set.all %}
+                    <option value="{{i.name}}">{{i.name}}</option>
+                    {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {% trans 'Chapter' %}:
+                </td>
+                <td>
+                    <input type="text" name="chapter" autocomplete="off" list="ch_list" placeholder="{% trans 'New chapter name' %}" value="{{last_chapter}}">
+                    <datalist id="ch_list">
+                        {% for chapter in chapters.keys %}<option value="{{chapter}}">{% endfor %}
+                    </datalist>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="hidden" name="newindicator_add" value="1" />
+                    <button class='massButton' name='Add' value='1'>{% trans 'Add' %}</button>
+                </td>
+            </tr>
+        </table>
 
     </form>
     
