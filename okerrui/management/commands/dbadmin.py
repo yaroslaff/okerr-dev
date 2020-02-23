@@ -39,7 +39,7 @@ class Command(BaseCommand):
             if options['really']:
                 print("Reset database")
                 management.call_command('flush', '--noinput')
-                management.call_command('group', '--reinit')
+                # management.call_command('group', '--reinit')
                 management.call_command('sysvar', '--reinit')
                 management.call_command('checkmethod', '--reinit', '--really')
                 management.call_command('oauth', '--reinit')
