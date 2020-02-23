@@ -77,6 +77,13 @@
 
         <h2>{% trans 'Indicators' %}</h2>
 
+<datalist id="chapters_list">
+{% for chapter in chapters.keys %}
+  <option value="{{chapter}}">
+{% endfor %}
+</datalist>
+
+
     {% for chapter, silist in chapters.items %}
         {% if chapter %}
             <h3>{{chapter}}</h3>
@@ -103,12 +110,6 @@
                         <td>{% trans 'Chapter' %}:</td>
                         <td>
                         <input type="text" name="chapter" autocomplete="off" list="chapters_list" placeholder="{% trans 'New chapter name' %}" value="{{si.chapter}}">
-                        <datalist id="chapters_list">
-                        {% for chapter in chapters.keys %}
-                          <option value="{{chapter}}">
-                        {% endfor %}
-                        </datalist>
-                        
                         </td>
                     </tr>
                     <tr>
@@ -164,10 +165,7 @@
                     {% trans 'Chapter' %}:
                 </td>
                 <td>
-                    <input type="text" name="chapter" autocomplete="off" list="ch_list" placeholder="{% trans 'New chapter name' %}" value="{{last_chapter}}">
-                    <datalist id="ch_list">
-                        {% for chapter in chapters.keys %}<option value="{{chapter}}">{% endfor %}
-                    </datalist>
+                    <input type="text" name="chapter" autocomplete="off" list="chapters_list" placeholder="{% trans 'New chapter name' %}" value="{{last_chapter}}">
                 </td>
             </tr>
             <tr>
