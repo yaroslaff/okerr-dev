@@ -16,8 +16,9 @@ import django
 from django.conf import settings
 
 from django.utils import timezone
-from django.db.models import Count, Q
 
+from dotenv import load_dotenv
+import okerrupdate
 
 # basic Django setup
 django.setup()
@@ -27,6 +28,7 @@ from okerrui.models import Project, Indicator
 
 resultq = None
 redis_conn = None
+myindicator = None
 
 class TProcExc(Exception):
     def __init__(self, textid=None, name=None):
@@ -240,6 +242,11 @@ def get_routing_key(i, data):
 def mainloop(args):
     global redis_conn
 
+    iupdate_last = time.time()
+    iupdate_period = 600
+    nput = 0
+    nget = 0
+
     pid = os.getpid()
     redis_conn = get_redis(settings.OKERR_REDIS_DB)
     assert(redis_conn)
@@ -312,6 +319,7 @@ def mainloop(args):
                     routing_key=route,
                     body = json.dumps(data),
                     properties = properties)
+                nput += 1
 
                 log.info("PUT {}@{} ({})".format(i.name, i.project.get_textid(), route))
                 log.debug("rescheduled: exp: {} sch: {}".format(
@@ -336,6 +344,7 @@ def mainloop(args):
                     if data['_task'] == 'tproc.reply':
                         try:
                             process_tproc_reply(channel,data)
+                            nget += 1
                         except TProcExc as e:
                             log.debug("TProcException: {}".format(e))
                             send_kill(channel, data['_machine'],
@@ -382,6 +391,20 @@ def mainloop(args):
             else:
                 process_helloq = False
 
+
+        #
+        # Part IV: post-actions
+        #
+        if time.time() > iupdate_last + iupdate_period:
+            try:
+                myindicator.update(nget, 'put: {} get: {} in {:.2f}s'.format(nput, nget, time.time() - iupdate_last))
+            except okerrupdate.OkerrExc as e:
+                log.error('myindicator {} update error: {}'.format(myindicator.name, e))
+
+            iupdate_last = time.time()
+            nput = 0
+            nget = 0
+
         time.sleep(args.sleep)
 
     connection.close()
@@ -391,8 +414,12 @@ def main():
     global log
     global channel
     global resultq
+    global myindicator
     stop = False
 
+    load_dotenv(dotenv_path='/etc/okerr/okerrupdate')
+
+    def_iname = '{}:mqsender'.format(socket.gethostname())
     def_pem = '/etc/okerr/ssl/client.pem'
     def_capem = '/etc/okerr/ssl/ca.pem'
 
@@ -403,7 +430,7 @@ def main():
     g.add_argument('-u', '--unlock', action='store_true', default=False, help='unlock at start')
     g.add_argument('--once', action='store_true', default=False, help='run just once')
     g.add_argument('-s', '--sleep', type=int, default=1, help='sleep time between runs')
-
+    g.add_argument('-i', '--indicator', default=def_iname, help='mqsender keepalive indicator name')
 
     g = parser.add_argument_group('RabbitMQ options')
     g.add_argument('--rmqhost', default=os.getenv('RMQ_HOST','localhost'), help='RabbitMQ host ($RMQ_HOST, localhost)')
@@ -436,6 +463,8 @@ def main():
     else:
         log.setLevel(logging.INFO)
 
+    op = okerrupdate.OkerrProject()
+    myindicator = op.indicator(args.indicator, method='numerical')
 
     log.debug("Important settings:")
     log.debug("settings.MQ_QUICK_TIME = {}".format(settings.MQ_QUICK_TIME))
@@ -446,7 +475,6 @@ def main():
         args.rmqhost, args.rmqvhost, args.rmquser,
         args.capem, args.pem
     ))
-
 
     if args.unlock:
         unlockold()

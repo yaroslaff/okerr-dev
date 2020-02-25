@@ -598,7 +598,7 @@ def_wwwgroup = 'www-data'
 
 def_rmquser = os.getenv('RMQ_USER', 'okerr')
 def_rmqpass = os.getenv('RMQ_PASS', 'okerr')
-def_rmqhost = os.getenv('RMQ_HOST', 'localhost')
+def_rmqhost = os.getenv('RMQ_HOST', '127.0.0.1')
 def_rmqvhost = os.getenv('RMQ_VHOST', 'okerr')
 def_sensor = os.getenv('SENSOR_NAME', 'okerr-dev@local.ru')
 
