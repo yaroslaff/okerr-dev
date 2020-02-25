@@ -31,7 +31,7 @@ def url2host(url):
 
 class Impex():
 
-    skipfields = ['mtime','rid','deleted_at','trans_last_sync','trans_last_update']
+    skipfields = ['mtime', 'rid', 'deleted_at', 'trans_last_sync','trans_last_update']
 
     modelconf = {
         'Profile': {
@@ -89,8 +89,8 @@ class Impex():
             '__bulk': True,
         },
         'ProfileArg': {
-            'group': 'trans:group.name',
-            '__bulk': True                                    
+            # 'group': 'trans:group.name',
+            '__bulk': True
         },
         'CheckArg': {
             'cm' :'ptrans:cm.codename'
@@ -628,9 +628,8 @@ class Impex():
         return out
 
 
-    def d2o(self,d,model, parents=None):
+    def d2o(self, d, model, parents=None):
 
-        
         def backtrans(mname, fname, trans,value,parents):
             
             #print "backtrans mname: {} fname: {} trans: {} value: {} parents: {}".format(
@@ -646,7 +645,7 @@ class Impex():
             rmodel = f.related_model
             
             kw = dict()
-            kw[field]=value
+            kw[field] = value
             
             if trans.startswith('ptrans'):
                 pmname = trans.split(':')[2]
@@ -901,8 +900,7 @@ class Impex():
             # nothing to no. no user -> no need to cleanup
             pass
 
-    def import_data(self,data):
-
+    def import_data(self, data):
 
         self.delay_d2o('Profile', data)
         self.delayed_run()
