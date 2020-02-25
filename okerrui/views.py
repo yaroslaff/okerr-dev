@@ -1951,11 +1951,11 @@ def eula(request):
         if cmd=='accept_eula':
             if agree:
                 profile = request.user.profile
-                eulaver = int(SystemVariable.get('eulaver',-1))
+                eulaver = int(SystemVariable.get('eulaver', -1))
                 try:
-                    pa = ProfileArg.objects.get(profile=profile,name='eulaver_accepted')
+                    pa = ProfileArg.objects.get(profile=profile, name='eulaver_accepted')
                 except ObjectDoesNotExist:
-                    pa = ProfileArg(name='eulaver_accepted',profile=profile)
+                    pa = ProfileArg(name='eulaver_accepted', profile=profile)
                 pa.value=eulaver
                 pa.save()
                 log.info('EULA_ACCEPT u: {} ip: {} eulaver {}'.format(
@@ -1967,7 +1967,7 @@ def eula(request):
             else:
                 msg.append('You must accept EULA to use okerr')
 
-    return render(request,'okerrui/eula.html',context)
+    return render(request, 'okerrui/eula.html', context)
 
 
 @login_required(login_url="myauth:login")
@@ -3145,8 +3145,6 @@ def status(request, textid, addr):
         d['base_url'] = request.build_absolute_uri('/')
         d['hostname'] = settings.HOSTNAME,
         d['MYMAIL_FOOTER'] = settings.MYMAIL_FOOTER
-
-
 
         text_content = plaintext.render(d)
         html_content = htmly.render(d)

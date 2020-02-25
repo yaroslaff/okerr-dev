@@ -4570,7 +4570,7 @@ class Profile(TransModel):
 
             if m.expires is None:
                 # no need to renew, just refill
-                m.refilled = timezone.now()
+                # m.refilled = timezone.now()
                 # group.fill(self, m.expires)
                 m.save()
                 return
@@ -4583,7 +4583,7 @@ class Profile(TransModel):
 
             m.expires = exptime
 
-            m.refilled = timezone.now()
+            # m.refilled = timezone.now()
             # group.fill(self, m.expires)
 
             m.save()
@@ -4599,9 +4599,9 @@ class Profile(TransModel):
             user=self.user.username,
             group=group, exptime=exptime))
 
-        m = Membership(groupname=group, profile=self, expires=exptime, refilled=timezone.now())
+        m = Membership(groupname=group, profile=self, expires=exptime, granted=timezone.now())
         # group.fill(self, exptime)
-        m.refilled = timezone.now()
+        # m.refilled = timezone.now()
         m.save()
 
     # profile.alerts
@@ -4622,13 +4622,6 @@ class Profile(TransModel):
             uname = self.user.username
 
         return "Profile for user {}".format(uname)
-
-    # profile.refill
-    def refill(self):
-        self.profilearg_set.all().delete()
-        for m in self.membership_set.all():
-            # print ".. refill user {} membership {}".format(user,m)
-            m.group.refill(self, m.expires)
 
     # profile.dump
     def dump(self):
@@ -4892,7 +4885,6 @@ class Profile(TransModel):
 
     # profile.reanimate
     def reanimate(self):
-        self.refill()
         for p in self.user.project_set.all():
             p.reanimate()
 
@@ -4900,7 +4892,6 @@ class Profile(TransModel):
     def post_import(self, d):
         self.transaction_postload(d)
         self.save()
-        self.refill()
 
 
 class LogRecord(models.Model):
@@ -5193,7 +5184,7 @@ class Membership(models.Model):
 
     granted = models.DateTimeField(default=timezone.now)  # when user got this userlevel first
     expires = models.DateTimeField(null=True, blank=True)
-    refilled = models.DateTimeField(default=timezone.now)  # when last time refilled (e.g. always not more then 30d old)
+    # refilled = models.DateTimeField(default=timezone.now)  # when last time refilled (e.g. always not more then 30d old)
 
     lastcron = 0
     crontime = 3600
@@ -5400,7 +5391,7 @@ class SystemVariable(models.Model):
 
 class ProfileArg(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
+    # group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=200)
     value = models.IntegerField()
     expires = models.DateTimeField(null=True)  # if not set - never expires
