@@ -421,7 +421,7 @@ def main():
 
     load_dotenv(dotenv_path='/etc/okerr/okerrupdate')
 
-    def_iname = '{}:mqsender'.format(socket.gethostname())
+    def_iname = '{}:mqsender'.format(socket.gethostname()).split('.')[0]
     def_pem = '/etc/okerr/ssl/client.pem'
     def_capem = '/etc/okerr/ssl/ca.pem'
 
