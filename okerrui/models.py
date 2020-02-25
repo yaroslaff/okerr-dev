@@ -5739,8 +5739,11 @@ class StatusSubscription(models.Model):
 
 class StatusBlog(models.Model):
     status_page = models.ForeignKey(StatusPage, on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(default=timezone.now)
     text = models.TextField(default='')  # e.g. servers
+
+    def __str__(self):
+        return "StatusBlog ({})".format(shortdate(self.created))
 
     def send_updates(self, base_url):
         for ss in self.status_page.statussubscription_set.all():

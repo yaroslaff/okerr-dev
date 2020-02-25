@@ -630,6 +630,14 @@ class Impex():
 
     def d2o(self, d, model, parents=None):
 
+        debug = False
+        debugmodels = []
+        if model.__name__ in debugmodels:
+            debug = True
+
+        if debug:
+            print("d2o {}".format(model.__name__))
+
         def backtrans(mname, fname, trans,value,parents):
             
             #print "backtrans mname: {} fname: {} trans: {} value: {} parents: {}".format(
@@ -674,13 +682,12 @@ class Impex():
         m = self.models[mname]
 
         for fname, ftype in m['fields'].items():
-            #print "restore field {} t:{} ({})".format(fname, ftype, d[fname] if fname in d else '--')
             if ftype is None:
                 #print "Set {} = {}".format(fname, d[fname])
                 
                 # with this check we can add new fields
                 if fname in d:
-                    setattr(o,fname,d[fname])            
+                    setattr(o, fname, d[fname])
             elif ftype == 'ignore':
                 pass
             elif ftype == 'DT':
@@ -688,11 +695,11 @@ class Impex():
                     val = d[fname]
                 else:
                     val = None
-                    
                 if val is None:
-                     setattr(o,fname,None)
+                     setattr(o, fname, None)
                 else:
-                    setattr(o,fname,myutils.unixtime2dt(d[fname]))
+                    setattr(o, fname, myutils.unixtime2dt(d[fname]))
+
             elif ftype == 'parent':
                 #print "procces {}: {}.{} parents: {}".format(mname, fname, ftype, parents)
                 #print json.dumps(m, indent=4)
@@ -752,6 +759,8 @@ class Impex():
                     # self.d2o(chres, chm, chparents)
                     self.delay_d2o(chmname, chres, chparents)
 
+        if debug:
+            print("d2o finished:", o)
 
     def delay_d2o(self, mname, res, parents=None):
         self.vprint(3, "delay {}".format(mname))
