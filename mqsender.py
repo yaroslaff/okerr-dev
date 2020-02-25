@@ -251,6 +251,8 @@ def mainloop(args):
     redis_conn = get_redis(settings.OKERR_REDIS_DB)
     assert(redis_conn)
 
+    myindicator.update(0, 'enter mainloop')
+
     credentials = pika.PlainCredentials(args.rmquser, args.rmqpass)
     context = ssl.create_default_context(cafile=args.capem)
     context.load_cert_chain(args.pem)
@@ -430,7 +432,8 @@ def main():
     g.add_argument('-u', '--unlock', action='store_true', default=False, help='unlock at start')
     g.add_argument('--once', action='store_true', default=False, help='run just once')
     g.add_argument('-s', '--sleep', type=int, default=1, help='sleep time between runs')
-    g.add_argument('-i', '--indicator', default=def_iname, help='mqsender keepalive indicator name')
+    g.add_argument('-i', '--indicator', default=def_iname, help='mqsender keepalive indicator name ({})'.format(
+        def_iname))
 
     g = parser.add_argument_group('RabbitMQ options')
     g.add_argument('--rmqhost', default=os.getenv('RMQ_HOST','localhost'), help='RabbitMQ host ($RMQ_HOST, localhost)')
