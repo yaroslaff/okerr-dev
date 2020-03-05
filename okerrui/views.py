@@ -4113,7 +4113,7 @@ def api_partner_check(request, partner_id):
     out['membership'] = list()
     for m in profile.membership_set.all():
         md = dict()
-        md['group'] = m.group.name
+        md['group'] = m.groupname
         if m.expires is None:
             md['exp'] = None
             md['exp_unixtime'] = None
@@ -4121,8 +4121,6 @@ def api_partner_check(request, partner_id):
             md['exp'] = m.expires.strftime('%Y%m%d')
             md['exp_unixtime'] = dt2unixtime(m.expires)
         out['membership'].append(md)
-
-
 
     out['projects'] = list()
     for project in Project.objects.filter( owner = profile.user ):
