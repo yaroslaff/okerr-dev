@@ -18,6 +18,7 @@ SECRET_KEY = '<default secret key, will be overwritten by environment or config>
 TRUSTED_IPS = []
 TRUSTED_HOSTS = []
 TRUSTED_NETS = []
+TRUSTED_DOMAINS = []
 LOG_SYSLOG = True
 LOG_STDOUT = False
 HONOR_LAST_FAIL = True
@@ -87,6 +88,11 @@ PLANS = {
     }
 }
 
+BONUS_CODES = []
+
+SPECIAL_CODES = [
+    # 'training'
+]
 
 # groups assigned after registration
 START_GROUP = 'Admin'

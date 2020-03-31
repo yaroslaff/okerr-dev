@@ -45,7 +45,7 @@ import socket
 
 import evalidate
 
-from okerrui.bonuscode import BonusCode
+# from okerrui.bonuscode import BonusCode
 # from transaction.models import TransactionEngine, Transaction, TransactionError, myci
 # from transaction.models import myci
 from okerrui.cluster import RemoteServer, myci  # ci2rs
@@ -56,6 +56,7 @@ from okerrui.impex import Impex
 
 from myutils import (
     shortdate,
+    shorttd,
     chopms,
     mybacktrace,
     strdiff,
@@ -2326,8 +2327,11 @@ class Indicator(TransModel):
 
     # indicator.change
     def change(self, status):
+
+        age = timezone.now() - self.changed
+
         self.alert(
-            "Changed status {old} -> {new} ({details})".format(old=self._status, new=status, details=self.details),
+            "Changed status {old} ({age}) -> {new} ({details})".format(old=self._status, age=shorttd(age), new=status, details=self.details),
             reduction=status,
             old_reduction=self.status
         )
@@ -2379,6 +2383,7 @@ class Indicator(TransModel):
                             log.error("redis http_post failed ({}): {} (cwd: {})".format(tryn, str(e), os.getcwd()))
                             tryn += 1
                             time.sleep(0.5)
+                            r = get_redis()
 
                 else:
                     log.error("no redis from get_redis()")
@@ -3880,7 +3885,6 @@ class Indicator(TransModel):
                 p = Policy.objects.get(project=project, name='Default')
 
             if p.autocreate:
-
                 if not Indicator.validname(idname):
                     return "Do not create indicator '{}': bad name".format(idname)
 
@@ -4198,6 +4202,20 @@ class Profile(TransModel):
             g[m.groupname] = m.expires
         return g
 
+    # profile.select_best_group - return most 'expensive' group
+    def get_best_membership(self):
+        mm = None
+
+        for m in self.membership_set.all():
+            if m.groupname.startswith('perk:'):
+                continue
+            if mm is None or m.get_weight() > mm.get_weight():
+                # new candidate!
+                mm = m
+
+            return mm
+
+
     # profile.groupstext (only groups, not perks)
     def groupstext(self):
         g = list()
@@ -4333,6 +4351,8 @@ class Profile(TransModel):
             # filter too large perks
             klist = filter(lambda x: x <= period, klist)
             return max(klist)
+
+        patrol_period = datetime.timedelta(seconds=1)
 
         for profile in cls.objects.filter(ci=myci(), patrolled__lt=timezone.now() - patrol_period):
             log.info("patrol profile {}".format(profile))
@@ -4472,12 +4492,14 @@ class Profile(TransModel):
 
     # profile.can_login
     def can_login(self):
-        return self.getarg('login') == 1
+        try:
+            return self.getarg('login') == 1
+        except KeyError as e:
+            log.error('can_login exception: {}'.format(e))
+            return False
 
     #
     # FIXME: wipe ProfileArg, use values from code?
-    #
-    #
     #
 
     # profile.getmaxval
@@ -4566,7 +4588,7 @@ class Profile(TransModel):
 
         if m and not force_assign:
             # renew
-            log.info("user {} is already member of group {}".format(self.user.username, group.name))
+            # log.info("user {} is already member of group {}".format(self.user.username, group))
 
             if m.expires is None:
                 # no need to renew, just refill
@@ -4574,6 +4596,7 @@ class Profile(TransModel):
                 # group.fill(self, m.expires)
                 m.save()
                 return
+
 
             # expiration limited
             if add:
@@ -4967,7 +4990,7 @@ class Group(models.Model):
         return settings.PLANS[name]
 
     @staticmethod
-    def reinit_groups(delete=False, readonly=False, quiet=False):
+    def UNUSEDQ_reinit_groups(delete=False, readonly=False, quiet=False):
 
         goodargs = ['maxindicators', 'settextname', 'mintextidlen', 'minperiod', 'teamsize', 'maxprojects', 'maxstatus',
                     'login', 'maxdyndns', 'status_maxsubscribers',
@@ -5222,6 +5245,10 @@ class Membership(models.Model):
         if w:
             return w
 
+        w = self.get_static_arg('maxindicators')
+        if w:
+            return w
+
         return 1
         # return settings.PLANS[self.groupname].get('_weight', 0)
 
@@ -5408,7 +5435,6 @@ class ProfileArg(models.Model):
     @staticmethod
     def expire():
         ProfileArg.objects.filter(expires__lt=timezone.now()).delete()
-
 
 class ProjectMember(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -6144,3 +6170,280 @@ class Oauth2Binding(models.Model):
     @classmethod
     def get_profiles(cls, provider, uid):
         return cls.objects.filter(provider=provider, uid=uid)
+
+
+
+#
+# reqs:
+# - secret generate/verify
+# - verify by secret
+# - verify by URL
+# - reactivation
+#
+
+class BonusException(Exception):
+    pass
+
+class BonusNotFound(BonusException):
+    pass
+
+class BonusVerificationFailed(BonusException):
+    pass
+
+class Bonus:
+    def __init__(self, name, prefix, group, days, expires=None, repeat=None, verify_url=None, secret=None,
+                 reactivation=None, verification=None, discard_if_failed=None):
+        self.name = name
+        self.prefix = prefix
+        self.group = group
+        # self.expires = expires
+        self.repeat = repeat
+        self.verify_url = verify_url
+        self.secret = secret
+        self.verification = verification
+
+        if isinstance(expires, str):
+            self.expires = timezone.make_aware(datetime.datetime.strptime(expires, "%Y-%m-%d"))
+        else:
+            # here expires is datetime or None, but not str
+            self.expires = expires
+
+        if isinstance(days, int):
+            self.days = datetime.timedelta(days=days)
+        else:
+            self.days = days
+
+        if isinstance(discard_if_failed, int):
+            self.discard_if_failed = datetime.timedelta(days=discard_if_failed)
+        else:
+            self.discard_if_failed = discard_if_failed
+
+        if isinstance(repeat, int):
+            self.repeat = datetime.timedelta(days=repeat)
+        else:
+            self.repeat = repeat
+
+        if isinstance(reactivation, int):
+            self.reactivation = datetime.timedelta(days=reactivation)
+        else:
+            self.reactivation = reactivation
+
+
+    @classmethod
+    def get_by_name(cls, name):
+        for b in settings.BONUS_CODES:
+            if b['name'] == name:
+                return cls.from_dict(b)
+        raise BonusNotFound
+
+    @classmethod
+    def get_by_code(cls, code, internal=False):
+        for b in settings.BONUS_CODES:
+            if code.startswith('_') and not internal:
+                continue
+
+            prefix = b.get('prefix') or b['name']
+
+            if prefix.endswith(':') and code.startswith(prefix) or code == prefix:
+                bonus = cls.from_dict(b)
+                if bonus.expired():
+                    continue
+
+                return bonus
+        raise BonusNotFound
+
+    @classmethod
+    def names(cls):
+        for b in settings.BONUS_CODES:
+            yield b['name']
+
+    @classmethod
+    def from_dict(cls, d):
+
+        bonus = cls(
+            name=d['name'],
+            prefix=d.get('prefix') or d['name'],
+            group=d.get('group'),
+            days=d.get('days'),
+            expires=d.get('expires'),
+            repeat=d.get('repeat'),
+            verify_url=d.get('verify_url'),
+            verification=d.get('verification'),
+            secret=d.get('secret'),
+            reactivation=d.get('reactivation'),
+            discard_if_failed=d.get('discard_if_failed')
+        )
+        return bonus
+
+    def __str__(self):
+        return "{}: {}* {} ({})".format(self.name, self.prefix, self.group, self.days)
+
+    def expired(self):
+        return self.expires is not None and timezone.now() > self.expires
+
+    def apply(self, profile, code):
+
+        print("Apply.. ..")
+        if self.group:
+            group = self.group
+        else:
+            m = profile.get_best_membership()
+            group = m.groupname
+
+        print("Group:", group)
+
+        # check if blocked?
+        if profile.bonusactivation_set.filter(profile=profile, name=self.name).count() > 0:
+            raise BonusVerificationFailed('Already applied bonuscode {} to profile {}'.format(self.name, profile))
+
+        self.verify(code)
+
+        profile.assign(group=group, time=self.days, add=True)
+
+        if self.reactivation:
+            reactivation = timezone.now() + self.reactivation
+        else:
+            reactivation = None
+
+        if self.repeat is None:
+            expiration = None
+        else:
+            expiration = timezone.now() + self.repeat
+
+        ba = BonusActivation(
+            profile=profile,
+            name=self.name,
+            code=code,
+            activated=timezone.now(),
+            reactivation=reactivation,
+            expiration=expiration
+        )
+
+        ba.save()
+
+    def reapply(self, profile, code):
+        self.verify(code)
+        if self.group:
+            group = self.group
+        else:
+            m = profile.get_best_membership()
+            group = m.groupname
+        log.info("Reapply group {} to {} for {}".format(group, profile.user.email, self.days))
+        profile.assign(group=group, time=self.days, add=False)
+
+    def generate(self, value=None):
+        if self.verification == 'hmac:sha256':
+            value = value or ''.join(random.choice(string.ascii_lowercase+string.digits) for i in range(20))
+            mac = hmac.new(self.secret.encode(), msg=self.name.encode() + value.encode()).hexdigest()
+            return '{}:{}:{}'.format(self.name, value, mac)
+        else:
+            return None
+
+    def verify(self, code):
+        if self.expired():
+            raise BonusVerificationFailed('BonusCode expired')
+
+        if self.verification == 'hmac:sha256':
+            name, value, mac = code.split(':')
+            mac2 = hmac.new(self.secret.encode(), msg=self.name.encode() + value.encode()).hexdigest()
+            if mac != mac2:
+                raise BonusVerificationFailed('Failed MAC verification')
+
+        elif self.verification == 'url:200':
+            if '.' in code:
+                raise BonusVerificationFailed('Incorrect code')
+
+            url = self.verify_url.format(CODE=code)
+            # print(url)
+            r = requests.get(url, allow_redirects=True)
+            if r.status_code != 200:
+                raise BonusVerificationFailed('Failed network verification')
+
+    def dump(self):
+        print("DUMP", self)
+        for ba in BonusActivation.objects.filter(name=self.name):
+            print(ba)
+
+
+class BonusActivation(models.Model):
+    class Meta:
+        app_label = 'okerrui'
+
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    # BonusCode = models.ForeignKey(BonusCode, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=200, null=True, default=None)  # bonus code name
+    code = models.CharField(max_length=200, null=True, default=None)  # bonus code itself
+    activated = models.DateTimeField(default=timezone.now, blank=True)
+    reactivation = models.DateTimeField(null=True, default=None)  # check and apply at that time
+    expiration = models.DateTimeField(null=True, default=None)  # delete at that time. (none: keep forever)
+    verification_failed_since = models.DateTimeField(null=True, default=None)
+
+    @staticmethod
+    # bonusactivation.cron
+    def cron(all_records=False):
+
+        #
+        # extend (reapply)
+        #
+        # delete old
+        #
+        now = timezone.now()
+
+        if all_records:
+            qs = BonusActivation.objects.filter(reactivation__isnull=False)
+        else:
+            qs = BonusActivation.objects.filter(reactivation__isnull=False, reactivation__lt=now)
+
+        for ba in qs:
+            try:
+                code = Bonus.get_by_name(ba.name)
+                code.reapply(profile=ba.profile, code=ba.code)
+                ba.reactivation = now + code.reactivation
+                ba.verification_failed_since = None
+                ba.save()
+            except BonusNotFound as e:
+                log.info("ZZZZ not bonus for BA {}".format(ba))
+                ba.delete()
+            except BonusVerificationFailed as e:
+                log.info("ZZZ exception: {}".format(e))
+                if ba.verification_failed_since is None:
+                    ba.verification_failed_since = timezone.now()
+
+                if code.discard_if_failed and (timezone.now() - ba.verification_failed_since) > code.discard_if_failed:
+                    # discard this BA
+                    log.info("Delete BA: {} (failed since: {})".format(ba, ba.verification_failed_since))
+                    ba.delete()
+                else:
+                    ba.reactivation = now + code.reactivation
+                    ba.save()
+
+
+        #
+        # delete expired
+        #
+        for ba in BonusActivation.objects.filter(expiration__isnull=False, expiration__lt=now):
+            log.info("{} expire".format(ba))
+            ba.expire()
+
+    def expire(self):
+        """Delete self or disable"""
+        # print "{} expire self".format(self)
+        if self.BonusCode and self.BonusCode.repeatable:
+            # just delete.
+            self.delete()
+        else:
+            # not repeatable. disable reactivation
+            self.expiration = None
+            self.reactivation = None
+            self.save()
+
+    def __str__(self):
+        return "#{} {} {} {} ({}) reactivation: {} expiration: {}".format(
+            self.id,
+            shortdate(self.activated),
+            self.profile.user.email,
+            self.name,
+            self.code,
+            self.reactivation,
+            self.expiration)
+

@@ -18,6 +18,7 @@ import fcntl
 import re
 import redis
 import inspect
+import socket
 
 import dns.resolver
 from dns.exception import DNSException
@@ -25,6 +26,26 @@ from dns.exception import DNSException
 import traceback
 import logging
 import logging.handlers
+
+
+def get_verified_reverse(ip):
+
+    try:
+        reverse, aliases, ipaddrs = socket.gethostbyaddr(ip)  # getfqdn need for charlie > charlie.okerr.com
+
+        reverse = socket.getfqdn(reverse)  # add optional domain
+
+        # verify!
+        hname, aliases, addresses = socket.gethostbyname_ex(reverse)
+
+        if ip in addresses:
+            return reverse
+
+    except Exception:
+        return None
+
+    return None
+
 
 
 def md_escape(txt):
@@ -243,6 +264,32 @@ def chopms(dt):
         raise ValueError(
             'chopms called with bad type {} instead of '\
             'datetime or timedelta'.format(type(dt)))
+
+
+def shorttd(td, npos=2):
+    """
+    short timedelta representation
+    """
+
+    seconds = int(td.total_seconds())
+    periods = [
+        ('days ', 60 * 60 * 24),
+        ('h', 60 * 60),
+        ('m', 60),
+        ('s', 1)
+    ]
+
+    strings = []
+    for period_name, period_seconds in periods:
+        if seconds > period_seconds:
+            period_value, seconds = divmod(seconds, period_seconds)
+            strings.append("%s%s" % (period_value, period_name))
+            npos -= 1
+            if npos == 0:
+                break
+
+    return "".join(strings)
+
 
 def shorttime(dt):
     if dt is None:

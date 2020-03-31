@@ -22,13 +22,14 @@ from okerrui.models import (
     Indicator,
     Profile,
     Throttle,
-    DynDNSRecord
+    DynDNSRecord,
+    BonusActivation
     )
 
 from moveauth.models import MoveAuthTicket
 
-from okerrui.bonuscode import BonusActivation
-#from transaction.models import TransactionServer
+# from okerrui.bonuscode import BonusActivation
+# from transaction.models import TransactionServer
 from okerrui.impex import Impex    
 
 lastcron = 0

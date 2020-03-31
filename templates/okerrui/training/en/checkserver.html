@@ -1,37 +1,26 @@
 <p>
-Okerr has set of safe and easy checks for server. To use it easily, install okerrclient configuration file: 
+Okerr has set of checks for server.
+    To use it easily, create configuration file (<code>/etc/okerr/okerrupdate</code>) with command:
+<code>okerrmod -i {{textid}} --init</code>
 
-<code>cp /usr/local/okerrclient/conf/okerrclient.conf /etc</code>.
-
-Now, edit file /etc/okerrclient.conf and set text id.
-
-<code>
-textid={{textid}}
-</code>
-
-Run okerrclient (without any arguments) to update all indicators:
+Run okerrmod (without any arguments) to update all indicators:
 <pre>
-root@braconnier:~# okerrclient 
-okerr updated braconnier:uptime = 362949
-okerr updated braconnier:la = 0.31
-okerr updated braconnier:df-/ = 53.9
-okerr updated braconnier:maxlogsz = 997513
-okerr updated braconnier:opentcp = 22(sshd) 25(master) 80(apache2) 139(sm..
-okerr updated braconnier:version = OK
-okerr updated braconnier:df-inodes-/ = 7
-okerr updated braconnier:okerr_errors = 0
-...
+root@okerr:~# okerrmod 
+okerr updated (200 OK) okerr:df-/@7rkd1xyyxo = 10.80
+okerr updated (200 OK) okerr:df-/opt/okerr@7rkd1xyyxo = 10.80
+okerr updated (200 OK) okerr:df-/root/repo@7rkd1xyyxo = 10.80
+okerr updated (200 OK) okerr:la@7rkd1xyyxo = 0.74
+okerr updated (200 OK) okerr:opentcp@7rkd1xyyxo = 22 25 80 4369 5355 5671 6379 8000 25672
 </pre>
 
 Task will be completed when project will have at least one indicator created this way.
 </p>
 
 <p>
-<h3>Bonus</h3>
-Probably you want to make periodical updates via cron or as system services (details - via link below). You you will not make this, indicators will 'expire' after some time and switch to 'ERR' status. You will get alert about this via email or telegram.
+<h3>Additional info</h3>
+<ul>
+    <li>- <code>okerrmod --init</code> creates cron file <code>/etc/cron.d/okerrmod</code>, to update indicators every 20 minutes</li>
+    <li>- You may need to delete few old indicators to be able to create few more indicators.</li>
+</ul>
 </p>
 
-<p>
-<h3>Links</h3>
-<a href="https://okerr.freshdesk.com/solution/articles/22000222047-%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-okerrclient">Solution: okerrclient install (russian)</a>
-</p>

@@ -314,7 +314,7 @@ def loop(ci, send_mail=True):
         send_summaries()
     return u
 
-def maincode(ci, send_mail=True, lifetime=None):
+def maincode(ci, send_mail=True, lifetime=None, keepalive=True):
     global stop
     stop = False
 
@@ -322,11 +322,11 @@ def maincode(ci, send_mail=True, lifetime=None):
 
     signal.signal(signal.SIGTERM,mysignal)
     signal.signal(signal.SIGINT,mysignal)
-    log.info('okerr processor pid: {} ci: {} started as user {}, procsleep: {} seconds'.\
-        format(os.getpid(),ci, pwd.getpwuid(os.getuid())[0],settings.PROCSLEEP))
-    iteration=0
+    log.info('okerr processor pid: {} ci: {} started as user {}, procsleep: {} seconds'.format(
+        os.getpid(), ci, pwd.getpwuid(os.getuid())[0], settings.PROCSLEEP))
+    iteration = 0
     
-    lastmemtime=0
+    lastmemtime = 0
 
     started = time.time()    
 
@@ -334,16 +334,16 @@ def maincode(ci, send_mail=True, lifetime=None):
 
     totalu = 0
 
-
-    log.info('Keepalive indicators...')
-    c=0
-    for i in Indicator.objects.filter(ci = ci, disabled = False):
-        # log.debug('keep {}'.format(i))
-        i.reanimate()
-        i.save()
-        c += 1
-    ka_time = time.time() - started;
-    log.info('rescheduled {} indicators in {:.2f}s ({:.2f} i/s)'.format(c, ka_time, float(c)/ka_time))
+    if keepalive:
+        log.info('Keepalive indicators...')
+        c = 0
+        for i in Indicator.objects.filter(ci = ci, disabled = False):
+            # log.debug('keep {}'.format(i))
+            i.reanimate()
+            i.save()
+            c += 1
+        ka_time = time.time() - started;
+        log.info('rescheduled {} indicators in {:.2f}s ({:.2f} i/s)'.format(c, ka_time, float(c)/ka_time))
 
     while not stop:
         if time.time()>(lastmemtime + 600):
@@ -385,47 +385,45 @@ def maincode(ci, send_mail=True, lifetime=None):
 
 def main():
 
-    cflist = [ '/etc/okerr/process.conf' ]
+    cflist = ['/etc/okerr/process.conf']
 
     parser = configargparse.ArgumentParser(description='okerr indicator local processor.', default_config_files = cflist)
 
     # parser = argparse.ArgumentParser(description='okerr indicator processor.')
-    parser.add_argument('--single', dest='single', action='store_true',
-                   default=False,
-                   help='single run')
-    parser.add_argument('--unlock', dest='unlock', action='store_true',
-                   default=False,
-                   help='unlock all locked indicators')
+    parser.add_argument('--single', dest='single', action='store_true', default=False, help='single run')
+    parser.add_argument('--unlock', dest='unlock', action='store_true', default=False,
+                        help='unlock all locked indicators')
     
-    parser.add_argument('--lockfile',dest='lockfile',
-        default='/var/run/lock/okerr-process.pid')
+    parser.add_argument('--lockfile', dest='lockfile', default='/var/run/lock/okerr-process.pid')
 
-    parser.add_argument('--ci',type=int,
-        default=None,help='force ci')
+    parser.add_argument('--ci', type=int, default=None, help='force ci')
         
 #    parser.add_argument('--cc',dest='clientconf', default='/etc/okerrclient.conf', help='okerrClient Conf file name')
 
-    parser.add_argument('--nomail',default=False, action='store_true',
-        help='do not send any mail')
+    parser.add_argument('--nomail', default=False, action='store_true',
+                        help='do not send any mail')
 
-    parser.add_argument('--check',dest='check',action='store_true',
-        default=False,help='check lockfile')
-    parser.add_argument('--kill',dest='kill',action='store_true',
-        default=False,help='kill by lockfile')
-    parser.add_argument('--user',default='okerr')
+    parser.add_argument('--check', dest='check',action='store_true',
+                        default=False, help='check lockfile')
+    parser.add_argument('--kill', dest='kill', action='store_true',
+                        default=False, help='kill by lockfile')
+    parser.add_argument('--user', default='okerr')
     parser.add_argument('--id', dest='id', help='run this indicator (iname@textid)', default=None)
-    parser.add_argument('-q', dest='quiet', action='store_true', default=False,
-        help='quiet mode')
-    parser.add_argument('-v', dest='verbose', action='store_true', default=False,
-        help='verbose mode')
     parser.add_argument('-d', dest='daemon', action='store_true', default=False,
-        help='daemon mode')
-    parser.add_argument('--stderr', action='store_true', default=False,
-        help='log to stderr')
-    parser.add_argument('--lifetime', metavar='SECONDS', default=None, type=int, help='suicide after this time')
-        
+                        help='daemon mode')
 
-    args = parser.parse_args()  
+    g = parser.add_argument_group('Debugging')
+    g.add_argument('--nokeepalive', action='store_true', default=False,
+                   help='Do not update keepalive indicators (for debug)')
+    g.add_argument('--stderr', action='store_true', default=False,
+                   help='log to stderr')
+    g.add_argument('--lifetime', metavar='SECONDS', default=None, type=int, help='suicide after this time')
+    g.add_argument('-q', dest='quiet', action='store_true', default=False,
+                        help='quiet mode')
+    g.add_argument('-v', dest='verbose', action='store_true', default=False,
+                        help='verbose mode')
+
+    args = parser.parse_args()
 
 
 #    oc.read_config(args.clientconf)
@@ -460,13 +458,13 @@ def main():
 
     if args.check:
         if not args.quiet:
-            log.debug("check lockfile",args.lockfile)
+            log.debug("check lockfile", args.lockfile)
        
         daemon = MyDaemon(args.lockfile) 
         pid = daemon.lockedpidfile()
         if pid:
             if not args.quiet:
-                log.debug( "pidfile {} locked by pid {}".format(args.lockfile,pid))
+                log.debug("pidfile {} locked by pid {}".format(args.lockfile,pid))
             sys.exit(0)
         else:
             if not args.quiet:
@@ -475,7 +473,7 @@ def main():
 
     if args.kill:
         try:
-            with open(args.lockfile,'r') as pf:
+            with open(args.lockfile, 'r') as pf:
                 pid = int(pf.read().strip())
         except ValueError:
             log.debug("bad value in pidfile")
@@ -552,7 +550,7 @@ def main():
                     log.error("pidfile {} already locked".format(args.lockfile))
                 sys.exit(1)
                 
-            maincode(ci, send_mail, args.lifetime)
+            maincode(ci, send_mail, args.lifetime, keepalive=(not args.nokeepalive))
             lockfh.close()
             os.unlink(args.lockfile)
  

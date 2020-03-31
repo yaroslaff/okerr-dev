@@ -400,12 +400,12 @@ DATABASES = {
         'CONN_MAX_AGE': 1800,
         'OPTIONS': {
             'sql_mode': 'STRICT_ALL_TABLES'
+        },
+
+        'TEST': {
+            'NAME': 'okerr_test'
         }
-    },
-#    'unused': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#    }
+    }
 }
 
 

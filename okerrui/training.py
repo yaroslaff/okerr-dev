@@ -5,8 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.urls import resolve, reverse
 from django.db.models import Q, Sum, Max, Min
 import re
-from okerrui.bonuscode import BonusCode
+# from okerrui.bonuscode import BonusCode
 from okerrui.views import notify
+from okerrui.models import Bonus, BonusVerificationFailed, BonusNotFound
 
 ######
 #
@@ -41,8 +42,8 @@ tasks = {'basic':
         },
 
         {
-            'code': 'okerrclient',
-            'title': _(u'Install okerrclient'),
+            'code': 'okerrupdate',
+            'title': _(u'Install okerrupdate'),
         },
 
         {
@@ -51,8 +52,8 @@ tasks = {'basic':
         },
 
         {
-            'code': 'serverconf',
-            'title': _(u'Special server configuration'),
+            'code': 'enable',
+            'title': _('Enable okerrmod checks'),
         },
 
         {
@@ -139,7 +140,7 @@ def training(request, code=None):
             pass
 
         s[section] = stage
-        for k,v in s.items():
+        for k, v in s.items():
             tsstr += '{}:{}'.format(k,v)
         profile.training_stage = tsstr
 
@@ -152,13 +153,16 @@ def training(request, code=None):
     def get_test_project(profile):
         return profile.user.project_set.first()
 
-    def check(profile, code):
+    def check(request, profile, code):
         p = get_test_project(profile)
+
+        if 'bonuscode:training' in request.session:
+            return True
 
         def inotify(i, msg):
             notify(request, i.name + ': ' + str(msg))
 
-        if code not in ['telegram', 'massdelete', 'serverconf']:
+        if code not in ['telegram', 'massdelete', 'enable', 'checkserver']:
             if p.indicator_set.filter(name__startswith='test:').count() == 0:
                 notify(request, _('no "test:*" indicators in project {}').format(p))
                 return False
@@ -254,31 +258,29 @@ def training(request, code=None):
                 return False
             return True
 
-        if code == 'okerrclient':
+        if code == 'okerrupdate':
             for i in p.indicator_set.filter(name__startswith='test:'):
                 for lr in i.logrecord_set.filter(message__startswith='ALERT:autocreated from'):
                     return True
 
         if code == 'checkserver':
+            print("checkserver")
             for i in p.indicator_set.all():
-                if not i.keypath:
-                    inotify(i, _("Indicator was set not via server check"))
-                    continue
-                else:
+                for lr in i.logrecord_set.filter(message__startswith='ALERT:autocreated from'):
                     return True
 
+                #if not i.keypath:
+                #    inotify(i, _("Indicator was set not via server check"))
+                #    continue
+                #else:
+                #    return True
 
-        if code == 'serverconf':
-            for i in p.indicator_set.all():
 
-                if i.keypath is None:
-                    continue
-
-                if not i.keypath.startswith('test'):
-                    inotify(i, _("Indicator was not set from test* template"))
-                    continue
-                else:
-                    return True
+        if code == 'enable':
+            n = p.indicator_set.filter(name__endswith=':uptime').count()
+            if n >= 1:
+                return True
+            notify(request, str(_("Not found 'uptime' indicators")))
 
             return False
 
@@ -455,12 +457,24 @@ def training(request, code=None):
     task = get_task(section, stage)
 
     if request.POST:
-        if check(profile, stage):
+        if check(request, profile, stage):
             old_stage = stage
             stage = next_stage(profile, section)
             if stage == 'DONE':
-                out = BonusCode.use('ReleasePromo2019', profile, apply=True)
-                notify(request, out)
+                # out = BonusCode.use('ReleasePromo2019', profile, apply=True)
+
+                try:
+                    b = Bonus.get_by_code('_training', internal=True)
+                except BonusNotFound as e:
+                    notify(request, "No bonus code _training")
+                    return
+
+                try:
+                    b.apply(profile, '_training')
+                except BonusVerificationFailed as e:
+                    notify(request, "ERR: {}".format(e))
+
+                notify(request, _('Mission accomplished!'))
             else:
                 notify(request, _('Training stage "{}" completed!').format(old_stage))
 

@@ -14,7 +14,7 @@ from django.forms import ModelForm
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.db import connection, transaction
-from django.db.models import Count, Q
+from django.db.models import Count, Q, ProtectedError
 from django.conf import settings
 from django.template.loader import get_template
 from django.template import Context
@@ -38,7 +38,7 @@ import time
 import json
 from myutils import shortstr, unixtime2dt, dt2unixtime, \
     get_remoteip, send_email, timesuffix2sec, dhms, strcharset, \
-    nsresolve, get_redis # ,forcestr
+    nsresolve, get_redis, get_verified_reverse
 from tree import Tree
 import myutils
 import re
@@ -247,6 +247,7 @@ def get_user_email(request):
 def security_check(request, quiet=False):
     # security check. True if okerr host (trusted)
     remoteip = get_remoteip(request)
+    reverse = None
 
     func = sys._getframe(1).f_code.co_name
 
@@ -257,28 +258,19 @@ def security_check(request, quiet=False):
     for tn in settings.TRUSTED_NETS:
         subnet = IPNetwork(tn)
         if ipa in subnet:
-            return True 
-        
-    ## todo: add forward verification!
-    try:
-        ghba_tuple = socket.gethostbyaddr(remoteip) # getfqdn need for charlie > charlie.okerr.com
-    except socket.herror:
-        log.info('security check fail, no reverse for {} req: {}'.format(remoteip, request.path))
-        return False
-
-    revlist = ghba_tuple[1]
-    revlist.append(ghba_tuple[0])
-
-    log.debug("security_check {} ip: {} revlist: {}".format(func, remoteip, revlist))
-
-    for r in revlist:
-        rev = socket.getfqdn(r) # add optional domain
-        if rev.endswith(".okerr.com") or rev.endswith(".www-security.com") or rev=="localhost":
             return True
+
+    if hasattr(settings, 'TRUSTED_DOMAINS'):
+        reverse = get_verified_reverse(remoteip)
+        for domain in settings.TRUSTED_DOMAINS:
+            if reverse.endswith(domain):
+                # trusted by verified reverse
+                return True
 
     if not quiet:
         # warn only about other function
-        log.warning("security_check FAIL {} ip: {} rev: {} ghba: {}".format(func, remoteip,rev,socket.gethostbyaddr(remoteip)))
+        log.warning("security_check FAIL {} ip: {} rev: {}"
+                    .format(func, remoteip, reverse))
 
     return False
 
@@ -1362,13 +1354,21 @@ def policy(request, textid, pname):
             notify(request, _('Can not delete "Default" policy'))
             return redirect(request.path)
         # only if user is tadmin
-        policy.delete()
-        return redirect('okerr:project',textid)
+        try:
+            policy.delete()
+        except ProtectedError:
+            notify(request, _('Can not delete policy {} because {} indicators ({} ...) are using it'.format(
+                policy.name,
+                policy.indicator_set.count(),
+                policy.indicator_set.first().name
+            )))
+            return redirect(request.path)
+        return redirect('okerr:project', textid)
 
     if request.POST.get('addsubnet',False):
         # TODO: valid subnet
-        subnet=request.POST.get('subnet','')
-        remark=request.POST.get('remark','')
+        subnet=request.POST.get('subnet', '')
+        remark=request.POST.get('remark', '')
         try:
             subnet=IPNetwork(subnet)
             # subnet is good if  no exception
@@ -2168,13 +2168,13 @@ def update(request):
 
 
     source = 'http'
-    details = request.POST.get('details','')
-    secret = request.POST.get('secret','')
+    details = request.POST.get('details', '')
+    secret = request.POST.get('secret', '')
     policy = request.POST.get('policy', None)
-    error = request.POST.get('error',None)
-    keypath = request.POST.get('keypath','')
-    origkeypath = request.POST.get('origkeypath','')
-    desc = request.POST.get('desc','')
+    error = request.POST.get('error', None)
+    keypath = request.POST.get('keypath', '')
+    origkeypath = request.POST.get('origkeypath', '')
+    desc = request.POST.get('desc', '')
 
     if trusted:
         if 'x_smtp' in request.POST:
@@ -2183,11 +2183,11 @@ def update(request):
             remoteip = request.POST.get('x_remoteip',None)
 
     errstr=Indicator.update(project=project,
-        idname = idname,
-        status = status,
-        details = details,
-        secret = secret,
-        error = error,
+        idname=idname,
+        status=status,
+        details=details,
+        secret=secret,
+        error=error,
         cmname=method,
         policy=policy,
         source=source,
@@ -2195,8 +2195,7 @@ def update(request):
         tags=tags,
         keypath=keypath,
         origkeypath=origkeypath,
-        desc=desc
-        )
+        desc=desc)
 
     # calculate update line
     u = "{} {}@{} = {} e:{}".format(remoteip,
@@ -4093,7 +4092,6 @@ def api_partner_list(request):
     return HttpResponse(json.dumps(out, indent = 4, sort_keys = True,  separators=(',', ': '))+'\n')
 
 
-
 def api_partner_check(request, partner_id):
     partner = auth_partner(request)
 
@@ -4377,7 +4375,7 @@ def UNUSED_api_sdump(request, srid):
 def api_plist(request):
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
 
     plist = []

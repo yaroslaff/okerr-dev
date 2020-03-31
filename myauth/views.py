@@ -20,8 +20,8 @@ from django_markup.markup import formatter
 
 from validate_email import validate_email
 
-from okerrui.models import Policy, Profile, LogRecord, Throttle, Oauth2Binding
-from okerrui.bonuscode import BonusCode
+from okerrui.models import Policy, Profile, LogRecord, Throttle, Oauth2Binding, Bonus
+# from okerrui.bonuscode import BonusCode
 from okerrui.views import notify
 from okerrui.cluster import RemoteServer
 
@@ -129,12 +129,12 @@ def verify(request):
                 utry.set_password(password)
                 utry.save()
                 context['error_message']='We have sent you email with new password'
-                log.warning("Recovered password for user '{}'".format(email))           
+                log.info("Recovered password for user '{}'".format(email))
 
-                subj='Okerr new password'
+                subj = 'Okerr new password'
       
                 plaintext = get_template('newpassword.txt')
-                htmly     = get_template('newpassword.html')
+                htmly = get_template('newpassword.html')
         
                 ctx = { 
                     'username': email, 
@@ -208,23 +208,31 @@ def profile(request):
 
     if request.POST.get('change', None):
         # context['error_message']='submitted'
-        request.user.first_name=request.POST.get('first_name','')
-        request.user.last_name=request.POST.get('last_name','')
+        request.user.first_name=request.POST.get('first_name', '')
+        request.user.last_name=request.POST.get('last_name', '')
 
         # bonuscode
-        if len(request.POST.get('bonus_code',''))>0:
-            bonuscodename=request.POST['bonus_code']
-            
+        if len(request.POST.get('bonus_code', '')) > 0:
+            bonuscodename = request.POST['bonus_code']
+
+            print("ENTERED BONUS CODE", bonuscodename)
+
+            if hasattr(settings, 'SPECIAL_CODES'):
+                if bonuscodename in settings.SPECIAL_CODES:
+                    request.session['bonuscode:' + bonuscodename] = True
+                    notify(request, 'Enabled bonus code {}'.format(bonuscodename))
+
+
             if hasattr(settings, 'DANGER_CODE') and bonuscodename == settings.DANGER_CODE:
                 log.info("set DANGER for user {}".format(request.user.username))
-                notify(request,'set DANGER for {}'.format(request.user))
-                request.session['danger']=True
+                notify(request, 'set DANGER for {}'.format(request.user))
+                request.session['danger'] = True
                 #return render(request,'myauth/profile.html',context)
                 return redirect('myauth:profile')
                 #return HttpResponseRedirect("")
 
             if bonuscodename.startswith('sudo:') and request.user.email in sudoers:
-                sudo, username = bonuscodename.split(':',1)
+                sudo, username = bonuscodename.split(':', 1)
                 user = Profile.find_user(username)
                 if user:
                     olduser = request.user
@@ -234,8 +242,6 @@ def profile(request):
                     request.session['presudo']=olduser.email
                     return redirect(request.path)
 
-
-                
             if bonuscodename == 'noredirect':
                 resp = redirect('myauth:profile')
                 log.info("set noredirect for user {} (host: {})".format(request.user.username, request.META['HTTP_HOST']))
@@ -261,8 +267,10 @@ def profile(request):
                     log.error('Dont know how to delete redirect for host: {}'.format(request.META['HTTP_HOST']))
 
                 return resp
-                        
-            out = BonusCode.use(bonuscodename, profile, apply=True)
+
+            print("USE", bonuscodename)
+            # out = BonusCode.use(bonuscodename, profile, apply=True)
+            out = 'zzzzzzzzzzzzzzzzzz'
             notify(request, out)
             return redirect(request.path)
             

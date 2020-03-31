@@ -1,37 +1,26 @@
 <p>
-Для okerr существует уже готовый набор безопасных и удобных проверок сервера.
-Чтобы удобнее ими пользоваться, установим файл конфигурации для okerrclient командой:
-<code>cp /usr/local/okerrclient/conf/okerrclient.conf /etc</code>.
+Для okerr существует уже готовый набор проверок сервера.
+    Чтобы удобнее ими пользоваться создадим файл конфигурации (<code>/etc/okerr/okerrupdate</code>) для okerrupdate командой:
+<code>okerrmod -i {{textid}} --init</code>.
 
-Затем, отредактируйте файл /etc/okerrclient.conf, указав идентификатор проекта:
-
-<code>
-textid={{textid}}
-</code>
-
-Запустите okerrclient без параметров, чтобы загрузить в okerr состояние всех индикаторов:
+Запустите okerrmod без параметров чтобы установить несколько индикаторов:
 <pre>
-root@braconnier:~# okerrclient 
-okerr updated braconnier:uptime = 362949
-okerr updated braconnier:la = 0.31
-okerr updated braconnier:df-/ = 53.9
-okerr updated braconnier:maxlogsz = 997513
-okerr updated braconnier:opentcp = 22(sshd) 25(master) 80(apache2) 139(sm..
-okerr updated braconnier:version = OK
-okerr updated braconnier:df-inodes-/ = 7
-okerr updated braconnier:okerr_errors = 0
-...
+root@okerr:~# okerrmod 
+okerr updated (200 OK) okerr:df-/@7rkd1xyyxo = 10.80
+okerr updated (200 OK) okerr:df-/opt/okerr@7rkd1xyyxo = 10.80
+okerr updated (200 OK) okerr:df-/root/repo@7rkd1xyyxo = 10.80
+okerr updated (200 OK) okerr:la@7rkd1xyyxo = 0.74
+okerr updated (200 OK) okerr:opentcp@7rkd1xyyxo = 22 25 80 4369 5355 5671 6379 8000 25672
 </pre>
 
-Задача будет засчитана, когда в проекте будет хотя бы один индикатор, установленный таким образом.
+Задача будет засчитана когда в проекте будет хотя бы один индикатор, установленный таким образом.
 </p>
 
 <p>
-<h3>Бонус</h3>
-Будет удобнее если Вы сразу настроите периодическое обновление через cron или как системный сервис (подробности - по ссылке ниже). Чтоб два раза не вставать. Если этого не сделать, то через некоторое время индикаторы "протухнут", перейдут из состояния OK в ERR, о чем вам придет оповещение (alert) на почту и в телеграм.
+<h3>Дополнительная информация</h3>
+<ul>
+    <li><code>okerrmod --init</code> создает крон-файл <code>/etc/cron.d/okerrmod</code> чтобы обновлять индикаторы каждые 20 минут</li>
+    <li>Вы можете удалить предыдущие индикаторы, чтобы была возможность создать несколько новых индикаторов.</li>
+</ul>
 </p>
 
-<p>
-<h3>Ссылки по теме</h3>
-<a href="https://okerr.freshdesk.com/solution/articles/22000222047-%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-okerrclient">Решения: Установка okerrclient</a>
-</p>

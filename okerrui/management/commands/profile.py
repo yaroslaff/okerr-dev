@@ -119,13 +119,16 @@ class Command(BaseCommand):
                 # tstage = tasks[section][0]['code']
                 tstage = None
             elif options['tstage'] == 'next':
-                section, curstage = p.training_stage.split(':',1)
+                section, curstage = p.training_stage.split(':', 1)
                 idx = stagelist.index(curstage)
                 tstage = stagelist[idx + 1]
             elif options['tstage'] == 'prev':
                 section, curstage = p.training_stage.split(':', 1)
                 idx = stagelist.index(curstage)
                 tstage = stagelist[idx - 1]
+            elif options['tstage'] == 'list':
+                print(stagelist)
+                return
             elif options['tstage'] in stagelist:
                 tstage = options['tstage']
             else:

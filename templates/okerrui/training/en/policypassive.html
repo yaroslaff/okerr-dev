@@ -12,7 +12,7 @@ At <a href="{% url 'okerr:project' project.get_textid %}">project page</a> creat
 Create passive indicator (created from okerrclient) with this policy, e.g.:
 <br>
 <code>
-    okerrclient --name test:passive -S MySecret -s 'POLICY test:passive' 'OK'
+    okerrupdate --secret MySecret --policy test:passive test:ppp OK
 </code>
 
 </p>

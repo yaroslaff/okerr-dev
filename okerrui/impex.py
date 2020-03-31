@@ -39,10 +39,10 @@ class Impex():
             '__children': ['Membership', 'Project', 'ProfileArg', 'BonusActivation', 'Oauth2Binding'],  # ProfileArg? or reapply?
             '__addparent': ['user'],                        
         },
-        'BonusActivation': {
-            'user': 'parent',
-            'BonusCode': 'ignore'
-        },
+        #'BonusActivation': {
+            # 'user': 'parent',
+            # 'BonusCode': 'ignore'
+        # },
         'Project': {
             'owner': 'parent',
             # 'jkeys': 'ignore',
@@ -135,7 +135,7 @@ class Impex():
         }
                
         m = import_module('okerrui.models')
-        bc = import_module('okerrui.bonuscode')
+        # bc = import_module('okerrui.bonuscode')
         self.all_models = [
             m.Profile, 
             m.Project,
@@ -156,7 +156,7 @@ class Impex():
             m.DynDNSRecord,
             m.DynDNSRecordValue,
             m.Oauth2Binding,
-            bc.BonusActivation
+            m.BonusActivation
         ]
         self.learn_all()
 
@@ -170,7 +170,7 @@ class Impex():
         if not mname in self._bulk:
             self._bulk[mname] = list()
         
-        if hasattr(o,'reanimate'):
+        if hasattr(o, 'reanimate'):
             o.reanimate()
             
         self._bulk[mname].append(o)

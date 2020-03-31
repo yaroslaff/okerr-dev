@@ -15,6 +15,8 @@ from importlib import import_module
 
 from myutils import chopms,shortdate
 
+from okerrui.models import ProfileKeyValue
+
 log = logging.getLogger('okerr')		
 
 #
@@ -26,6 +28,7 @@ log = logging.getLogger('okerr')
 
 
 # from okerrui.models import Group, Profile
+
 
 class BonusCode(models.Model):
 
@@ -94,14 +97,16 @@ class BonusCode(models.Model):
     @classmethod
     def get_builtin(cls, name):
         m = import_module('okerrui.models')
-        
-        codes = {
-            'ReleasePromo2019': {
-                'group': 'AlcorPromo',
-                'time': 86400 * 365,
-                'expires': datetime.datetime.strptime("2020-12-31", "%Y-%m-%d")
-            }
-        }
+
+        codes = settings.get('BONUS_CODES', {})
+
+        #codes = {
+        #    'ReleasePromo2019': {
+        #        'group': 'AlcorPromo',
+        #        'time': 86400 * 365,
+        #        'expires': datetime.datetime.strptime("2020-12-31", "%Y-%m-%d")
+        #    }
+        #}
 
         if not name in codes:
             return None
@@ -137,7 +142,7 @@ class BonusCode(models.Model):
         
             bc.apply(profile)
             # no need to save, because builtin
-            BonusActivation.objects.create(user=profile.user,BonusCode=None, text=code, 
+            BonusActivation.objects.create(user=profile.user,BonusCode=None, text=code,
                 reactivation = bc.next_reactivation(), expiration = bc.next_expiration())
             return 'Built-in code activated. Good!'
         
@@ -355,7 +360,7 @@ class BonusCode(models.Model):
                 
             if self.verifyurl:
                 log.info('bonuscode \'{}\' verify \'{}\''\
-                    .format(self.name,self.verifyurl))
+                    .format(self.name, self.verifyurl))
                 payload = {'email': profile.user.username, 'bonuscode': self.name}
                 r = requests.post(self.verifyurl,data=payload)
                 log.info('bonus verify status_code: {} content: {}'.format(r.status_code,r.content))
@@ -373,7 +378,8 @@ class BonusCode(models.Model):
 #
 # BonusActivation use cases
 # 1. Prevent multiple use of bonuscode (if bonuscode.repeatable==True, it cannot be reused for same user. Only used one time)
-# 2. Keep automatical reactivation of bonus-vendor codes. (e.g. User will have membership only when he is customer of hosting company)
+# 2. Keep automatical reactivation of bonus-vendor codes. (e.g. User will have membership only when he is customer of
+# hosting company)
 #
 
 class BonusActivation(models.Model):
@@ -387,7 +393,6 @@ class BonusActivation(models.Model):
     activated = models.DateTimeField(auto_now_add=True, blank=True)
     reactivation = models.DateTimeField(null=True, default=None)     # check and apply at that time
     expiration = models.DateTimeField(null=True, default=None)       # delete at that time. (none: keep forever)
-
 
     @staticmethod           
     def cron():

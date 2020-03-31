@@ -15,45 +15,37 @@ from okerrui.models import (
 import datetime
 
 
-
 class IndicatorTestCase(TestCase):
-    def setUp(self):    
-        User = get_user_model()
-        self.user = User.objects.get(username='test@example.com')
-        self.profile = self.user.profile
-        self.project = Project.objects.get(owner=self.user,name='test@example.com')
-
 
     @classmethod
     def setUpClass(cls):
-        User = get_user_model()    
+        User = get_user_model()
 
         # create database        
-        Group.reinit_groups(delete=None, readonly=False, quiet=True)
+        # Group.reinit_groups(delete=None, readonly=False, quiet=True)
         CheckMethod.reinit_checkmethods(really=True, quiet=True)
 
         # create test user
         user = User.objects.create(username='test@example.com')
-        profile = Profile.objects.create(user = user)
+        profile = Profile.objects.create(user=user)
         profile.inits()
         profile.save()
         profile.assign(group='Cursa', time=datetime.timedelta(hours=1))
         
-        project = Project.objects.get(owner=user,name='test@example.com')
+        self.project = Project.objects.get(owner=user, name='test@example.com')
         
-        policy_noretry = Policy(project=project,name='noretry')
+        policy_noretry = Policy(project=project, name='noretry')
         policy_noretry.retry_schedule = ''
         policy_noretry.save()
         
-
 
     @classmethod
     def tearDownClass(cls):
         pass
 
     def test_cyrname(self):
-        iname = u'ляля'
-        i2name = u'маляля'
+        iname = 'ляля'
+        i2name = 'маляля'
         i = Indicator.create(self.project,iname,silent=True)
         i.copy(i2name)
         i2 = self.project.get_indicator(i2name)
