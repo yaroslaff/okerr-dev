@@ -72,7 +72,8 @@ class Command(BaseCommand):
     help = 'Manage group membership'
 
     def add_arguments(self,parser):
-        parser.add_argument('--list', nargs='?', default=None, const='all',help='list all groups or one --group')
+        parser.add_argument('--list', nargs='?', default=None, const='all',
+                            help='list all groups or one --group')
         parser.add_argument('--force', default=False, action='store_true', help='force (e.g. to add to 2nd group)')
         parser.add_argument('--revoke', default=None, metavar='GROUP', help='revoke --user from this GROUP')        
         parser.add_argument('--refill', default=False, action='store_true', help='refill --user')        
@@ -179,13 +180,15 @@ class Command(BaseCommand):
                 print("no profile for {}".format(options['user']))
         else:
             for p in Profile.objects.all():
-                groupstr=""
-                gn=0
-                for name,exp in p.groups().items():
-                    if gn>0:
-                        groupstr+=", "
-                    groupstr+=name
-                    gn+=1
-                print("{}: {}".format(p.user.username,groupstr))
+                groupstr = ""
+                gn = 0
+                for name, exp in p.groups().items():
+                    if gn > 0:
+                        groupstr += ", "
+                    groupstr += name
+                    if exp:
+                        groupstr += " ({})".format(exp.strftime('%Y-%m-%d'))
+                    gn += 1
+                print("{}: {}".format(p.user.username, groupstr))
 
 

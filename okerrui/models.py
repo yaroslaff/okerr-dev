@@ -4455,7 +4455,7 @@ class Profile(TransModel):
                         p.limited = False
                         p.save()
                         can_unlimit -= 1
-                        if not 'unlimited' in report:
+                        if 'unlimited' not in report:
                             report['unlimited'] = list()
                         report['unlimited'].append(p)
 
