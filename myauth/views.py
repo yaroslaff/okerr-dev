@@ -20,7 +20,9 @@ from django_markup.markup import formatter
 
 from validate_email import validate_email
 
-from okerrui.models import Policy, Profile, LogRecord, Throttle, Oauth2Binding, Bonus
+from okerrui.models import Profile, Throttle, Oauth2Binding, Bonus, BonusVerificationFailed, \
+    BonusNotFound
+
 # from okerrui.bonuscode import BonusCode
 from okerrui.views import notify
 from okerrui.cluster import RemoteServer

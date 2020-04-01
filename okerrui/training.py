@@ -4,8 +4,6 @@ from django.utils.translation import to_locale, get_language
 from django.contrib.auth.decorators import login_required
 from django.urls import resolve, reverse
 from django.db.models import Q, Sum, Max, Min
-import re
-# from okerrui.bonuscode import BonusCode
 from okerrui.views import notify
 from okerrui.models import Bonus, BonusVerificationFailed, BonusNotFound
 
