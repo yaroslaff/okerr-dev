@@ -463,12 +463,13 @@ def training(request, code=None):
                     b = Bonus.get_by_code('_training', internal=True)
                 except BonusNotFound as e:
                     notify(request, "No bonus code _training")
-                    return
+                    return redirect(request.path)
 
                 try:
                     b.apply(profile, '_training')
                 except BonusVerificationFailed as e:
                     notify(request, "ERR: {}".format(e))
+                    return redirect(request.path)
 
                 notify(request, _('Mission accomplished!'))
             else:
