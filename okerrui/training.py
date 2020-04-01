@@ -421,8 +421,6 @@ def training(request, code=None):
 
                 return True
 
-
-
         return False
 
     def next_stage(profile, section):

@@ -24,6 +24,8 @@ SERVER_EMAIL
 ADMINS
 disable netprocess
 mkdir /var/log/okerr
+
+logrotate /var/log/okerr/*log
 """
 
 

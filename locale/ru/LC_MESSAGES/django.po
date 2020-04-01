@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-30 20:48+0000\n"
+"POT-Creation-Date: 2020-04-01 19:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,59 +19,73 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: myauth/views.py:284
+#: myauth/views.py:273
+#, fuzzy
+#| msgid "Applied bonus code \"{}\""
+msgid "No bonus code '{}'"
+msgstr "Нет бонус кода '{}'"
+
+#: myauth/views.py:279
+msgid "Not applied: {}"
+msgstr "Не применен: {}"
+
+#: myauth/views.py:282
+msgid "Applied bonus code \"{}\""
+msgstr "Применен бонус код \"{}\""
+
+#: myauth/views.py:292
 msgid "password changed"
 msgstr "пароль изменен"
 
-#: myauth/views.py:286
+#: myauth/views.py:294
 msgid "must provide valid current password"
 msgstr "нужно указать верный действующий пароль"
 
-#: myauth/views.py:288
+#: myauth/views.py:296
 msgid "passwords does not match"
 msgstr "пароли не совпадают"
 
-#: myauth/views.py:353
+#: myauth/views.py:361
 msgid ""
 "Configured telegram username. Now send /on command to telegram bot @OkerrBot"
 msgstr ""
 "Установлено имя пользователя telegram. Сейчас пошлите команду /on телеграм-"
 "боту @OkerrBot"
 
-#: myauth/views.py:355
+#: myauth/views.py:363
 msgid "Cleared telegram username. No messages will be send."
 msgstr "Сброшено имя пользователя telegram. Сообщения не будут отправляться"
 
-#: myauth/views.py:383
+#: myauth/views.py:390
 msgid "You have to accept EULA to start using okerr"
 msgstr ""
 "Требуется принять пользовательское соглашение чтобы начать пользоваться okerr"
 
-#: myauth/views.py:399
+#: myauth/views.py:406
 msgid "Already has signup from {}"
 msgstr "Уже есть заявка на регистрацию с адреса {}"
 
-#: myauth/views.py:401
+#: myauth/views.py:408
 msgid "Already has registered user {}"
 msgstr "Уже есть зарегистрированный пользователь {}"
 
-#: myauth/views.py:482 okerrui/views.py:3125
+#: myauth/views.py:489 okerrui/views.py:3132
 msgid "Already had such request for user {} recently. Try again later"
 msgstr "Уже был такой запрос от пользователя {} недавно. Попробуйте позже."
 
-#: myauth/views.py:579
+#: myauth/views.py:586
 msgid "Bad email address"
 msgstr "Неправильный e-mail адрес"
 
-#: myauth/views.py:600
+#: myauth/views.py:607
 msgid "User {} can not login (web login)"
 msgstr "Пользователь {} не имеет права для входа"
 
-#: myauth/views.py:610
+#: myauth/views.py:617
 msgid "Account disabled"
 msgstr "Аккаунт отключен"
 
-#: myauth/views.py:614
+#: myauth/views.py:621
 msgid "Wrong login/password"
 msgstr "Плохой логин/пароль"
 
@@ -166,8 +180,8 @@ msgstr "Метод проверки не '{}'"
 msgid "host not 8.8.8.8"
 msgstr "host не 8.8.8.8"
 
-#: okerrui/training.py:189 okerrui/training.py:213 okerrui/training.py:343
-#: okerrui/training.py:366
+#: okerrui/training.py:189 okerrui/training.py:213 okerrui/training.py:342
+#: okerrui/training.py:365
 msgid "check was not performed yet"
 msgstr "Проверка еще не произошла"
 
@@ -199,113 +213,113 @@ msgstr "Телеграм не связан с {}"
 msgid "{} indicators were mass-deleted recently"
 msgstr "{} индикаторов были массово удалены недавно"
 
-#: okerrui/training.py:284
+#: okerrui/training.py:283
 msgid "Not found 'uptime' indicators"
 msgstr "Не найдено индикаторов 'uptime'"
 
-#: okerrui/training.py:292 okerrui/training.py:331
+#: okerrui/training.py:291 okerrui/training.py:330
 msgid "Indicator uses policy {} (not test*)"
 msgstr "Индикатор использует политику {} (не test*)"
 
-#: okerrui/training.py:296
+#: okerrui/training.py:295
 msgid "Indicator policy {} period {} (not 2h)"
 msgstr "Индикатор использует политику {} с периодом {} (не 2h)"
 
-#: okerrui/training.py:300
+#: okerrui/training.py:299
 msgid "Indicator policy {} retry schedule {} (not 5min)"
 msgstr ""
 "Индикатор использует политику {} с расписанием перепроверки {} (не 5min)"
 
-#: okerrui/training.py:304
+#: okerrui/training.py:303
 msgid "Indicator policy {} recovery retry schedule {} (not emtpy)"
 msgstr ""
 "Индикатор использует политику {} с расписанием восстановления {} (не пустое)"
 
-#: okerrui/training.py:308
+#: okerrui/training.py:307
 msgid "Indicator policy {} has autocreate enabled"
 msgstr "Индикатор использует политику {} с включенным режимом autocreate"
 
-#: okerrui/training.py:312
+#: okerrui/training.py:311
 msgid "Indicator policy {} has httpupdate enabled"
 msgstr "Индикатор использует политику {} с включенным режимом httpupdate"
 
-#: okerrui/training.py:316
+#: okerrui/training.py:315
 msgid "Indicator policy {} has smtpupdate enabled"
 msgstr "Индикатор использует политику {} с включенным режимом stmpupdate"
 
-#: okerrui/training.py:327
+#: okerrui/training.py:326
 msgid "Not passive checkmethod"
 msgstr "Не пассивный метод проверки"
 
-#: okerrui/training.py:335
+#: okerrui/training.py:334
 msgid "Policy {} has disabled autocreate"
 msgstr "В политике {} отключен режим autocreate"
 
-#: okerrui/training.py:339
+#: okerrui/training.py:338
 msgid "Policy {} has no secret"
 msgstr "В политике {} не установлен секрет"
 
-#: okerrui/training.py:355
+#: okerrui/training.py:354
 msgid "no test:* indicators with tag \"test\" in project"
 msgstr "Нет индикаторов \"test:*\" с меткой \"test\"в проекте"
 
-#: okerrui/training.py:359
+#: okerrui/training.py:358
 msgid "no logical indicator with name test:* in project"
 msgstr "Нет логических индикаторов с именем test:* в проекте"
 
-#: okerrui/training.py:370
+#: okerrui/training.py:369
 msgid "has problem flag"
 msgstr "Установлен флаг problem"
 
-#: okerrui/training.py:374
+#: okerrui/training.py:373
 msgid "has wrong expr"
 msgstr "Используется неправильное выражение (expr)"
 
-#: okerrui/training.py:382
+#: okerrui/training.py:381
 msgid "no status pages in project"
 msgstr "В проекте нет страниц статуса"
 
-#: okerrui/training.py:386
+#: okerrui/training.py:385
 msgid "status page {} not public"
 msgstr "Cтраница статуса {} не публична"
 
-#: okerrui/training.py:390
+#: okerrui/training.py:389
 msgid "status page {} has less then 2 indicators"
 msgstr "Страница статуса {} использует менее 2 индикаторов"
 
-#: okerrui/training.py:394
+#: okerrui/training.py:393
 msgid "status page {} has no blog records"
 msgstr "Страница статуса {} не имеет записей в блоге"
 
-#: okerrui/training.py:400
+#: okerrui/training.py:399
 msgid "No failover configured in project"
 msgstr "В проекте не созданы схемы отказоустойчивости"
 
-#: okerrui/training.py:407
+#: okerrui/training.py:406
 msgid "Failover {} uses less then 2 indicators"
 msgstr "Схема {} использует менее 2 индикаторов"
 
-#: okerrui/training.py:411
+#: okerrui/training.py:410
 msgid "Failover {} not initialized yet"
 msgstr "Схема {} еще не инициализирована"
 
-#: okerrui/training.py:416
+#: okerrui/training.py:415
 msgid "Failover {} not switched to backup server"
 msgstr "Схема {} не переключена на вторичный сервер"
 
-#: okerrui/training.py:420
+#: okerrui/training.py:419
 msgid "Failover {} not synced yet. Retry little later."
 msgstr "Схема {} еще не синхронизирована. Повторите чуть позже."
 
-#: okerrui/training.py:453
+#: okerrui/training.py:450
 msgid "You have to create at least one project for training"
 msgstr "Вам нужно создать хотя бы один проект чтобы пройти тренинг"
 
-#: okerrui/training.py:478
+#: okerrui/training.py:475
 msgid "Mission accomplished!"
 msgstr ""
 
-#: okerrui/training.py:480
+#: okerrui/training.py:477
 msgid "Training stage \"{}\" completed!"
 msgstr "Этап {} тренинга завершен"
 
@@ -358,74 +372,78 @@ msgstr "Имя политики должно быть уникальным"
 msgid "Can not delete \"Default\" policy"
 msgstr "Нелья удалять полику \"Default\""
 
-#: okerrui/views.py:1387
+#: okerrui/views.py:1360
+msgid "Can not delete policy {} because {} indicators ({} ...) are using it"
+msgstr ""
+
+#: okerrui/views.py:1395
 msgid "Can not rename \"Default\" policy"
 msgstr "Нельзя переименовывать политику \"Default\""
 
-#: okerrui/views.py:2427
+#: okerrui/views.py:2434
 msgid "Not valid JSON data"
 msgstr "Не валидные данные JSON"
 
-#: okerrui/views.py:2844 okerrui/views.py:2964
+#: okerrui/views.py:2851 okerrui/views.py:2971
 msgid "Bad syntax"
 msgstr "Синтаксическая ошибка"
 
-#: okerrui/views.py:3105
+#: okerrui/views.py:3112
 msgid "Invalid email address: \"{}\""
 msgstr "Неправильный формат адреса: \"{}\""
 
-#: okerrui/views.py:3113 okerrui/views.py:3238
+#: okerrui/views.py:3120 okerrui/views.py:3245
 msgid "Already {} subscribers. Cannot subscribe more. Sorry."
 msgstr "Уже есть {} подписчик(ов). К сожалению, нельзя подписать больше."
 
-#: okerrui/views.py:3117
+#: okerrui/views.py:3124
 msgid "Address \"{}\" already subscribed"
 msgstr "Адрес \"{}\" уже подписан"
 
-#: okerrui/views.py:3148
+#: okerrui/views.py:3155
 msgid "Please click on link in confirmational email we sent to {}"
 msgstr "Пожалуйста, перейдите по ссылке из сообщения, которое мы выслали на {}"
 
-#: okerrui/views.py:3189
+#: okerrui/views.py:3196
 msgid "{} not subscribed"
 msgstr "{} не подписан"
 
-#: okerrui/views.py:3198
+#: okerrui/views.py:3205
 msgid "You are unsubscribed now"
 msgstr "Теперь вы отписаны"
 
-#: okerrui/views.py:3232
+#: okerrui/views.py:3239
 msgid "{} already subscribed"
 msgstr "{} уже подписан"
 
-#: okerrui/views.py:3247
+#: okerrui/views.py:3254
 msgid ""
 "You are subscribed! You will get message to {} when blog will be updated"
 msgstr ""
 "Теперь вы будете получать сообщения на адрес {} когда этот блог будет "
 "обновлен"
 
-#: okerrui/views.py:3433
+#: okerrui/views.py:3440
 msgid "No current value for DNS record"
 msgstr "Нет текущено значения для DNS записи"
 
-#: okerrui/views.py:3458
+#: okerrui/views.py:3465
 msgid "Invalid IP address"
 msgstr "Неправильный IP адрес"
 
-#: okerrui/views.py:3462
+#: okerrui/views.py:3469
 msgid "Already has this indicator in this record"
 msgstr "Уже используется такой индикатор"
 
-#: okerrui/views.py:3466
+#: okerrui/views.py:3473
 msgid "Already has this priority in this record"
 msgstr "Уже используется такой приоритет"
 
-#: okerrui/views.py:5224 okerrui/views.py:5243
+#: okerrui/views.py:5231 okerrui/views.py:5250
 msgid "Bound profile to {}"
 msgstr "Профиль привязан к {}"
 
-#: okerrui/views.py:5253
+#: okerrui/views.py:5260
 msgid "Not found user bound to this {} account. Link it in profile."
 msgstr ""
 "Не найден пользователь привязанный к этому аккаунту {}.\n"

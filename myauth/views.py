@@ -215,12 +215,11 @@ def profile(request):
         if len(request.POST.get('bonus_code', '')) > 0:
             bonuscodename = request.POST['bonus_code']
 
-            print("ENTERED BONUS CODE", bonuscodename)
-
             if hasattr(settings, 'SPECIAL_CODES'):
                 if bonuscodename in settings.SPECIAL_CODES:
                     request.session['bonuscode:' + bonuscodename] = True
                     notify(request, 'Enabled bonus code {}'.format(bonuscodename))
+                    return redirect('myauth:profile')
 
 
             if hasattr(settings, 'DANGER_CODE') and bonuscodename == settings.DANGER_CODE:
@@ -268,24 +267,33 @@ def profile(request):
 
                 return resp
 
-            print("USE", bonuscodename)
-            # out = BonusCode.use(bonuscodename, profile, apply=True)
-            out = 'zzzzzzzzzzzzzzzzzz'
-            notify(request, out)
+            try:
+                b = Bonus.get_by_code(bonuscodename, internal=False)
+            except BonusNotFound as e:
+                notify(request, _("No bonus code '{}'").format(bonuscodename))
+                return redirect(request.path)
+
+            try:
+                b.apply(profile, bonuscodename)
+            except BonusVerificationFailed as e:
+                notify(request, _("Not applied: {}").format(e))
+                return redirect(request.path)
+
+            notify(request, _('Applied bonus code "{}"'.format(bonuscodename)))
             return redirect(request.path)
             
         # password change
-        if len(request.POST.get('pass1',''))>0:
+        if len(request.POST.get('pass1', ''))>0:
             if request.POST['pass1'] == request.POST.get('pass2',''):
                 if authenticate(username=request.user.username, password=request.POST.get('password','')):
                     # change pass
                     request.user.set_password(request.POST['pass1'])
                     request.user.save()
-                    context['error_message']=_('password changed')
+                    context['error_message'] = _('password changed')
                 else:
-                    context['error_message']=_('must provide valid current password')
+                    context['error_message'] = _('must provide valid current password')
             else:
-                context['error_message']=_('passwords does not match')
+                context['error_message'] = _('passwords does not match')
 
             logger.log(u'pass change user {} from ip: {} status: {}'.format(
                 request.user.username, remoteip, context['error_message']), 
@@ -324,11 +332,11 @@ def profile(request):
                 else:
                     raise ValueError
             except ValueError:
-                notify(request,'Send alerts time must be in HH:MM format, e.g. 6:30')
+                notify(request, 'Send alerts time must be in HH:MM format, e.g. 6:30')
 
-        if request.POST.get('suicide',False):
+        if request.POST.get('suicide', False):
             # check confirmation phrase
-            iamsure=request.POST.get('iamsure','')
+            iamsure=request.POST.get('iamsure', '')
             if iamsure == u'Да, я уверен!' or iamsure == 'Yes, I am sure!':
                 # delete user
                 log.info('suicide u: {} ip: {}'.\
@@ -354,7 +362,6 @@ def profile(request):
             else:
                 notify(request, _('Cleared telegram username. No messages will be send.'))
             sync = True
-
 
         request.user.save()
         profile.save()
