@@ -4352,8 +4352,6 @@ class Profile(TransModel):
             klist = filter(lambda x: x <= period, klist)
             return max(klist)
 
-        patrol_period = datetime.timedelta(seconds=1)
-
         for profile in cls.objects.filter(ci=myci(), patrolled__lt=timezone.now() - patrol_period):
             log.info("patrol profile {}".format(profile))
 
