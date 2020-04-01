@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-01 19:14+0000\n"
+"POT-Creation-Date: 2020-04-01 19:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,73 +19,73 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: myauth/views.py:273
+#: myauth/views.py:275
 #, fuzzy
 #| msgid "Applied bonus code \"{}\""
 msgid "No bonus code '{}'"
 msgstr "Нет бонус кода '{}'"
 
-#: myauth/views.py:279
+#: myauth/views.py:281
 msgid "Not applied: {}"
 msgstr "Не применен: {}"
 
-#: myauth/views.py:282
+#: myauth/views.py:284
 msgid "Applied bonus code \"{}\""
 msgstr "Применен бонус код \"{}\""
 
-#: myauth/views.py:292
+#: myauth/views.py:294
 msgid "password changed"
 msgstr "пароль изменен"
 
-#: myauth/views.py:294
+#: myauth/views.py:296
 msgid "must provide valid current password"
 msgstr "нужно указать верный действующий пароль"
 
-#: myauth/views.py:296
+#: myauth/views.py:298
 msgid "passwords does not match"
 msgstr "пароли не совпадают"
 
-#: myauth/views.py:361
+#: myauth/views.py:363
 msgid ""
 "Configured telegram username. Now send /on command to telegram bot @OkerrBot"
 msgstr ""
 "Установлено имя пользователя telegram. Сейчас пошлите команду /on телеграм-"
 "боту @OkerrBot"
 
-#: myauth/views.py:363
+#: myauth/views.py:365
 msgid "Cleared telegram username. No messages will be send."
 msgstr "Сброшено имя пользователя telegram. Сообщения не будут отправляться"
 
-#: myauth/views.py:390
+#: myauth/views.py:392
 msgid "You have to accept EULA to start using okerr"
 msgstr ""
 "Требуется принять пользовательское соглашение чтобы начать пользоваться okerr"
 
-#: myauth/views.py:406
+#: myauth/views.py:408
 msgid "Already has signup from {}"
 msgstr "Уже есть заявка на регистрацию с адреса {}"
 
-#: myauth/views.py:408
+#: myauth/views.py:410
 msgid "Already has registered user {}"
 msgstr "Уже есть зарегистрированный пользователь {}"
 
-#: myauth/views.py:489 okerrui/views.py:3132
+#: myauth/views.py:491 okerrui/views.py:3132
 msgid "Already had such request for user {} recently. Try again later"
 msgstr "Уже был такой запрос от пользователя {} недавно. Попробуйте позже."
 
-#: myauth/views.py:586
+#: myauth/views.py:588
 msgid "Bad email address"
 msgstr "Неправильный e-mail адрес"
 
-#: myauth/views.py:607
+#: myauth/views.py:609
 msgid "User {} can not login (web login)"
 msgstr "Пользователь {} не имеет права для входа"
 
-#: myauth/views.py:617
+#: myauth/views.py:619
 msgid "Account disabled"
 msgstr "Аккаунт отключен"
 
-#: myauth/views.py:621
+#: myauth/views.py:623
 msgid "Wrong login/password"
 msgstr "Плохой логин/пароль"
 
@@ -106,220 +106,220 @@ msgstr ""
 msgid "Period {}s is less then minperiod {}s"
 msgstr "Период в {}s меньше, чем minperiod {}s"
 
-#: okerrui/training.py:22
+#: okerrui/training.py:20
 msgid "Ping OK"
 msgstr "Пинг OK"
 
-#: okerrui/training.py:26
+#: okerrui/training.py:24
 msgid "Ping ERR"
 msgstr "Пинг ERR"
 
-#: okerrui/training.py:31
+#: okerrui/training.py:29
 msgid "Monitor web page"
 msgstr "Наблюдение за веб-страницей"
 
-#: okerrui/training.py:36
+#: okerrui/training.py:34
 msgid "Connect to Telegram"
 msgstr "Подключение к Telegram"
 
-#: okerrui/training.py:41
+#: okerrui/training.py:39
 msgid "Delete group of indicators"
 msgstr "Удалить несколько индикаторов"
 
-#: okerrui/training.py:46
+#: okerrui/training.py:44
 #, fuzzy
 #| msgid "Install okerrclient"
 msgid "Install okerrupdate"
 msgstr "Установить okerrclient"
 
-#: okerrui/training.py:51
+#: okerrui/training.py:49
 msgid "Check whole server"
 msgstr "Проверить целый сервер"
 
-#: okerrui/training.py:56
+#: okerrui/training.py:54
 msgid "Enable okerrmod checks"
 msgstr ""
 
-#: okerrui/training.py:61
+#: okerrui/training.py:59
 msgid "Policy for active indicators"
 msgstr "Политика для активных индикаторов"
 
-#: okerrui/training.py:66
+#: okerrui/training.py:64
 msgid "Policy for passive indicators"
 msgstr "Политика для пассивных индикаторов"
 
-#: okerrui/training.py:71
+#: okerrui/training.py:69
 msgid "Escalation"
 msgstr "Эскалация"
 
-#: okerrui/training.py:76 templates/statuspage-update.html:12
+#: okerrui/training.py:74 templates/statuspage-update.html:12
 msgid "Status page"
 msgstr "Страница состояний"
 
-#: okerrui/training.py:81
+#: okerrui/training.py:79
 msgid "Failover"
 msgstr "Аварийное переключение"
 
-#: okerrui/training.py:86
+#: okerrui/training.py:84
 msgid "Training completed"
 msgstr "Тренинг завершен"
 
-#: okerrui/training.py:167
+#: okerrui/training.py:165
 msgid "no \"test:*\" indicators in project {}"
 msgstr "Нет индикаторов \"test:*\" в проекте {}"
 
-#: okerrui/training.py:172
+#: okerrui/training.py:170
 msgid "no indicators in project {}"
 msgstr "Нет индикаторов в проекте {}"
 
-#: okerrui/training.py:181 okerrui/training.py:209 okerrui/training.py:230
+#: okerrui/training.py:179 okerrui/training.py:207 okerrui/training.py:228
 msgid "check method not '{}'"
 msgstr "Метод проверки не '{}'"
 
-#: okerrui/training.py:185
+#: okerrui/training.py:183
 msgid "host not 8.8.8.8"
 msgstr "host не 8.8.8.8"
 
-#: okerrui/training.py:189 okerrui/training.py:213 okerrui/training.py:342
-#: okerrui/training.py:365
+#: okerrui/training.py:187 okerrui/training.py:211 okerrui/training.py:340
+#: okerrui/training.py:363
 msgid "check was not performed yet"
 msgstr "Проверка еще не произошла"
 
-#: okerrui/training.py:193 okerrui/training.py:234
+#: okerrui/training.py:191 okerrui/training.py:232
 msgid "status not OK"
 msgstr "Cтатус индикатора не OK"
 
-#: okerrui/training.py:197 okerrui/training.py:221
+#: okerrui/training.py:195 okerrui/training.py:219
 msgid "maintenance mode"
 msgstr "режим настройки"
 
-#: okerrui/training.py:217
+#: okerrui/training.py:215
 msgid "status not ERR"
 msgstr "Cтатус индикатора не ERR"
 
-#: okerrui/training.py:238
+#: okerrui/training.py:236
 msgid "hash not initialized"
 msgstr "hash не проинициализирован"
 
-#: okerrui/training.py:246
+#: okerrui/training.py:244
 msgid "Telegram username not set in profile"
 msgstr "Имя пользователя telegram не установлено в профиле"
 
-#: okerrui/training.py:250
+#: okerrui/training.py:248
 msgid "Telegram not linked with {}"
 msgstr "Телеграм не связан с {}"
 
-#: okerrui/training.py:257
+#: okerrui/training.py:255
 msgid "{} indicators were mass-deleted recently"
 msgstr "{} индикаторов были массово удалены недавно"
 
-#: okerrui/training.py:283
+#: okerrui/training.py:281
 msgid "Not found 'uptime' indicators"
 msgstr "Не найдено индикаторов 'uptime'"
 
-#: okerrui/training.py:291 okerrui/training.py:330
+#: okerrui/training.py:289 okerrui/training.py:328
 msgid "Indicator uses policy {} (not test*)"
 msgstr "Индикатор использует политику {} (не test*)"
 
-#: okerrui/training.py:295
+#: okerrui/training.py:293
 msgid "Indicator policy {} period {} (not 2h)"
 msgstr "Индикатор использует политику {} с периодом {} (не 2h)"
 
-#: okerrui/training.py:299
+#: okerrui/training.py:297
 msgid "Indicator policy {} retry schedule {} (not 5min)"
 msgstr ""
 "Индикатор использует политику {} с расписанием перепроверки {} (не 5min)"
 
-#: okerrui/training.py:303
+#: okerrui/training.py:301
 msgid "Indicator policy {} recovery retry schedule {} (not emtpy)"
 msgstr ""
 "Индикатор использует политику {} с расписанием восстановления {} (не пустое)"
 
-#: okerrui/training.py:307
+#: okerrui/training.py:305
 msgid "Indicator policy {} has autocreate enabled"
 msgstr "Индикатор использует политику {} с включенным режимом autocreate"
 
-#: okerrui/training.py:311
+#: okerrui/training.py:309
 msgid "Indicator policy {} has httpupdate enabled"
 msgstr "Индикатор использует политику {} с включенным режимом httpupdate"
 
-#: okerrui/training.py:315
+#: okerrui/training.py:313
 msgid "Indicator policy {} has smtpupdate enabled"
 msgstr "Индикатор использует политику {} с включенным режимом stmpupdate"
 
-#: okerrui/training.py:326
+#: okerrui/training.py:324
 msgid "Not passive checkmethod"
 msgstr "Не пассивный метод проверки"
 
-#: okerrui/training.py:334
+#: okerrui/training.py:332
 msgid "Policy {} has disabled autocreate"
 msgstr "В политике {} отключен режим autocreate"
 
-#: okerrui/training.py:338
+#: okerrui/training.py:336
 msgid "Policy {} has no secret"
 msgstr "В политике {} не установлен секрет"
 
-#: okerrui/training.py:354
+#: okerrui/training.py:352
 msgid "no test:* indicators with tag \"test\" in project"
 msgstr "Нет индикаторов \"test:*\" с меткой \"test\"в проекте"
 
-#: okerrui/training.py:358
+#: okerrui/training.py:356
 msgid "no logical indicator with name test:* in project"
 msgstr "Нет логических индикаторов с именем test:* в проекте"
 
-#: okerrui/training.py:369
+#: okerrui/training.py:367
 msgid "has problem flag"
 msgstr "Установлен флаг problem"
 
-#: okerrui/training.py:373
+#: okerrui/training.py:371
 msgid "has wrong expr"
 msgstr "Используется неправильное выражение (expr)"
 
-#: okerrui/training.py:381
+#: okerrui/training.py:379
 msgid "no status pages in project"
 msgstr "В проекте нет страниц статуса"
 
-#: okerrui/training.py:385
+#: okerrui/training.py:383
 msgid "status page {} not public"
 msgstr "Cтраница статуса {} не публична"
 
-#: okerrui/training.py:389
+#: okerrui/training.py:387
 msgid "status page {} has less then 2 indicators"
 msgstr "Страница статуса {} использует менее 2 индикаторов"
 
-#: okerrui/training.py:393
+#: okerrui/training.py:391
 msgid "status page {} has no blog records"
 msgstr "Страница статуса {} не имеет записей в блоге"
 
-#: okerrui/training.py:399
+#: okerrui/training.py:397
 msgid "No failover configured in project"
 msgstr "В проекте не созданы схемы отказоустойчивости"
 
-#: okerrui/training.py:406
+#: okerrui/training.py:404
 msgid "Failover {} uses less then 2 indicators"
 msgstr "Схема {} использует менее 2 индикаторов"
 
-#: okerrui/training.py:410
+#: okerrui/training.py:408
 msgid "Failover {} not initialized yet"
 msgstr "Схема {} еще не инициализирована"
 
-#: okerrui/training.py:415
+#: okerrui/training.py:413
 msgid "Failover {} not switched to backup server"
 msgstr "Схема {} не переключена на вторичный сервер"
 
-#: okerrui/training.py:419
+#: okerrui/training.py:417
 msgid "Failover {} not synced yet. Retry little later."
 msgstr "Схема {} еще не синхронизирована. Повторите чуть позже."
 
-#: okerrui/training.py:450
+#: okerrui/training.py:448
 msgid "You have to create at least one project for training"
 msgstr "Вам нужно создать хотя бы один проект чтобы пройти тренинг"
 
-#: okerrui/training.py:475
+#: okerrui/training.py:473
 msgid "Mission accomplished!"
 msgstr ""
 
-#: okerrui/training.py:477
+#: okerrui/training.py:475
 msgid "Training stage \"{}\" completed!"
 msgstr "Этап {} тренинга завершен"
 
