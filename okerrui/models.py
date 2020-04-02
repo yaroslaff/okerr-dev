@@ -6333,7 +6333,7 @@ class Bonus:
         if self.verification == 'hmac:sha256':
             value = value or ''.join(random.choice(string.ascii_lowercase+string.digits) for i in range(20))
             mac = hmac.new(self.secret.encode(), msg=self.name.encode() + value.encode()).hexdigest()
-            return '{}:{}:{}'.format(self.name, value, mac)
+            return '{}{}:{}'.format(self.prefix, value, mac)
         else:
             return None
 
