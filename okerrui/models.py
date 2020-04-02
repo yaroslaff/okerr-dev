@@ -5307,7 +5307,7 @@ class Membership(models.Model):
                     pass
 
                 log.info("warn user {} about expirations of group {} at {} in {}".format(
-                    m.profile.user.username, m.group.name, expstr, warntimestr))
+                    m.profile.user.username, m.groupname, expstr, warntimestr))
 
                 # send email
 
