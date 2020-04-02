@@ -5295,7 +5295,8 @@ class Membership(models.Model):
             for m in Membership.objects.filter(expires__lt=expmoment, profile__ci=myci()):
                 expstr = m.expires.strftime('%Y%m%d')
                 timeleft = chopms(m.expires - timezone.now())
-                thname = 'WarnMembershipExpires:' + m.profile.user.username + ':' + m.group.name + ':' + expstr + ':' + warntimestr
+                thname = 'WarnMembershipExpires:' + m.profile.user.username + ':' + m.groupname + ':' + expstr + ':' \
+                         + warntimestr
 
                 try:
                     Throttle.get(thname)
