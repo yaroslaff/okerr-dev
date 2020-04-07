@@ -5285,7 +5285,7 @@ class Membership(models.Model):
 
         for m in Membership.objects.filter(expires__lt=timezone.now()):
             log.info("delete expired membership {} in group {}".format(
-                m.profile.user.username, m.group.name))
+                m.profile.user.username, m.groupname))
             m.delete()
 
         # warn N days before expiration
@@ -5427,7 +5427,7 @@ class ProfileArg(models.Model):
     def __str__(self):
         return "{user}.{gname}.{name} = {value} ({exp})".format(
             user=safe_getattr(self, 'profile.user.username'),
-            gname=safe_getattr(self, 'group.name'),
+            gname=safe_getattr(self, 'groupname'),
             name=self.name, value=self.value,
             exp=self.expires if self.expires else "never")
 
