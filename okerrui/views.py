@@ -1176,7 +1176,7 @@ def pjson(request,pid):
 def rawpjson(request,tid):
 
     if not request.user.is_authenticated and not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     project = Project.get_by_textid(tid)
     if not project:
@@ -1184,13 +1184,13 @@ def rawpjson(request,tid):
 
     # check if user is related to project
     if not security_check(request, quiet=True) and not project.member(request.user):
-        return HttpResponse('', status=403)
+        return HttpResponse('', status=401)
 
-    content = json.dumps(project.rawdatastruct(),sort_keys=True,indent=4, separators=(',', ': '))
+    content = json.dumps(project.rawdatastruct(), sort_keys=True,indent=4, separators=(',', ': '))
     return HttpResponse(content, content_type='text/plain')
 
 @login_required(login_url="myauth:login")
-def rawijson(request,iid):
+def rawijson(request, iid):
     indicator = Indicator.objects.get(pk=iid)
 
     if not indicator:
@@ -2104,20 +2104,20 @@ def mirror(request):
 
         idname = reqdata['idname']
         status = reqdata['status']
-        details = reqdata.get('details','')
-        secret = reqdata.get('secret','')
-        error = reqdata.get('error',None)
-        cmname = reqdata.get('cmname',None)
-        clientremoteip = reqdata.get('remoteip','')
+        details = reqdata.get('details', '')
+        secret = reqdata.get('secret', '')
+        error = reqdata.get('error', None)
+        cmname = reqdata.get('cmname', None)
+        clientremoteip = reqdata.get('remoteip', '')
 
-        source = reqdata.get('source','')
+        source = reqdata.get('source', '')
 
         errstr=Indicator.update(project=project,
-            idname = idname,
-            status = status,
-            details = details,
-            secret = secret,
-            error = error,
+            idname=idname,
+            status=status,
+            details=details,
+            secret=secret,
+            error=error,
             cmname=cmname,
             source=source,
             remoteip=clientremoteip
@@ -2507,7 +2507,7 @@ def getkeyval(request,textid,path):
     access = project.getkey(accesspath)
     if access is not None and len(access):
 
-        noauth = HttpResponse("Auth Required", status = 401)
+        noauth = HttpResponse("Auth Required", status=401)
         noauth['WWW-Authenticate'] = 'Basic realm="okerr keys"'
 
         if not isinstance(access,dict):
@@ -3627,14 +3627,14 @@ def api_create(request,pid,iname):
             who, pid, p.name, i.id, i.name))
         return HttpResponse("Created {}\n".format(i))
     except ValueError as e:
-        return HttpResponse(str(e)+'\n', status = 400, content_type='text/plain; charset=utf-8')
+        return HttpResponse(str(e)+'\n', status=400, content_type='text/plain; charset=utf-8')
 
 
 def api_indicators(request,pid):
     p = getProjectHTTPAuth(request, pid)
 
     if need_relocate(p):
-        return relocate(request, p, mkticket=False)
+        return relocate(request, p)
 
     ilist=[]
     for i in p.indicator_set.filter(deleted_at__isnull=True).all():
@@ -3649,7 +3649,7 @@ def api_recheck(request, pid):
 
     if not security_check(request):
         log.warning("security check failed, remoteip: {}".format(remoteip))
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     project = Project.get_by_textid(pid)
     if project is None:
@@ -4228,7 +4228,7 @@ def api_partner_revoke(request):
 def api_profile(request, pid):
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     profile = None
 
@@ -4290,18 +4290,18 @@ def api_setci(request):
 
     if not security_check(request):
         log.warning("security check failed, remoteip: {}".format(remoteip))
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     if not request.POST:
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     if ci is None or email is None:
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
     ci = int(ci)
 
     my_ci = myci()
 
-    profile = Profile.objects.get(user__email = email)
+    profile = Profile.objects.get(user__email=email)
     profile.set_ci(ci, force=True)
     profile.tsave()
 
@@ -4315,7 +4315,7 @@ def UNUSED_api_fsync(request, opts=None):
     remoteip = get_remoteip(request)
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     log.info('accept fsync request from {}'.format(remoteip))
 
@@ -4346,7 +4346,7 @@ def UNUSED_api_sync(request,tstamp=None):
     remoteip = get_remoteip(request)
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     log.info('accept sync request from {}'.format(remoteip))
 
@@ -4354,22 +4354,22 @@ def UNUSED_api_sync(request,tstamp=None):
         tstamp=0
 
     te = TransactionEngine()
-    backup = te.dump(timestamp = tstamp)
+    backup = te.dump(timestamp=tstamp)
 
     return HttpResponse(
-        json.dumps(backup, indent=4, sort_keys=True, separators=(',',': ')),
+        json.dumps(backup, indent=4, sort_keys=True, separators=(',', ': ')),
         content_type='text/plain')
 
 
 def UNUSED_api_sdump(request, srid):
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     te = TransactionEngine()
     backup = te.dump(srid = srid)
     return HttpResponse(
-        json.dumps(backup, indent=4, sort_keys=True, separators=(',',': ')),
+        json.dumps(backup, indent=4, sort_keys=True, separators=(',', ': ')),
         content_type='text/plain')
 
 def api_plist(request):
@@ -4482,17 +4482,15 @@ def api_tproc_get(request):
 
     if not request.POST:
         log.info('tproc_get not POST ({}) request from {}'.format(request.method, remoteip))
-        return HttpResponse("not post", status = 401)
+        return HttpResponse("not post", status=401)
 
-
-    name = request.POST.get('name','noname')
-    location = request.POST.get('location','nowhere.no')
+    name = request.POST.get('name', 'noname')
+    location = request.POST.get('location', 'nowhere.no')
     numi = int(request.POST.get('numi', '5'))
-    textid = request.POST.get('textid',None)
-    iname = request.POST.get('iname',None)
+    textid = request.POST.get('textid', None)
+    iname = request.POST.get('iname', None)
 
-    rnd = random.randint( -2147483648, 2147483647 )
-
+    rnd = random.randint(-2147483648, 2147483647)
 
     redis = get_redis(settings.OKERR_REDIS_DB)
     
@@ -4512,7 +4510,7 @@ def api_tproc_get(request):
 
     if not security_check(request):
         log.info('tproc_get fail security check for ip {}'.format(remoteip))
-        return HttpResponse("security check fail", status = 401)
+        return HttpResponse("security check fail", status=401)
     else:
         # log.info('tproc_get good security check for ip {}'.format(remoteip))
         pass
@@ -4553,7 +4551,7 @@ def api_tproc_set(request):
     remoteip = get_remoteip(request)
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
 
     name    = str(request.POST.get('name','name-not-set'))
@@ -4643,7 +4641,7 @@ def api_listcluster(request):
     remoteip = get_remoteip(request)
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     return HttpResponse(json.dumps(settings.MACHINES, indent=4, separators=(',',': '), sort_keys=True), content_type='text/plain')
 
@@ -4655,7 +4653,7 @@ def api_ip(request):
 def api_status(request):
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     data = dict()
 
@@ -4682,7 +4680,7 @@ def api_status(request):
 def api_hostinfo(request):
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
 
     redis = get_redis(settings.OKERR_REDIS_DB)
@@ -4738,7 +4736,7 @@ def api_hostinfo(request):
 def api_admin_cilist(request):
     out = list()
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     for p in Profile.objects.filter(ci=myci()):
         out.append(p.user.username)
@@ -4749,7 +4747,7 @@ def api_admin_cilist(request):
 def api_admin_list(request):
     out = list()
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     for p in Profile.objects.all():
         out.append(dict(ci=p.ci, user=p.user.username))
@@ -4760,11 +4758,11 @@ def api_admin_list(request):
 def api_admin_member(request, email):
     out = list()
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     # profile = Profile.objects.first(user__email = email)
     User = get_user_model()
-    u = User.objects.filter(email = email).first()
+    u = User.objects.filter(email=email).first()
     if u is None:
         # no such
         return HttpResponseNotFound('No such user')
@@ -4787,7 +4785,7 @@ def api_admin_member(request, email):
 def api_admin_qsum(request, textid):
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     d = dict()
 
@@ -4799,11 +4797,11 @@ def api_admin_qsum(request, textid):
     d['textid'] = textid
     d['cnt'] = dict()
     d['cnt']['total'] = project.indicator_set.count()
-    d['cnt']['maintenance'] = project.indicator_set.filter(disabled=False, maintenance__isnull = False).count()
+    d['cnt']['maintenance'] = project.indicator_set.filter(disabled=False, maintenance__isnull=False).count()
     d['cnt']['silent'] = project.indicator_set.filter(disabled=False, silent = True).count()
-    d['cnt']['ERR'] = project.indicator_set.filter(disabled=False, maintenance__isnull = True, silent = False, _status = 'ERR').count()
+    d['cnt']['ERR'] = project.indicator_set.filter(disabled=False, maintenance__isnull=True, silent=False, _status='ERR').count()
     d['ERR'] = list()
-    for i in project.indicator_set.filter(disabled=False, maintenance__isnull = True, silent = False, _status = 'ERR'):
+    for i in project.indicator_set.filter(disabled=False, maintenance__isnull=True, silent=False, _status='ERR'):
         istr = dict()
         istr['name'] = i.name
         istr['status'] = i._status
@@ -4834,7 +4832,7 @@ def api_admin_chat_id(request, chat_id):
 def api_admin_tglink(request):
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     tgname = request.POST.get('tgname', None)
     email = request.POST.get('email', None)
@@ -4895,7 +4893,7 @@ def api_admin_export(request,email):
     remoteip = get_remoteip(request)
 
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     # log.info('EXPORT request for {} from {}'.format(email, remoteip))
 
@@ -4921,7 +4919,7 @@ def api_admin_export(request,email):
 @csrf_exempt
 def api_admin_accept_invite(request):
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     User = get_user_model()
     email = request.POST.get('email', None)
@@ -4955,7 +4953,7 @@ def api_admin_accept_invite(request):
 def api_admin_force_sync(request):
     remoteip = get_remoteip(request)
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     User = get_user_model()
     email = request.POST.get('email', None)
@@ -4976,7 +4974,7 @@ def api_admin_force_sync(request):
 def api_admin_log(request, mname, start):
     remoteip = get_remoteip(request)
     if not security_check(request):
-        return HttpResponse(status = 401)
+        return HttpResponse(status=401)
 
     limit = 20 # unused
 
@@ -5017,7 +5015,7 @@ def api_groups(request):
 
     gconf = Group.get_groups()
 
-    gconf.pop('Admin',None) # hide admin
+    gconf.pop('Admin', None)  # hide admin
 
 
     for gname, gdata in gconf.items():

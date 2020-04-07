@@ -20,7 +20,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # from okerrui.models import Profile, ProjectTextID, ProfileArg, Group, Membership, Project, Policy, PolicySubnet, Indicator, ProjectMember, Membership, ProjectInvite, CheckMethod, CheckArg
 
-from okerrui.cluster import RemoteServer, myci
+from okerrui.cluster import RemoteServer, RemoteServerExc, myci
 # from transaction.models import TransactionServer
 
 import myutils
@@ -241,7 +241,7 @@ class Impex():
         ci = myci()
         rci = rs.get_ci()
         
-        userlist = rs.get_userlist()            
+        userlist = rs.get_userlist()
 
         for email in userlist:
             if not email:
@@ -252,9 +252,9 @@ class Impex():
             
             # get local user
             try:
-                profile = Profile.objects.get(user__email = email)
+                profile = Profile.objects.get(user__email=email)
                                 
-                if profile.ci == ci and overwrite==False:
+                if profile.ci == ci and not overwrite:
                     log.error('sync: user {} ci: {} is mine!!'.format(email, ci))
                     raise Exception('user: {} ci: {} is mine and not overwrite!'.format(email, ci))                            
             except User.DoesNotExist:
@@ -265,7 +265,7 @@ class Impex():
             
             try:
                 data = rs.get_user(email)
-            except requests.exceptions.RequestException as e:
+            except (requests.exceptions.RequestException, RemoteServerExc) as e:
                 log.warning('sync error (user {} from {}): {}'.format(email, rs.name, str(e)))
                 continue
 
@@ -311,7 +311,7 @@ class Impex():
                 log.info('syncmap from {} {}'.format(rsname, url2host(rs.url)))
                 ie.sync(rs.url)
             except Exception as e:
-                log.error('syncmap exception {}: {}: {}'.format(url2host(rsname), str(e), traceback.format_exc()))
+                log.error('syncmap exception {}: {} {}: {}'.format(url2host(rsname), type(e), str(e), traceback.format_exc()))
 
 
 

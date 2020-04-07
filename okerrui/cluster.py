@@ -14,7 +14,10 @@ import logging
 # log = logging.getLogger('okerr')                
 
 
-class RemoteServer():
+class RemoteServerExc(Exception):
+    pass
+
+class RemoteServer:
     
     _skip = list()
     
@@ -136,10 +139,10 @@ class RemoteServer():
     # remoteserver.get_userlist
     def get_userlist(self):
         if not 'userlist' in self.cache:
-            rurl = urllib.parse.urljoin(self.url,'/api/admin/cilist')
+            rurl = urllib.parse.urljoin(self.url, '/api/admin/cilist')
             r = requests.get(rurl, timeout=30)
             if r.status_code == 200:
-                userlist = list( filter(None, r.text.split('\n')) )
+                userlist = list(filter(None, r.text.split('\n')))
             else:
                 raise Exception('Error code: {} from url {}'.format(r.status_code, rurl))
             self.cache['userlist'] = userlist
@@ -148,12 +151,12 @@ class RemoteServer():
 
     # remoteserver.get_user
     def get_user(self,email):
-        rurl = urllib.parse.urljoin(self.url,'/api/admin/export/{}'.format(email))
+        rurl = urllib.parse.urljoin(self.url, '/api/admin/export/{}'.format(email))
         r = requests.get(rurl, timeout=30)
         if r.status_code == 200:
             data = json.loads(r.text)
         else:
-            raise Exception('Error code: {} from url {}'.format(r.status_code, rurl))
+            raise RemoteServerExc('Error code: {} from url {}'.format(r.status_code, rurl))
         return data
 
     # remoteserver.accept_invite
@@ -165,14 +168,14 @@ class RemoteServer():
         if r.status_code == 200:
             data = json.loads(r.text)
         else:
-            raise Exception('Error code: {} from url {} text: {}'.format(r.status_code, rurl, r.text))
+            raise RemoteServerExc('Error code: {} from url {} text: {}'.format(r.status_code, rurl, r.text))
         return data
     
     # remoteserver.force_sync
-    def force_sync(self, email, server = settings.HOSTNAME):
+    def force_sync(self, email, server=settings.HOSTNAME):
             
-        rurl = urllib.parse.urljoin(self.url,'/api/admin/force_sync')
-        payload = { 'email': email, 'server': server }
+        rurl = urllib.parse.urljoin(self.url, '/api/admin/force_sync')
+        payload = {'email': email, 'server': server}
         
         r = requests.post(rurl, data=payload)
         if r.status_code != 200:
@@ -182,7 +185,7 @@ class RemoteServer():
     def land_url(self, suffix, hostname=None):
         suffix = suffix.lstrip('/')
         if hostname is None:
-            hostspec = 'okerr:'+settings.HOSTNAME
+            hostspec = 'okerr:' + settings.HOSTNAME
         else:
             hostspec = hostname
         
