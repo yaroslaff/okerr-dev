@@ -302,7 +302,14 @@ def mainloop(args):
             for i in Indicator.objects.filter(lockpid=pid):
                 # print i,i.lockpid,i.lockat
 
-                data = i.tproc()
+                try:
+                    data = i.tproc()
+                except e:
+                    log.error("Problem processing indicator #{}".format(i.id))
+                    log.error("Indicator: {}".format(i))
+                    log.error("Project: {}".format(i.project))
+                    raise
+
                 data['resultq'] = resultq
 
                 i.expected = timezone.now()
