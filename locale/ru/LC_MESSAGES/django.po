@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-01 19:21+0000\n"
+"POT-Creation-Date: 2020-04-08 17:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -315,11 +315,11 @@ msgstr "Схема {} еще не синхронизирована. Повтор
 msgid "You have to create at least one project for training"
 msgstr "Вам нужно создать хотя бы один проект чтобы пройти тренинг"
 
-#: okerrui/training.py:473
+#: okerrui/training.py:474
 msgid "Mission accomplished!"
 msgstr ""
 
-#: okerrui/training.py:475
+#: okerrui/training.py:476
 msgid "Training stage \"{}\" completed!"
 msgstr "Этап {} тренинга завершен"
 
@@ -439,11 +439,11 @@ msgstr "Уже используется такой индикатор"
 msgid "Already has this priority in this record"
 msgstr "Уже используется такой приоритет"
 
-#: okerrui/views.py:5231 okerrui/views.py:5250
+#: okerrui/views.py:5229 okerrui/views.py:5248
 msgid "Bound profile to {}"
 msgstr "Профиль привязан к {}"
 
-#: okerrui/views.py:5260
+#: okerrui/views.py:5258
 msgid "Not found user bound to this {} account. Link it in profile."
 msgstr ""
 "Не найден пользователь привязанный к этому аккаунту {}.\n"
@@ -656,7 +656,7 @@ msgstr "Продолжить"
 msgid "Begin"
 msgstr "Начать"
 
-#: templates/myauth/profile.html:61 templates/okerrui/servers.html:14
+#: templates/myauth/profile.html:61 templates/okerrui/servers.html:18
 msgid "Access"
 msgstr "Доступ"
 
@@ -1440,9 +1440,9 @@ msgstr "ID ключа"
 msgid "Comment"
 msgstr "Комментарий"
 
-#: templates/okerrui/project.html:377 templates/okerrui/servers.html:49
-#: templates/okerrui/servers.html:68 templates/okerrui/servers.html:94
-#: templates/okerrui/servers.html:111
+#: templates/okerrui/project.html:377 templates/okerrui/servers.html:53
+#: templates/okerrui/servers.html:72 templates/okerrui/servers.html:98
+#: templates/okerrui/servers.html:115
 msgid "Create"
 msgstr "Создать"
 
@@ -1566,23 +1566,33 @@ msgstr "Клонировать этот скрипт с именем"
 msgid "Delete this script"
 msgstr "Удалить этот скрипт"
 
-#: templates/okerrui/servers.html:38
+#: templates/okerrui/servers.html:13
+msgid ""
+"This section is useful only if you manage large group of servers and want to "
+"adjust okerrclient logic. Okerrmod do not use this settings. Most users do "
+"not need to change anything here."
+msgstr ""
+"Эта секция нужна только если вы управляете большой группой серверов и хотите "
+"изменить логику okerrclient. Okerrmod не использует эти настройки. "
+"Большинству пользователей не требуется изменять что-либо здесь."
+
+#: templates/okerrui/servers.html:42
 msgid "Configuration templates"
 msgstr "Шаблоны конфигурации"
 
-#: templates/okerrui/servers.html:57
+#: templates/okerrui/servers.html:61
 msgid "Servers"
 msgstr "Сервера"
 
-#: templates/okerrui/servers.html:75
+#: templates/okerrui/servers.html:79
 msgid "Okerr script library"
 msgstr "Библиотека скриптов okerr"
 
-#: templates/okerrui/servers.html:85
+#: templates/okerrui/servers.html:89
 msgid "Update"
 msgstr "Обновить"
 
-#: templates/okerrui/servers.html:100
+#: templates/okerrui/servers.html:104
 msgid "My script library"
 msgstr "Собственная библиотека скриптов"
 
