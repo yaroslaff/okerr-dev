@@ -251,7 +251,10 @@ def mainloop(args):
     redis_conn = get_redis(settings.OKERR_REDIS_DB)
     assert(redis_conn)
 
-    myindicator.update(0, 'enter mainloop')
+    try:
+        myindicator.update(0, 'enter mainloop')
+    except okerrupdate.OkerrExc as e:
+        log.error('myindicator {} update error: {}'.format(myindicator.name, e))
 
     credentials = pika.PlainCredentials(args.rmquser, args.rmqpass)
     context = ssl.create_default_context(cafile=args.capem)
