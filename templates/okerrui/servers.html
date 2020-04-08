@@ -8,7 +8,11 @@
 {% with project=project prefix="servers" %}
     {% include 'okerrui/projectlinks.html' %}
 {% endwith %}
-    
+
+<div class="motd">
+{% trans 'This section is useful only if you manage large group of servers and want to adjust okerrclient logic. Most users do not need it' %}
+</div>
+
 <div syle="text-align: center;">
     <div class=halfdiv>
         <h2>{% trans 'Access' %}</h2>
