@@ -6422,19 +6422,7 @@ class BonusActivation(models.Model):
         #
         for ba in BonusActivation.objects.filter(expiration__isnull=False, expiration__lt=now):
             log.info("{} expire".format(ba))
-            ba.expire()
-
-    def expire(self):
-        """Delete self or disable"""
-        # print "{} expire self".format(self)
-        if self.BonusCode and self.BonusCode.repeatable:
-            # just delete.
-            self.delete()
-        else:
-            # not repeatable. disable reactivation
-            self.expiration = None
-            self.reactivation = None
-            self.save()
+            ba.delete()
 
     def __str__(self):
         return "#{} {} {} {} ({}) reactivation: {} expiration: {}".format(
