@@ -310,7 +310,7 @@ class Command(BaseCommand):
             return
 
         if options['user']:         
-            print("show for user: ",options['user']) 
+            print("show for user: ", options['user'])
             u = User.objects.filter(username=options['user']).first()
                                     
             if u:

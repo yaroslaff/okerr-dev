@@ -2998,7 +2998,7 @@ class Indicator(TransModel):
 
         # super(Indicator, self).fulldump()
 
-        # print self.title()
+        print(self.title())
         print("cm: {}".format(self.cm))
 
         print("Project:", self.project.id, repr(self.project.name), "main ID:", self.project.get_textid(), "owner",

@@ -261,7 +261,7 @@ def mainloop(args):
     context.load_cert_chain(args.pem)
     ssl_options = pika.SSLOptions(context, "rabbitmq")
 
-    properties=pika.BasicProperties(
+    properties = pika.BasicProperties(
         expiration=str(args.rmqttl*1000),
     )
 
