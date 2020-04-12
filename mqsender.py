@@ -307,7 +307,8 @@ def mainloop(args):
 
                 try:
                     data = i.tproc()
-                except e:
+                except Exception as e:
+                    log.error("Exception type: {} exception: {}".format(type(e), e))
                     log.error("Problem processing indicator #{}".format(i.id))
                     log.error("Indicator: {}".format(i))
                     log.error("Project: {}".format(i.project))
