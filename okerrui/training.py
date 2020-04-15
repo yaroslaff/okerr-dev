@@ -55,6 +55,11 @@ tasks = {'basic':
         },
 
         {
+            'code': 'numerical',
+            'title': _('Configure numerical check'),
+        },
+
+        {
             'code': 'policyactive',
             'title': _('Policy for active indicators'),
         },
@@ -160,7 +165,7 @@ def training(request, code=None):
         def inotify(i, msg):
             notify(request, i.name + ': ' + str(msg))
 
-        if code not in ['telegram', 'massdelete', 'enable', 'checkserver']:
+        if code not in ['telegram', 'massdelete', 'enable', 'numerical', 'checkserver']:
             if p.indicator_set.filter(name__startswith='test:').count() == 0:
                 notify(request, _('no "test:*" indicators in project {}').format(p))
                 return False
@@ -281,6 +286,26 @@ def training(request, code=None):
             notify(request, str(_("Not found 'uptime' indicators")))
 
             return False
+
+
+        if code == 'numerical':
+            if not p.indicator_set.filter(cm__codename='numerical').count():
+                notify(request, str(_("Not numerical indicators in project")))
+                return False
+
+            for i in p.indicator_set.filter(cm__codename='numerical'):
+                if i.status == 'OK':
+                    inotify(i, str(_("has status OK (need ERR)")))
+                    continue
+                if not i.getarg('diffmax'):
+                    inotify(i, str(_("diffmax not set")))
+                    continue
+
+                # all checks passed sucessfully here
+                return True
+
+            return False
+
 
         if code == 'policyactive':
             for i in p.indicator_set.filter(name__startswith='test:'):

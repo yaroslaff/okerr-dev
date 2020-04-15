@@ -1,0 +1,28 @@
+<p>
+In this lesson we will track log file on linux server and alert if it will grow abnormally fast.
+</p>
+
+<p>
+    <ul>
+        <li>Enable okerrmod check <code>linecount</code> like in previous lesson.</li>
+        <li>Decide, which file we will track. For example we can watch apache error log file:
+            <code>/var/log/apache2/error.log</code>. Or you can create special test file, e.g.
+            <code>/tmp/my.log</code></li>
+        <li>Edit check configuration <code>/etc/okerr/mods-env/linecount</code> and set that log file
+            in <code>PATHLIST</code></li>
+        <li>Run <code>okerrmod</code> so it would upload data to server
+        <li>On indicator page in okerr UI set value for diffmax as you want. On next update Okerr will alert if
+            file has more new lines then diffmax value. Low values could be used to pass test faster,
+            e.g. 2. Save new indicator configuration.
+        <li>Wait until log files will group enough. If you use test file, you can run
+            <code>date >> /tmp/my.log</code> few times.
+        <li>Run <code>okerrmod</code> again to upload new data to server. Ensure that diffmax limit worked and
+            indicator switched status to 'ERR'.
+    </ul>
+</p>
+
+
+<p>
+<h3>Links:</h3>
+<a href="https://gitlab.com/yaroslaff/okerrupdate/-/wikis/home">okerrupdate/okerrmod wiki</a>
+</p>
