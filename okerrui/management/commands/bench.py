@@ -28,18 +28,18 @@ class Command(BaseCommand):
     def geti_benchmark(self, options):
         random.seed()        
         p = Project.get_by_textid(options['textid'])
-        print "Project:",p
+        print("Project:", p)
         started = time.time()
-        for i in xrange(1, options['iter']):
+        for i in range(1, options['iter']):
             # print "iteration",i
-            name = options['template'].format(random.randint(1,options['inum']))
+            name = options['template'].format(random.randint(1, options['inum']))
             indicator = p.get_indicator(name)
             # print indicator
         stopped = time.time()
-        print "{} iterations in {:.2f} seconds ({:.2f} i/sec)".format(i, stopped - started, i / (stopped - started))
+        print("{} iterations in {:.2f} seconds ({:.2f} i/sec)".format(i, stopped - started, i / (stopped - started)))
         
 
     def handle(self, *args, **options):
         if options['geti']:
-            print "geti benchmark"
+            print("geti benchmark")
             self.geti_benchmark(options)

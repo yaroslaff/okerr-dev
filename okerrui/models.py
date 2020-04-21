@@ -3975,7 +3975,7 @@ class Indicator(TransModel):
         # now we have indicator (old, or created it)
 
         # check if wrong ci and warn
-        if i.ci != myci():
+        if i.ci != myci() and not i.name.startswith('bench:'):
             log.warning(
                 "bad ci update i#{}: {} / {} i.ci: {} myci: {}".format(i.id, i.project.get_textid(), i.name, i.ci,
                                                                         myci()))
