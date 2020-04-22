@@ -96,7 +96,7 @@ class Command(BaseCommand):
         parser.epilog = 'Example:\n' \
                         '{me} -i bench --num 1000 --prepare\n' \
                         '{me} -i bench --num 100 --processes 10 --shard --seconds 60 --ok'\
-            .format(me=sys.argv[0])
+            .format(me=me)
         parser.formatter_class = argparse.RawDescriptionHelpFormatter
         ispec = parser.add_argument_group('Indicator specification')
         ispec.add_argument('--textid', '-i', default='bench', help='project TextID')
