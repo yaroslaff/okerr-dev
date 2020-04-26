@@ -591,10 +591,30 @@
 
 <table>
         <tr class="title">
-            <td>{% trans "Log records" %}:</td>
+            <td>
+                <div style="float:left;">{% trans "Log records" %}</div>
+            </td>
+            <td>
+                <script>
+                    function unlock_logs() {
+                        var textarea = document.getElementById('logs');
+                        var div = document.getElementById('div_logunlock');
+
+                        textarea.disabled = !textarea.disabled;
+                        if(textarea.disabled){
+                            div.innerText = "[ {% trans 'unlock' %} ]";
+                        }else{
+                            div.innerText = "[ {% trans 'lock' %} ]";
+                        }
+                    }
+                </script>
+                <div id='div_logunlock' style="float:right;" onclick="unlock_logs();">
+                    [ {% trans 'unlock' %} ]
+                </div>
+            </td>
         </tr>
         <tr>
-            <td>
+            <td colspan="2">
                 <textarea id=logs cols=100 rows=10 disabled=true>{{ logs | join:"&#10;" }}
                 </textarea>
                 <script>

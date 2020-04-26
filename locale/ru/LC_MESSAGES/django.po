@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-15 12:42+0000\n"
+"POT-Creation-Date: 2020-04-26 13:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -182,8 +182,8 @@ msgstr "Метод проверки не '{}'"
 msgid "host not 8.8.8.8"
 msgstr "host не 8.8.8.8"
 
-#: okerrui/training.py:192 okerrui/training.py:216 okerrui/training.py:345
-#: okerrui/training.py:368
+#: okerrui/training.py:192 okerrui/training.py:216 okerrui/training.py:365
+#: okerrui/training.py:388
 msgid "check was not performed yet"
 msgstr "Проверка еще не произошла"
 
@@ -219,109 +219,125 @@ msgstr "{} индикаторов были массово удалены нед�
 msgid "Not found 'uptime' indicators"
 msgstr "Не найдено индикаторов 'uptime'"
 
-#: okerrui/training.py:294 okerrui/training.py:333
+#: okerrui/training.py:293
+#, fuzzy
+#| msgid "no indicators in project {}"
+msgid "Not numerical indicators in project"
+msgstr "Нет индикаторов в проекте {}"
+
+#: okerrui/training.py:298
+#, fuzzy
+#| msgid "status not ERR"
+msgid "has status OK (need ERR)"
+msgstr "Cтатус индикатора не ERR"
+
+#: okerrui/training.py:301
+msgid "diffmax not set"
+msgstr ""
+
+#: okerrui/training.py:314 okerrui/training.py:353
 msgid "Indicator uses policy {} (not test*)"
 msgstr "Индикатор использует политику {} (не test*)"
 
-#: okerrui/training.py:298
+#: okerrui/training.py:318
 msgid "Indicator policy {} period {} (not 2h)"
 msgstr "Индикатор использует политику {} с периодом {} (не 2h)"
 
-#: okerrui/training.py:302
+#: okerrui/training.py:322
 msgid "Indicator policy {} retry schedule {} (not 5min)"
 msgstr ""
 "Индикатор использует политику {} с расписанием перепроверки {} (не 5min)"
 
-#: okerrui/training.py:306
+#: okerrui/training.py:326
 msgid "Indicator policy {} recovery retry schedule {} (not emtpy)"
 msgstr ""
 "Индикатор использует политику {} с расписанием восстановления {} (не пустое)"
 
-#: okerrui/training.py:310
+#: okerrui/training.py:330
 msgid "Indicator policy {} has autocreate enabled"
 msgstr "Индикатор использует политику {} с включенным режимом autocreate"
 
-#: okerrui/training.py:314
+#: okerrui/training.py:334
 msgid "Indicator policy {} has httpupdate enabled"
 msgstr "Индикатор использует политику {} с включенным режимом httpupdate"
 
-#: okerrui/training.py:318
+#: okerrui/training.py:338
 msgid "Indicator policy {} has smtpupdate enabled"
 msgstr "Индикатор использует политику {} с включенным режимом stmpupdate"
 
-#: okerrui/training.py:329
+#: okerrui/training.py:349
 msgid "Not passive checkmethod"
 msgstr "Не пассивный метод проверки"
 
-#: okerrui/training.py:337
+#: okerrui/training.py:357
 msgid "Policy {} has disabled autocreate"
 msgstr "В политике {} отключен режим autocreate"
 
-#: okerrui/training.py:341
+#: okerrui/training.py:361
 msgid "Policy {} has no secret"
 msgstr "В политике {} не установлен секрет"
 
-#: okerrui/training.py:357
+#: okerrui/training.py:377
 msgid "no test:* indicators with tag \"test\" in project"
 msgstr "Нет индикаторов \"test:*\" с меткой \"test\"в проекте"
 
-#: okerrui/training.py:361
+#: okerrui/training.py:381
 msgid "no logical indicator with name test:* in project"
 msgstr "Нет логических индикаторов с именем test:* в проекте"
 
-#: okerrui/training.py:372
+#: okerrui/training.py:392
 msgid "has problem flag"
 msgstr "Установлен флаг problem"
 
-#: okerrui/training.py:376
+#: okerrui/training.py:396
 msgid "has wrong expr"
 msgstr "Используется неправильное выражение (expr)"
 
-#: okerrui/training.py:384
+#: okerrui/training.py:404
 msgid "no status pages in project"
 msgstr "В проекте нет страниц статуса"
 
-#: okerrui/training.py:388
+#: okerrui/training.py:408
 msgid "status page {} not public"
 msgstr "Cтраница статуса {} не публична"
 
-#: okerrui/training.py:392
+#: okerrui/training.py:412
 msgid "status page {} has less then 2 indicators"
 msgstr "Страница статуса {} использует менее 2 индикаторов"
 
-#: okerrui/training.py:396
+#: okerrui/training.py:416
 msgid "status page {} has no blog records"
 msgstr "Страница статуса {} не имеет записей в блоге"
 
-#: okerrui/training.py:402
+#: okerrui/training.py:422
 msgid "No failover configured in project"
 msgstr "В проекте не созданы схемы отказоустойчивости"
 
-#: okerrui/training.py:409
+#: okerrui/training.py:429
 msgid "Failover {} uses less then 2 indicators"
 msgstr "Схема {} использует менее 2 индикаторов"
 
-#: okerrui/training.py:413
+#: okerrui/training.py:433
 msgid "Failover {} not initialized yet"
 msgstr "Схема {} еще не инициализирована"
 
-#: okerrui/training.py:418
+#: okerrui/training.py:438
 msgid "Failover {} not switched to backup server"
 msgstr "Схема {} не переключена на вторичный сервер"
 
-#: okerrui/training.py:422
+#: okerrui/training.py:442
 msgid "Failover {} not synced yet. Retry little later."
 msgstr "Схема {} еще не синхронизирована. Повторите чуть позже."
 
-#: okerrui/training.py:453
+#: okerrui/training.py:473
 msgid "You have to create at least one project for training"
 msgstr "Вам нужно создать хотя бы один проект чтобы пройти тренинг"
 
-#: okerrui/training.py:479
+#: okerrui/training.py:499
 msgid "Mission accomplished!"
 msgstr ""
 
-#: okerrui/training.py:481
+#: okerrui/training.py:501
 msgid "Training stage \"{}\" completed!"
 msgstr "Этап {} тренинга завершен"
 
@@ -926,7 +942,7 @@ msgstr "DNS Сервера"
 msgid "Public DNS servers"
 msgstr "Публичные DNS сервера"
 
-#: templates/okerrui/dyndns.html:221 templates/okerrui/indicator.html:594
+#: templates/okerrui/dyndns.html:221 templates/okerrui/indicator.html:595
 msgid "Log records"
 msgstr "Журнал"
 
@@ -1134,6 +1150,14 @@ msgstr "Верхний уровень"
 #: templates/okerrui/indicator.html:485
 msgid "Lower Level"
 msgstr "Нижний уровень"
+
+#: templates/okerrui/indicator.html:605 templates/okerrui/indicator.html:612
+msgid "unlock"
+msgstr "разблокировать"
+
+#: templates/okerrui/indicator.html:607
+msgid "lock"
+msgstr "заблокировать"
 
 #: templates/okerrui/invitations.html:7
 msgid "Your projects"
