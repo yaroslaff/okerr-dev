@@ -15,9 +15,12 @@ import argparse
 from multiprocessing import Queue, Process
 
 
-def prepare(p, opts):
+def prepare(opts):
     created = 0
     processed = 0
+
+    p = Project.get_by_textid(opts['textid'])
+
     started = time.time()
 
     for n in range(opts['num']):
@@ -140,7 +143,7 @@ class Command(BaseCommand):
             self.geti_benchmark(options)
 
         if options['prepare']:
-            prepare(project, options)
+            prepare(options)
 
         if options['ok']:
             jobs = list()

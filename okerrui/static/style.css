@@ -679,3 +679,10 @@ form.myform > p > button:hover {
 
 
 /******* JS ALERT STOP *******/
+
+.alignleft {
+	float: left;
+}
+.alignright {
+	float: right;
+}
