@@ -1975,9 +1975,11 @@ def project_log(request, textid, codelist=None):
     ctx = dict()
     p = Project.get_by_textid(textid)
 
-    if not p.member(request.user):
+    if p is None:
         return redirect('okerr:index')
 
+    if not p.member(request.user):
+        return redirect('okerr:index')
 
     if not 'logreverse' in request.session:
         request.session['logreverse'] = False
