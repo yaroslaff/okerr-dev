@@ -8,7 +8,7 @@ class VerificationCode():
         if datecode is None:
             datecode = datetime.datetime.now().strftime('%Y%m%d')
         text = ':'.join([datecode, email, purpose, self.secret])
-        h = hashlib.sha256(text).hexdigest()
+        h = hashlib.sha256(text.encode('utf8')).hexdigest()
         return (datecode, h)
 
     def verify_code(self, datecode, email, purpose, usercode):
