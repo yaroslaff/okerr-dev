@@ -42,8 +42,9 @@ from myauth.models import SignupRequest
 
 import logmessage.models 
 
-mainpage='okerr:index'
-afterlogin='okerr:afterlogin'
+mainpage = 'okerr:index'
+afterlogin = 'okerr:afterlogin'
+afterlifepage = 'okerr:afterlife'
 
 #log=myutils.openlog()
 log = logging.getLogger('okerr')
@@ -350,9 +351,9 @@ def profile(request):
                 user = request.user
                 logger.log('user: {} suicided ip: {}'.format(request.user.username, remoteip), kind='reg')
                 django_logout(request)
-                profile.delete()                                
-                user.delete() 
-                return redirect(mainpage)
+                profile.predelete()  # deletes user too
+                profile.delete()
+                return redirect(afterlifepage)
             else:
                 notify(request, 'bad delete confirmation phrase')
 
@@ -645,11 +646,11 @@ def demologin(request):
             profile = user.profile
             # profile.lastlogin = timezone.now()
             profile.save()
-            django_login(request,user)
+            django_login(request, user)
             return redirect(mainpage)
         else:
             log.info("no login, acount disabled {}".format(demouser))
-            context['error_message']="Account disabled"
+            context['error_message'] = "Account disabled"
 
 def error(request):
     return HttpResponseForbidden("Error: "+str(request.user))

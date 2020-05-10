@@ -1,0 +1,27 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load markup_tags %}
+
+{% block title %}{% trans 'Message of the day' %}{% endblock %}
+
+{% block content %}
+
+    <p>
+<h1>{% trans "We are sorry you are leaving :-(" %}</h1>
+    </p>
+    <p>
+    {% trans "Please, let us know what was not so good (or terrible) in okerr?" %}<sup>*</sup>
+    </p>
+
+<p>
+    <form method=post>
+        {% csrf_token %}
+        <textarea name="message" rows=10 cols=80 placeholder="{% trans 'Feedback' %}"></textarea><br>
+        <input type="text" name="email" placeholder="{% trans 'email address (NOT required)' %}"><br>
+        <input type=submit name="continue" value="{% trans 'Continue' %}"><br>
+    </form>
+</p>
+<p class="dull">
+    <sup>*</sup> - {% trans 'Feedbacks are read by prepared seasoned adult staff, so do not worry, you can use any words.' %}
+</p>
+    {% endblock %}

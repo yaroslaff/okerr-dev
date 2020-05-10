@@ -39,6 +39,7 @@ import json
 from myutils import shortstr, unixtime2dt, dt2unixtime, \
     get_remoteip, send_email, timesuffix2sec, dhms, strcharset, \
     nsresolve, get_redis, get_verified_reverse
+from django.core.mail import send_mail
 from tree import Tree
 import myutils
 import re
@@ -314,6 +315,20 @@ def seen_motd(request):
         return True
 
     return False
+
+def afterlife(request):
+    if request.POST and 'message' in request.POST:
+        for admin in settings.ADMINS:
+            address = admin[0]
+            send_mail(
+                'User last feedback',
+                'Email: {}\nMessages:\n{}\n'.format(request.POST['email'], request.POST['message']),
+                settings.SERVER_EMAIL,
+                [address]
+            )
+        return redirect('https://okerr.com/')
+    else:
+        return render(request, 'okerrui/afterlife.html')
 
 def motd(request, return_url=None):
 
@@ -699,17 +714,17 @@ def doop(request, textid):
     i = project.get_indicator(name=request.POST['name'])
 
     if i.project.iadmin(request.user):
-        if cmd=='maintenance':
+        if cmd == 'maintenance':
             if i.maintenance:
                 i.stopmaintenance(request.user)
                 i.save()
             else:
                 i.startmaintenance(request.user)
                 i.save()
-        elif cmd=='retest':
+        elif cmd == 'retest':
             i.retest()
             i.save()
-        elif cmd=='delete':
+        elif cmd == 'delete':
             if i.disabled:
                 i.log(u'u: {} ip: {} deleted (masscmd)'.format(request.user.username, remoteip), typecode='indicator')
                 i.predelete()
@@ -719,7 +734,7 @@ def doop(request, textid):
                 notify(request,_("Only disabled indicator can be deleted. Indicator {} not disabled.").format(i.name))
                 return HttpResponse('{"deleted": false}', status=200)
 
-        elif cmd=='enable':
+        elif cmd == 'enable':
             if i.disabled:
                 i.log(u'u: {} ip: {} enabled (masscmd)'.format(request.user.username, remoteip), typecode='indicator')
                 i.enable()
@@ -727,15 +742,13 @@ def doop(request, textid):
                 i.log(u'u: {} ip: {} disabled (masscmd)'.format(request.user.username, remoteip), typecode='indicator')
                 i.disable()
             i.save()
-        elif cmd=='silent':
+        elif cmd == 'silent':
             if i.silent:
                 i.log(u'u: {} ip: {} set silent flag OFF (masscmd)'.format(request.user.username, remoteip), typecode='indicator')
             else:
                 i.log(u'u: {} ip: {} set silent flag ON (masscmd)'.format(request.user.username, remoteip), typecode='indicator')
             i.silent = not i.silent
             i.save()
-
-
 
 #        elif cmd=='disable':
 #            i.disable()

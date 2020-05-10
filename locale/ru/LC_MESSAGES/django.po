@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-26 13:02+0000\n"
+"POT-Creation-Date: 2020-05-10 12:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,73 +19,73 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: myauth/views.py:275
+#: myauth/views.py:276
 #, fuzzy
 #| msgid "Applied bonus code \"{}\""
 msgid "No bonus code '{}'"
 msgstr "Нет бонус кода '{}'"
 
-#: myauth/views.py:281
+#: myauth/views.py:282
 msgid "Not applied: {}"
 msgstr "Не применен: {}"
 
-#: myauth/views.py:284
+#: myauth/views.py:285
 msgid "Applied bonus code \"{}\""
 msgstr "Применен бонус код \"{}\""
 
-#: myauth/views.py:294
+#: myauth/views.py:295
 msgid "password changed"
 msgstr "пароль изменен"
 
-#: myauth/views.py:296
+#: myauth/views.py:297
 msgid "must provide valid current password"
 msgstr "нужно указать верный действующий пароль"
 
-#: myauth/views.py:298
+#: myauth/views.py:299
 msgid "passwords does not match"
 msgstr "пароли не совпадают"
 
-#: myauth/views.py:363
+#: myauth/views.py:364
 msgid ""
 "Configured telegram username. Now send /on command to telegram bot @OkerrBot"
 msgstr ""
 "Установлено имя пользователя telegram. Сейчас пошлите команду /on телеграм-"
 "боту @OkerrBot"
 
-#: myauth/views.py:365
+#: myauth/views.py:366
 msgid "Cleared telegram username. No messages will be send."
 msgstr "Сброшено имя пользователя telegram. Сообщения не будут отправляться"
 
-#: myauth/views.py:392
+#: myauth/views.py:393
 msgid "You have to accept EULA to start using okerr"
 msgstr ""
 "Требуется принять пользовательское соглашение чтобы начать пользоваться okerr"
 
-#: myauth/views.py:408
+#: myauth/views.py:409
 msgid "Already has signup from {}"
 msgstr "Уже есть заявка на регистрацию с адреса {}"
 
-#: myauth/views.py:410
+#: myauth/views.py:411
 msgid "Already has registered user {}"
 msgstr "Уже есть зарегистрированный пользователь {}"
 
-#: myauth/views.py:491 okerrui/views.py:3132
+#: myauth/views.py:492 okerrui/views.py:3136
 msgid "Already had such request for user {} recently. Try again later"
 msgstr "Уже был такой запрос от пользователя {} недавно. Попробуйте позже."
 
-#: myauth/views.py:588
+#: myauth/views.py:589
 msgid "Bad email address"
 msgstr "Неправильный e-mail адрес"
 
-#: myauth/views.py:609
+#: myauth/views.py:610
 msgid "User {} can not login (web login)"
 msgstr "Пользователь {} не имеет права для входа"
 
-#: myauth/views.py:619
+#: myauth/views.py:620
 msgid "Account disabled"
 msgstr "Аккаунт отключен"
 
-#: myauth/views.py:623
+#: myauth/views.py:624
 msgid "Wrong login/password"
 msgstr "Плохой логин/пароль"
 
@@ -341,127 +341,127 @@ msgstr ""
 msgid "Training stage \"{}\" completed!"
 msgstr "Этап {} тренинга завершен"
 
-#: okerrui/views.py:590
+#: okerrui/views.py:594
 msgid "Cannot create indicator without name"
 msgstr "Нельзя просто так взять и создать индикатор без имени"
 
-#: okerrui/views.py:595
+#: okerrui/views.py:599
 msgid "Bad indicator name"
 msgstr "Плохое имя индикатора"
 
-#: okerrui/views.py:606 okerrui/views.py:610
+#: okerrui/views.py:610 okerrui/views.py:614
 msgid "Indicator \"{}\" already exists in project \"{}\""
 msgstr "Индикатор \"{}\" уже есть в проекте \"{}\")"
 
-#: okerrui/views.py:615
+#: okerrui/views.py:619
 msgid "User already hit maxinidicator limit ({}). Indicator not created"
 msgstr ""
 "В проекте уже достигнут предел maxindicators: {}. Новый индикатор не создан."
 
-#: okerrui/views.py:619
+#: okerrui/views.py:623
 msgid "This project is limited. Indicator not created"
 msgstr "Функционал проекта ограничен. Индикатор не создан"
 
-#: okerrui/views.py:649
+#: okerrui/views.py:653
 msgid "You dont have permission to manage indicators in project {}"
 msgstr "У вас нет прав управлять индикаторами в проекте {}"
 
-#: okerrui/views.py:719
+#: okerrui/views.py:723
 msgid "Only disabled indicator can be deleted. Indicator {} not disabled."
 msgstr "Удалять можно только отключенные индикаторы. Индикатор {} не отключен."
 
-#: okerrui/views.py:813
+#: okerrui/views.py:815
 msgid "Backup file"
 msgstr "Файл бэкапа"
 
-#: okerrui/views.py:867
+#: okerrui/views.py:869
 msgid "Copy this key (it will not be displayed in UI):\n"
 msgstr ""
 
-#: okerrui/views.py:874
+#: okerrui/views.py:876
 msgid "Deleted API key: {} / {}"
 msgstr ""
 
-#: okerrui/views.py:883
+#: okerrui/views.py:885
 msgid "Policy name must be unique"
 msgstr "Имя политики должно быть уникальным"
 
-#: okerrui/views.py:1354
+#: okerrui/views.py:1356
 msgid "Can not delete \"Default\" policy"
 msgstr "Нелья удалять полику \"Default\""
 
-#: okerrui/views.py:1360
+#: okerrui/views.py:1362
 msgid "Can not delete policy {} because {} indicators ({} ...) are using it"
 msgstr ""
 
-#: okerrui/views.py:1395
+#: okerrui/views.py:1397
 msgid "Can not rename \"Default\" policy"
 msgstr "Нельзя переименовывать политику \"Default\""
 
-#: okerrui/views.py:2434
+#: okerrui/views.py:2438
 msgid "Not valid JSON data"
 msgstr "Не валидные данные JSON"
 
-#: okerrui/views.py:2851 okerrui/views.py:2971
+#: okerrui/views.py:2855 okerrui/views.py:2975
 msgid "Bad syntax"
 msgstr "Синтаксическая ошибка"
 
-#: okerrui/views.py:3112
+#: okerrui/views.py:3116
 msgid "Invalid email address: \"{}\""
 msgstr "Неправильный формат адреса: \"{}\""
 
-#: okerrui/views.py:3120 okerrui/views.py:3245
+#: okerrui/views.py:3124 okerrui/views.py:3249
 msgid "Already {} subscribers. Cannot subscribe more. Sorry."
 msgstr "Уже есть {} подписчик(ов). К сожалению, нельзя подписать больше."
 
-#: okerrui/views.py:3124
+#: okerrui/views.py:3128
 msgid "Address \"{}\" already subscribed"
 msgstr "Адрес \"{}\" уже подписан"
 
-#: okerrui/views.py:3155
+#: okerrui/views.py:3159
 msgid "Please click on link in confirmational email we sent to {}"
 msgstr "Пожалуйста, перейдите по ссылке из сообщения, которое мы выслали на {}"
 
-#: okerrui/views.py:3196
+#: okerrui/views.py:3200
 msgid "{} not subscribed"
 msgstr "{} не подписан"
 
-#: okerrui/views.py:3205
+#: okerrui/views.py:3209
 msgid "You are unsubscribed now"
 msgstr "Теперь вы отписаны"
 
-#: okerrui/views.py:3239
+#: okerrui/views.py:3243
 msgid "{} already subscribed"
 msgstr "{} уже подписан"
 
-#: okerrui/views.py:3254
+#: okerrui/views.py:3258
 msgid ""
 "You are subscribed! You will get message to {} when blog will be updated"
 msgstr ""
 "Теперь вы будете получать сообщения на адрес {} когда этот блог будет "
 "обновлен"
 
-#: okerrui/views.py:3440
+#: okerrui/views.py:3444
 msgid "No current value for DNS record"
 msgstr "Нет текущено значения для DNS записи"
 
-#: okerrui/views.py:3465
+#: okerrui/views.py:3469
 msgid "Invalid IP address"
 msgstr "Неправильный IP адрес"
 
-#: okerrui/views.py:3469
+#: okerrui/views.py:3473
 msgid "Already has this indicator in this record"
 msgstr "Уже используется такой индикатор"
 
-#: okerrui/views.py:3473
+#: okerrui/views.py:3477
 msgid "Already has this priority in this record"
 msgstr "Уже используется такой приоритет"
 
-#: okerrui/views.py:5229 okerrui/views.py:5248
+#: okerrui/views.py:5233 okerrui/views.py:5252
 msgid "Bound profile to {}"
 msgstr "Профиль привязан к {}"
 
-#: okerrui/views.py:5258
+#: okerrui/views.py:5262
 msgid "Not found user bound to this {} account. Link it in profile."
 msgstr ""
 "Не найден пользователь привязанный к этому аккаунту {}.\n"
@@ -666,7 +666,8 @@ msgstr "Тренинг"
 msgid "Completed"
 msgstr "Завершен"
 
-#: templates/myauth/profile.html:52 templates/okerrui/motd.html:21
+#: templates/myauth/profile.html:52 templates/okerrui/afterlife.html:21
+#: templates/okerrui/motd.html:21
 msgid "Continue"
 msgstr "Продолжить"
 
@@ -815,6 +816,32 @@ msgid ""
 "You can alway see and accept your invitations on <a href=\"%(invurl)s"
 "\">page</a>.\n"
 msgstr ""
+
+#: templates/okerrui/afterlife.html:5 templates/okerrui/motd.html:5
+msgid "Message of the day"
+msgstr "Сообщение дня"
+
+#: templates/okerrui/afterlife.html:10
+msgid "We are sorry you are leaving :-("
+msgstr "Нам жаль, что вы уходите :-("
+
+#: templates/okerrui/afterlife.html:13
+msgid "Please, let us know what was not so good (or terrible) in okerr?"
+msgstr "Пожалуйста, скажите, в чем okerr не оправдал ваши ожидания?"
+
+#: templates/okerrui/afterlife.html:19
+msgid "Feedback"
+msgstr "Отзыв"
+
+#: templates/okerrui/afterlife.html:20
+msgid "email address (NOT required)"
+msgstr "email (только если хотите)"
+
+#: templates/okerrui/afterlife.html:25
+msgid ""
+"Feedbacks are read by prepared seasoned adult staff, so do not worry, you "
+"can use any words."
+msgstr "Отзывы читают взрослые подготовленные люди с устойчивой психикой. Не стесняйтесь. Умеренное употребление русского мата, если все настолько плохо - допускается."
 
 #: templates/okerrui/base.html:27
 msgid "Server time"
@@ -1253,10 +1280,6 @@ msgstr ""
 "Загрузить поддерево и добавить его сюда (существующие ключи будут "
 "переписаны)Поддерево должно предславлять из себя JSON документ, "
 "экспортированный в сыром (raw) формате (вверху страницы)"
-
-#: templates/okerrui/motd.html:5
-msgid "Message of the day"
-msgstr "Сообщение дня"
 
 #: templates/okerrui/noproject.html:9
 msgid "NO PROJECTS"
