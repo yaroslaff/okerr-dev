@@ -18,7 +18,7 @@ from django.db.models import Count, Q, ProtectedError
 from django.conf import settings
 from django.template.loader import get_template
 from django.template import Context
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, mail_admins
 from django.utils.translation import ugettext_lazy as _, pgettext
 from django.contrib.auth import get_user_model
 from oauth2_provider.views.generic import ProtectedResourceView
@@ -39,7 +39,6 @@ import json
 from myutils import shortstr, unixtime2dt, dt2unixtime, \
     get_remoteip, send_email, timesuffix2sec, dhms, strcharset, \
     nsresolve, get_redis, get_verified_reverse
-from django.core.mail import send_mail
 from tree import Tree
 import myutils
 import re
@@ -318,15 +317,10 @@ def seen_motd(request):
 
 def afterlife(request):
     if request.POST and 'message' in request.POST:
-        for admin in settings.ADMINS:
-            address = admin[0]
-            send_mail(
-                'User last feedback',
-                'Email: {}\nMessages:\n{}\n'.format(request.POST['email'], request.POST['message']),
-                settings.SERVER_EMAIL,
-                [address]
-            )
-            log.info("Send afterlife feedback {} > {}".format(settings.SERVER_EMAIL, settings.ADMINS))
+        mail_admins(
+            'User last feedback',
+            'Email: {}\nMessages:\n{}\n'.format(request.POST['email'], request.POST['message'])
+        )
         return redirect('https://okerr.com/')
     else:
         return render(request, 'okerrui/afterlife.html')
@@ -3172,7 +3166,7 @@ def status(request, textid, addr):
         return redirect(request.path)
 
 
-    ctx=dict()
+    ctx = dict()
     ctx['sp'] = sp
     ctx['project'] = project
     ctx['chapters'] = sp.get_chapters()
