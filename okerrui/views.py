@@ -326,7 +326,7 @@ def afterlife(request):
                 settings.SERVER_EMAIL,
                 [address]
             )
-            log.info("Send afterlife feedback {} > {}".format(settings.SERVER_EMAIL, settings.ADNINS))
+            log.info("Send afterlife feedback {} > {}".format(settings.SERVER_EMAIL, settings.ADMINS))
         return redirect('https://okerr.com/')
     else:
         return render(request, 'okerrui/afterlife.html')
