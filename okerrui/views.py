@@ -326,6 +326,7 @@ def afterlife(request):
                 settings.SERVER_EMAIL,
                 [address]
             )
+            log.info("Send afterlife feedback {} > {}".format(settings.SERVER_EMAIL, settings.ADNINS))
         return redirect('https://okerr.com/')
     else:
         return render(request, 'okerrui/afterlife.html')
@@ -333,7 +334,7 @@ def afterlife(request):
 def motd(request, return_url=None):
 
     if return_url is None:
-        return_url='okerr:afterlogin'
+        return_url = 'okerr:afterlogin'
 
     if 'continue' in request.POST:
         request.user.profile.last_motd = request.POST['hash']
