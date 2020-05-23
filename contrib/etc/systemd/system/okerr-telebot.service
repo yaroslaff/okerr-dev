@@ -7,6 +7,8 @@ Type=simple
 ExecStart=%VENV%/bin/python -u %OKERR%/okerr-telebot.py
 StandardOutput=append:/var/log/okerr/telebot-out.log
 StandardError=append:/var/log/okerr/telebot-err.log
+Restart=always
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target
