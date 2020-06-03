@@ -23,3 +23,4 @@ https://gitlab.com/yaroslaff/okerr-dev/-/wikis/
 - [Okerr-server source code repository](gitlab.com/yaroslaff/okerr-dev/) and [okerr server wiki doc](https://gitlab.com/yaroslaff/okerr-dev/wikis/)
 - [Okerr client (okerrupdate) repositoty](https://gitlab.com/yaroslaff/okerrupdate) and [okerrupdate wiki doc](https://gitlab.com/yaroslaff/okerrupdate/wikis/)
 - [Okerrbench network server benchmark](https://gitlab.com/yaroslaff/okerrbench)
+- [Okerr network sensor](https://gitlab.com/yaroslaff/sensor)
