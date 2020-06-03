@@ -73,6 +73,8 @@ from myutils import (
     get_redis
 )
 
+from okerrui.exceptions import OkerrError
+
 from timestr import TimeStr
 from dyndns import DynDNS, DDNSExc
 from verification_code import VerificationCode
@@ -3808,8 +3810,10 @@ class Indicator(TransModel):
             pass
 
         if limits and not project.owner.profile.can_new_indicator():
-            raise ValueError('User already hit maxinidicator limit ({}). Indicator not created'.format(
-                project.owner.profile.getarg('maxindicators')))
+            #raise ValueError('User already hit maxinidicator limit ({}). Indicator not created'.format(
+            #    project.owner.profile.getarg('maxindicators')))
+            raise OkerrError('User already hit maxinidicator limit ({}). Indicator not created'.format(
+                project.owner.profile.getarg('maxindicators')), 'LIMIT_MAXINDICATORS')
 
         if project.limited:
             raise ValueError('Project is limited. Indicator not created')
@@ -3893,8 +3897,10 @@ class Indicator(TransModel):
                 maxni = project.owner.profile.getarg('maxindicators')
 
                 if pni >= maxni:
-                    return 'Project already has {} indicators, maxindicators is {}. Indicator not created'.format(pni,
-                                                                                                                  maxni)
+                    raise OkerrError(
+                        'Project already has {} indicators, maxindicators is {}. Indicator not created'
+                            .format(pni, maxni),
+                        'LIMIT_MAXINDICATORS')
 
                 if p.secret:
                     if p.secret != secret:
@@ -3997,7 +4003,8 @@ class Indicator(TransModel):
                 return line
 
         if not i.cm.codename in ['heartbeat', 'numerical', 'string']:
-            return 'Bad method'
+            # return 'Bad method'
+            raise OkerrError('Indicator exists with cm: {}'.format(i.cm.codename), code='BAD_METHOD')
 
         # get secret
         isecret = i.getarg('secret', '')

@@ -87,6 +87,8 @@ from okerrui.models import (
     Oauth2Binding
     )
 
+from okerrui.exceptions import OkerrError
+
 # import okerr.settings_oauth
 from okerrui.cluster import RemoteServer, myci
 
@@ -2192,34 +2194,36 @@ def update(request):
         if 'x_remoteip' in request.POST:
             remoteip = request.POST.get('x_remoteip',None)
 
-    errstr=Indicator.update(project=project,
-        idname=idname,
-        status=status,
-        details=details,
-        secret=secret,
-        error=error,
-        cmname=method,
-        policy=policy,
-        source=source,
-        remoteip=remoteip,
-        tags=tags,
-        keypath=keypath,
-        origkeypath=origkeypath,
-        desc=desc)
+    try:
+        errstr=Indicator.update(project=project,
+            idname=idname,
+            status=status,
+            details=details,
+            secret=secret,
+            error=error,
+            cmname=method,
+            policy=policy,
+            source=source,
+            remoteip=remoteip,
+            tags=tags,
+            keypath=keypath,
+            origkeypath=origkeypath,
+            desc=desc)
 
-    # calculate update line
-    u = "{} {}@{} = {} e:{}".format(remoteip,
-        idname,textid, status, error)
+        # calculate update line
+        u = "{} {}@{} = {} e:{}".format(remoteip, idname, textid, status, error)
 
+        if secret:
+            u += " [secret]"
 
-    if secret:
-        u+=" [secret]"
+        if errstr is None:
+            log.debug('HTTPUPDATE OK ' + u)
+            return HttpResponse("OK", status=200)
+        log.info('HTTPUPDATE ERR ({}) {}'.format(errstr, u))
+        return HttpResponse(errstr, status=400)
+    except OkerrError as e:
+        return HttpResponse(str(e), status=400)
 
-    if errstr==None:
-        log.debug('HTTPUPDATE OK ' + u)
-        return HttpResponse("OK",status=200)
-    log.info('HTTPUPDATE ERR ({}) {}'.format(errstr,u))
-    return HttpResponse(errstr,status=400)
 
 
 @csrf_exempt
@@ -3020,12 +3024,13 @@ def getsysvar(request,varname):
     # print "getsysvar",varname
     return HttpResponse(SystemVariable.get(varname,''))
 
+
 def cat(request):
     ctx = dict()
 
     nslist = None
     while nslist is None:
-        nslist = nsresolve('he.okerr.com',qtype='ns')
+        nslist = nsresolve('he.okerr.com', qtype='ns')
         if nslist is None:
             # tmp failure
             time.sleep(1)
@@ -3034,12 +3039,19 @@ def cat(request):
     ctx['name'] = rs.name
     # ctx['ip'] = socket.gethostbyname(socket.getfqdn())
     ctx['ip'] = settings.MYIP 
-    
-    nsname = random.choice(nslist)
-    ctx['nsname'] = nsname
-    ns = nsresolve(nsname)[0]
-    
-    nsip_struct = nsresolve('cat.he.okerr.com',ns)
+
+    ns = None
+    while ns is None:
+        nsname = random.choice(nslist)
+        ctx['nsname'] = nsname
+        try:
+            ns = nsresolve(nsname)[0]
+        except TypeError:
+            # nsresolve returned None
+            time.sleep(1)
+            pass
+
+    nsip_struct = nsresolve('cat.he.okerr.com', ns)
     if nsip_struct:
         ctx['nsip'] = nsip_struct[0]
     else:
@@ -4677,13 +4689,13 @@ def api_status(request):
     data['lastloop']['lastloop'] = int(SystemVariable.get('lastloopunixtime'))
     data['lastloop']['lastloop_age'] = int(time.time() - data['lastloop']['lastloop'])
 
-    if data['lastloop']['lastloop_age'] < 60:
+    if data['lastloop']['lastloop_age'] < 300:
         data['lastloop']['lastloop_status'] = 'OK'
     else:
         data['lastloop']['lastloop_status'] = 'ERR'
 
     return HttpResponse(
-        json.dumps(data, indent=4, separators=(',',': ')), content_type='text/plain')
+        json.dumps(data, indent=4, separators=(',', ': ')), content_type='text/plain')
 
 
 
