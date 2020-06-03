@@ -17,3 +17,9 @@ But better read wiki page for [Installation](https://gitlab.com/yaroslaff/okerr-
 # WIKI
 Main docs is in wiki:
 https://gitlab.com/yaroslaff/okerr-dev/-/wikis/
+
+# Other okerr resources
+- [Okerr main website](https://okerr.com/)
+- [Okerr-server source code repository](gitlab.com/yaroslaff/okerr-dev/) and [okerr server wiki doc](https://gitlab.com/yaroslaff/okerr-dev/wikis/)
+- [Okerr client (okerrupdate) repositoty](https://gitlab.com/yaroslaff/okerrupdate) and [okerrupdate wiki doc](https://gitlab.com/yaroslaff/okerrupdate/wikis/)
+- [Okerrbench network server benchmark](https://gitlab.com/yaroslaff/okerrbench)
