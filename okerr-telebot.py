@@ -500,7 +500,7 @@ def main():
     log.addHandler(out)
 
     err = logging.StreamHandler(sys.stderr)
-    err.setLevel(logging.ERROR)
+    err.setLevel(logging.INFO)
     log.addHandler(err)
 
     if args.verbose:
