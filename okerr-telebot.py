@@ -33,18 +33,6 @@ from okerrui.cluster import myci, RemoteServer
 from okerrui.impex import Impex
 from okerrupdate import OkerrProject, OkerrExc
 from myutils import dhms, md_escape
-import socket
-
-old_getaddrinfo = socket.getaddrinfo
-
-def new_getaddrinfo(*args, **kwargs):
-    responses = old_getaddrinfo(*args, **kwargs)
-    return [response
-            for response in responses
-            if response[0] == socket.AF_INET]
-socket.getaddrinfo = new_getaddrinfo
-
-# end of IPV4 fix
 
 bot = telebot.TeleBot(settings.TGBOT_TOKEN)
 started = time.time()
@@ -539,7 +527,8 @@ def main():
 
     # updater.start_polling()
     try:
-        bot.polling(none_stop=True)
+        bot.infinity_polling()
+        # bot.polling(none_stop=True)
     except RequestException as e:
         log.error('Caught request exceptions {}: {}'.format(type(e), e))
         sys.exit(1)
