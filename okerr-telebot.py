@@ -26,6 +26,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "okerr.settings")
 django.setup()
 from django.db import connection
 
+from requests.exceptions import RequestException
 
 from okerrui.models import Profile, Project
 from okerrui.cluster import myci, RemoteServer
@@ -512,7 +513,12 @@ def main():
 
     print("start polling...")
     # updater.start_polling()
-    bot.polling(none_stop=True)
+    try:
+        bot.polling(none_stop=True)
+    except RequestException as e:
+        log.error('Caught request exceptions {}: {}'.format(type(e), e))
+        sys.exit(1)
+
     print("stop polling")
 
     while not stop:
