@@ -473,11 +473,16 @@ def main():
     global bot
     global main_rs
 
+    try:
+        def_server = getattr(settings, 'SERVER_URL')
+    except AttributeError:
+        def_server = None
+
     parser = argparse.ArgumentParser(description='okerr telegram server.')
     parser.add_argument('-s', '--server',
-        default=settings.SERVER_URL, help='Remote okerr server URL')
+                        default=def_server, help='Remote okerr server URL')
     parser.add_argument('-v', dest='verbose', action='store_true',
-        default=False, help='verbose mode')
+                        default=False, help='verbose mode')
 
 
     args = parser.parse_args()  
@@ -486,7 +491,6 @@ def main():
 
     main_rs = RemoteServer(url=args.server)
     assert(main_rs)
-
     signal.signal(signal.SIGINT, sighandler)    
 
     #logging.basicConfig(
@@ -497,10 +501,12 @@ def main():
     out = logging.StreamHandler(sys.stdout)
     out.setFormatter(logging.Formatter('%(asctime)s %(message)s',
                                        datefmt='%Y/%m/%d %H:%M:%S'))
+    out.setLevel(logging.INFO)
+
     log.addHandler(out)
 
     err = logging.StreamHandler(sys.stderr)
-    err.setLevel(logging.INFO)
+    err.setLevel(logging.ERROR)
     log.addHandler(err)
 
     if args.verbose:
@@ -509,9 +515,11 @@ def main():
         log.setLevel(logging.INFO)
 
     log.propagate = False
+
     op.setlog(log)
 
-    print("start polling...")
+    log.info("Start polling...")
+
     # updater.start_polling()
     try:
         bot.polling(none_stop=True)
