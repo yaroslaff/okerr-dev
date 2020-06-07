@@ -33,22 +33,16 @@ from okerrui.cluster import myci, RemoteServer
 from okerrui.impex import Impex
 from okerrupdate import OkerrProject, OkerrExc
 from myutils import dhms, md_escape
-
-# IPV4 fix
 import socket
-import requests.packages.urllib3.util.connection as urllib3_cn
 
-def allowed_gai_family():
-    """
-     https://github.com/shazow/urllib3/blob/master/urllib3/util/connection.py
-    """
-    family = socket.AF_INET
-    if urllib3_cn.HAS_IPV6:
-        family = socket.AF_INET6 # force ipv6 only if it is available
-    return family
+old_getaddrinfo = socket.getaddrinfo
 
-
-urllib3_cn.allowed_gai_family = allowed_gai_family
+def new_getaddrinfo(*args, **kwargs):
+    responses = old_getaddrinfo(*args, **kwargs)
+    return [response
+            for response in responses
+            if response[0] == socket.AF_INET]
+socket.getaddrinfo = new_getaddrinfo
 
 # end of IPV4 fix
 
