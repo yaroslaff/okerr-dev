@@ -5232,7 +5232,9 @@ class Membership(models.Model):
 
     # membership.get_static_arg
     def get_static_arg(self, name, default=None):
-        return settings.PLANS[self.groupname].get(name, default)
+        plan = settings.PLANS[self.groupname]
+        value = plan.get(name, default)
+        return value
 
     # membership.get_static_arg_prefix
     def get_static_arg_prefix(self, argprefix, default=None):
