@@ -828,8 +828,8 @@ def project(request, pid):
         return redirect('okerr:index')
 
     tadmin = project.tadmin(request.user)
-    profile=request.user.profile
-    context={'profile':profile, 'project':project, 'tadmin': tadmin}
+    profile = request.user.profile
+    context = {'profile': profile, 'project': project, 'tadmin': tadmin}
 
 
     # only project member can view this
@@ -840,10 +840,10 @@ def project(request, pid):
     # only tadmin can POST
     if request.POST:
         if not project.tadmin(request.user):
-            context['error_message']="you are not project admin, sorry"
+            context['error_message'] = "you are not project admin, sorry"
             return render(request, 'okerrui/project.html',context)
 
-    cmd = request.POST.get('cmd',False)
+    cmd = request.POST.get('cmd', False)
 
     if cmd == 'partner_access_enable':
         project.partner_access = True
@@ -856,8 +856,8 @@ def project(request, pid):
         return redirect(request.path)
 
 
-    if cmd=='newowner':
-        newowner = request.POST.get('newowner','')
+    if cmd == 'newowner':
+        newowner = request.POST.get('newowner', '')
         User = get_user_model()
         # is this user member
         u = User.objects.filter(username=newowner).first()
@@ -893,6 +893,11 @@ def project(request, pid):
             notify(request, _('Policy name must be unique'))
             return redirect(request.path)
 
+        try:
+            Policy.validname(name)
+        except ValueError as e:
+            notify(request, str(e))
+            return redirect(request.path)
 
         p = Policy()
         p.retry_schedule = ''
@@ -1341,10 +1346,9 @@ def policy(request, textid, pname):
     if not project:
         return redirect('okerr:index')
 
-    msg=[]
-    try:
-        policy = project.policy_set.filter(name = pname).first()
-    except:
+    msg = []
+    policy = project.policy_set.filter(name=pname).first()
+    if policy is None:
         return redirect('okerr:project', project.get_textid())
 
     # check if user has right to access it
@@ -1359,8 +1363,8 @@ def policy(request, textid, pname):
 
 
     # delete, but not default
-    if request.POST.get('delete',False):
-        if policy.name =='Default':
+    if request.POST.get('delete', False):
+        if policy.name == 'Default':
             notify(request, _('Can not delete "Default" policy'))
             return redirect(request.path)
         # only if user is tadmin
@@ -1375,10 +1379,10 @@ def policy(request, textid, pname):
             return redirect(request.path)
         return redirect('okerr:project', textid)
 
-    if request.POST.get('addsubnet',False):
+    if request.POST.get('addsubnet', False):
         # TODO: valid subnet
-        subnet=request.POST.get('subnet', '')
-        remark=request.POST.get('remark', '')
+        subnet = request.POST.get('subnet', '')
+        remark = request.POST.get('remark', '')
         try:
             subnet=IPNetwork(subnet)
             # subnet is good if  no exception
@@ -1387,18 +1391,18 @@ def policy(request, textid, pname):
         except AddrFormatError:
             msg.append('not valid subnet')
 
-    if request.POST.get('delsubnet',False):
+    if request.POST.get('delsubnet', False):
         # TODO: security check
-        subid = request.POST.get('subid',None)
-        PolicySubnet.objects.filter(policy=policy,id=subid).delete()
-        return redirect('okerr:policy',textid,pname)
+        subid = request.POST.get('subid', None)
+        PolicySubnet.objects.filter(policy=policy, id=subid).delete()
+        return redirect('okerr:policy', textid, pname)
 
 
     if request.POST.get('apply',False):
 
         # VALIDATION
         # change fields, but cannot change name of default policy
-        if policy.name !='Default':
+        if policy.name != 'Default':
             policy.name = request.POST['name']
         else:
             if policy.name != request.POST['name']:
@@ -1430,6 +1434,12 @@ def policy(request, textid, pname):
        }
 
         changed = post2obj(policy, fields, request, msg)
+        try:
+            Policy.validname(policy.name)
+        except ValueError as e:
+            notify(request, str(e))
+            return redirect(request.path)
+
         policy.touch(True)
         policy.save()
         # cannot redirect to request.path, because name can be changed

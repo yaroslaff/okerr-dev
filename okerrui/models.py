@@ -1315,6 +1315,13 @@ class Policy(TransModel):
     def __str__(self):
         return "{} ({})".format(self.name, self.period)
 
+    @classmethod
+    def validname(cls, name):
+        if not name:
+            raise ValueError('Policy must have non-empty name')
+
+
+
     # policy.fix
     def fix(self, verbose=False):
         # fix record, e.g. details
