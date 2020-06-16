@@ -12,17 +12,40 @@
 </head>
 <body>
     <p>
-    <table class=header>
+    <table class=header border="0">
         <tr>
             <td>
-                <a href="/"><img src="{% static 'okerrlogo.png' %}"></a>
+                <a href="/"><img src="{% static 'okerrlogo.png' %}"></a><br>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'okerr:index' %}">{% trans "Indicators" %}</a>
+                        <a href={% url 'okerr:projectlist' %}>{% trans "Projects" %}</a>
+                        {% if user.profile.get_jarg_full_interface %}
+                            <a href={% url 'okerr:invitations' %}>{% trans "Invitations" %}</a>
+                        {% endif %}
+                    {% else %}
+                         <a href="{% url 'myauth:login' %}">{% trans "Login" %}</a>
+                         <a href="{% url 'myauth:signup' %}">{% trans "Register" %}</a>
+                    {% endif %}
             </td>
             <td align=right class="sysinfo">
+            <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+            <input name="language" type="hidden" value="ru" />
+            <input type="image" src="{% static 'rus.png' %}" alt="rus" title="Russian">
+            </form>
+            <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+            <input name="language" type="hidden" value="en" />
+            <input type="image" src="{% static 'uk.png' %}" alt="eng" title="English">
+            </form>
+
             {% if user.is_authenticated %}
-                {{ user.email }}
+                <a href={% url 'myauth:profile' %}><img src="{% static 'user.png' %}" title="profile">{{ user.email }}</a>
+                &nbsp;
+                <a href={% url 'myauth:logout' %}><img src="{% static 'logout.png' %}" title="logout"></a>
             {% endif %}
-            &nbsp;
-            okerr:BETA
             <br>
             {% trans "Server time" %}: {% now "d M Y H:i:s (e)" %}
             {% getbacklog as backlog %}
@@ -44,39 +67,21 @@
             {% endif %}
             {{ loopage }} seconds
             </span>
+            <br>
+            {% trans 'Interface' %}:
+            <a href="{% url 'okerr:toggle_interface_level' request.path %}">
+            {% if user.profile.get_jarg_full_interface %}
+                    {% trans 'Full' %}
+            {% else %}
+                    {% trans 'Simple' %}
+            {% endif %}
+                </a>
+            &nbsp;
+            <a href="https://gitlab.com/yaroslaff/okerr-dev/-/wikis/"><img src="{% static 'help.png' %}"> {% trans 'Wiki' %}</a>
+            &nbsp;
+            <a href="https://okerr.freshdesk.com/"><img src="{% static 'lifebuoy.png' %}"> {% trans 'Support' %}</a>
             </td>
         </tr>
-        <tr>
-            <td colspan=2>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'okerr:index' %}">{% trans "Indicators" %}</a>
-                        <a href={% url 'okerr:projectlist' %}>{% trans "Projects" %}</a>
-                        <a href={% url 'okerr:invitations' %}>{% trans "Invitations" %}</a>
-                        <a href={% url 'myauth:profile' %}>{% trans 'Profile' %}</a>
-                        <a href="https://gitlab.com/yaroslaff/okerr-dev/-/wikis/">{% trans 'Wiki' %}</a>
-                        <a href="https://okerr.freshdesk.com/">{% trans 'Support' %}</a>
-                        <a href="{% url 'myauth:logout' %}">{% trans "Logout" %}</a>
-                    {% else %}
-
-                        <a href="https://okerr.freshdesk.com/">{% trans 'Support' %}</a>
-                         <a href="{% url 'myauth:login' %}">{% trans "Login" %}</a>
-                         <a href="{% url 'myauth:signup' %}">{% trans "Register" %}</a>
-                    {% endif %}
-
-                    <form action="{% url 'set_language' %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-                    <input name="language" type="hidden" value="ru" />
-                    <input type="image" src="{% static 'rus.png' %}" alt="rus">
-                    </form>
-
-
-                    <form action="{% url 'set_language' %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-                    <input name="language" type="hidden" value="en" />
-                    <input type="image" src="{% static 'uk.png' %}" alt="eng"> </form>
-            </tr>
     </table>
     </p>
 

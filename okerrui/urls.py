@@ -59,8 +59,9 @@ urlpatterns = [
     url(r'^keystext/(?P<pid>\d+)/(?P<parentpath>.*)', views.keystext, name='keystext'),
     url(r'^updatevkeys/(?P<pid>\d+)', views.updatevkeys, name='updatevkeys'),
     url(r'^resetkeys/(?P<pid>\d+)', views.resetkeys, name='resetkeys'),
+    url('^toggle_interface_level/(?P<path>.+)', views.toggle_interface_level, name='toggle_interface_level'),
 
-#    url(r'^getkeytree/(?P<textid>[^\/]+)/(?P<path>.*)',views.getkeytree,name='getkeytree'),
+    #    url(r'^getkeytree/(?P<textid>[^\/]+)/(?P<path>.*)',views.getkeytree,name='getkeytree'),
     url(r'^exportkeyval/(?P<pid>[^\/]+)/(?P<path>.*)', views.exportkeyval, name='exportkeyval'),
     url(r'^exportkeyval_raw/(?P<pid>[^\/]+)/(?P<path>.*)', views.exportkeyval_raw, name='exportkeyval_raw'),
 
@@ -80,6 +81,7 @@ urlpatterns = [
     url(r'^getpub/?', views.getpub, name='getpub'),
     url(r'^eula', views.eula, name='eula'),
     url(r'^motd', views.motd, name='motd'),
+    url('^firstlogin', views.firstlogin, name='firstlogin'),
     url(r'^afterlife', views.afterlife, name='afterlife'),
     url(r'^bonusverify', views.bonusverify, name='bonusverify'),
     url(r'^tview', TemplateView.as_view(template_name='okerrui/eula.html')),

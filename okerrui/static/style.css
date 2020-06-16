@@ -89,8 +89,8 @@ p.footer {
 
 .sysinfo {
     font-size: 12px;
+    align-items: top;
     color:#676767;
-    text-align: right;
     padding: 0px;
 }
 

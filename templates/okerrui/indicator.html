@@ -299,7 +299,7 @@
             </td>
         </td>
 
-
+        {% if user.profile.get_jarg_full_interface %}
         <tr class=title>          
             <td>{% trans 'Tags' %}</td>
         </tr>
@@ -322,8 +322,9 @@
                 </form>
             </td>
         </tr>
+        {% endif %}
 
-
+        {% if user.profile.get_jarg_full_interface %}
         <tr class=title><td>{% trans 'Copy indicator' %}</td></tr>
         <tr><td>
         
@@ -333,7 +334,8 @@
                 <button class='massButton' name='copy' value='1'>{% trans 'Copy' %}</button>
             </form>
 
-        </td></tr>            
+        </td></tr>
+        {% endif %}
 
     
     </table> {# nested table, left #}    
@@ -357,8 +359,14 @@
         {% endif %}
 
 
+        {% if user.profile.get_jarg_full_interface %}
+
         <tr class=title>
-            <td>{% trans 'User-specific settings' %}</td>
+            <td><div style="float:left;width:90%;">{% trans 'User-specific settings' %}</div></td>
+            <td>
+                <a href="https://gitlab.com/yaroslaff/okerr-dev/-/wikis/Indicators"  target="_blank">
+                    <img src="{% static 'help.png' %}"></a>
+            </td>
         </tr>
         <tr><td>
             <form method=post>
@@ -383,6 +391,7 @@
                 </tr>
             </table>
         </td></tr>
+        {% endif %}
 
 
         {% if i.statusindicator_set.count %}

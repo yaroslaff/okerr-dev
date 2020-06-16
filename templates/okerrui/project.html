@@ -28,8 +28,8 @@ function alert_handler(){
 </script>
 
 
-
-{% with project=project prefix="Configuration" %}
+{% trans "Settings" as prefix %}
+{% with project=project prefix=prefix %}
     {% include 'okerrui/projectlinks.html' %}
 {% endwith %}
 <br>
@@ -47,7 +47,7 @@ function alert_handler(){
                <form method=post>
                 {% csrf_token %}
                 <input type=text name=name value="{{project.name}}">
-                <button class='massButton' name='change' value='1'>{% trans 'Add' %}</button>
+                <button class='massButton' name='change' value='1'>{% trans 'Rename' %}</button>
                </form>
                
             {% endif %}
@@ -56,6 +56,7 @@ function alert_handler(){
         </td>
     </tr>
 
+    {% if user.profile.get_jarg_full_interface %}
     <tr class=title><td>{% trans 'TextID' %}</td></tr>
     <tr>
         <td>
@@ -85,8 +86,9 @@ function alert_handler(){
             </td></tr></table>
         </td>
     </tr>
+    {% endif %}
 
-
+    {% if user.profile.get_jarg_full_interface %}
     <tr class=title>
         <td>{% trans 'Owner' %}</td>
     </tr>
@@ -121,7 +123,7 @@ function alert_handler(){
             </form>
         </td>
     </tr>
-
+    {% endif %}
 
 
     {% if profile.partner_id and profile.partner_name %}
@@ -153,6 +155,7 @@ function alert_handler(){
 
 
 
+    {% if user.profile.get_jarg_full_interface %}
 
     <tr class=title>
         <td>{% trans 'Members' %}</td>
@@ -202,6 +205,10 @@ function alert_handler(){
             {# {% csrf_token %} <center> </form> #}
         </td>
     </tr>
+    {% endif %}
+
+
+    {% if user.profile.get_jarg_full_interface %}
     <tr class=title>
         <td>{% trans 'Invitiations' %}</td>
     </tr>
@@ -276,6 +283,7 @@ function alert_handler(){
 
         </td>
     </tr>
+    {% endif %}
     
     <tr class=title>
         <td>{% trans 'Policies' %}</td>
@@ -423,12 +431,10 @@ function alert_handler(){
                     {% trans 'Status page short name (address)' %}:
                 </td>
                 <td>
-                    <input type=text name="addr">
+                    <input type=text name="addr"> <button class='massButton' name='addstatus' value='1'>{% trans 'Add' %}</button>
                 </td>
             </tr>
-
             </table>
-            <button class='massButton' name='addstatus' value='1'>{% trans 'Add' %}</button>
             </form>                
         </td>
     </tr>
@@ -468,7 +474,7 @@ function alert_handler(){
                 <input type=hidden name='adddyndns' value='1'>
                 {% csrf_token %}
                 host: <input type=text name='host'>
-                <br>
+
                 <button class='massButton'>{% trans 'Add' %}</button>
             </form>
         </td>

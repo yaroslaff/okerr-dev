@@ -527,6 +527,7 @@ class Project(TransModel):
         return self.owner.profile.getarg('minperiod')
 
     # project.get_na_indicatos
+    # return number of non-disabled indicators
     def get_na_indicators(self):
         na = self.indicator_set.filter(disabled=False).count()
         return na
@@ -4097,6 +4098,7 @@ class Profile(TransModel):
     partner_name = models.CharField(max_length=100, default=None, null=True)  # e.g. 'example.com'
     partner_id = models.CharField(max_length=100, default=None,
                                   null=True)  # e.g. '00220' id of user in partner. e.g. contract no or email or anything
+    jargs = models.TextField(default='{}')  # any other arguments in JSON format
 
     # profile.set_ci
     def set_ci(self, ci, force=False):
@@ -4367,9 +4369,9 @@ class Profile(TransModel):
             klist = filter(lambda x: x <= period, klist)
             return max(klist)
 
+
         for profile in cls.objects.filter(ci=myci(), patrolled__lt=timezone.now() - patrol_period):
             log.info("patrol profile {}".format(profile))
-
             report = dict()
 
             na = profile.get_na_indicators()
@@ -4394,10 +4396,12 @@ class Profile(TransModel):
 
             if base_minperiod:
                 # only for non-none. just in case
-                # print 'qindicators for {} minperiod: {} qi: {}'.format(profile, base_minperiod, qi)
 
-                for i in Indicator.objects.filter(project__in=profile.ownerprojects(), disabled=False,
-                                                  policy__period__lt=base_minperiod):
+                for i in Indicator.objects.filter(project__in=profile.ownerprojects(), disabled=False):
+                    if i.policy.get_period() >= base_minperiod:
+                        # regular indicator, not quick. not interested, skip it
+                        continue
+
                     try:
                         plimit = getminqi(qi, i.policy.get_period())
                     except ValueError:
@@ -4509,6 +4513,24 @@ class Profile(TransModel):
             return self.getarg('login') == 1
         except KeyError as e:
             log.error('can_login exception: {}'.format(e))
+            return False
+
+    # profile.get_jarg
+    def get_jarg(self, key):
+        jargs = json.loads(self.jargs or '{}')
+        return jargs[key]
+
+    # profile.set_jarg
+    def set_jarg(self, key, value):
+        jargs = json.loads(self.jargs or '{}')
+        jargs[key] = value
+        self.jargs = json.dumps(jargs)
+
+    # specific jargs getters
+    def get_jarg_full_interface(self):
+        try:
+            return self.get_jarg('full_interface')
+        except KeyError:
             return False
 
     #

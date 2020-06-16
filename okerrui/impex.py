@@ -817,7 +817,7 @@ class Impex():
         # self.learn(o.__class__)
         m = self.models[mname]
 
-        def trans(o,trans):
+        def trans(o, trans):
         
             for step in trans.split(':')[1].split('.'):
                 if o is None:
@@ -825,7 +825,7 @@ class Impex():
                 o = getattr(o,step)
             return o
 
-        self.vprint(2,u'.. o2d {}: {}'.format(mname, o))
+        self.vprint(2, '.. o2d {}: {}'.format(mname, o))
 
 
         if parents is None:

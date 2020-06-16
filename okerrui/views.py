@@ -340,9 +340,8 @@ def motd(request, return_url=None):
 
     ctx = {}
     # get motd
-    motd = requests.get('http://okerr.com/motd/motd.txt')
+    motd = requests.get(settings.MOTD_MESSAGE_URL)
     motdsha1 = hashlib.sha1(motd.text.encode('utf-8')).hexdigest()
-
 
     ctx['motd'] = motd.text
     ctx['return_url'] = return_url
@@ -352,12 +351,41 @@ def motd(request, return_url=None):
     # check if should see motd, return motd page
     return render(request, 'okerrui/motd.html', ctx)
 
+def firstlogin(request, return_url=None):
+
+    print("firstlogin")
+
+    if return_url is None:
+        return_url = 'okerr:afterlogin'
+
+    if 'continue' in request.POST:
+        request.session['seen_firstlogin'] = True
+        return redirect(request.POST['return_url'])
+
+    ctx = {}
+    # get message
+    msg = requests.get(settings.FIRSTLOGIN_MESSAGE_URL)
+
+    ctx['motd'] = msg.text
+    ctx['return_url'] = return_url
+    print(msg.text)
+
+    # check if should see motd, return motd page
+    return render(request, 'okerrui/motd.html', ctx)
+
+
 
 def afterlogin(request):
 
+    first_login = (timezone.now() - request.user.date_joined).total_seconds() < 30
+
     remoteip = get_remoteip(request)
 
-    if settings.ENABLE_MOTD and request.user.is_authenticated and not seen_motd(request):
+    if first_login and not request.session.get('seen_firstlogin', False) and \
+            getattr(settings, 'FIRSTLOGIN_MESSAGE_URL', None):
+        return redirect('okerr:firstlogin')
+
+    if getattr(settings, 'MOTD_MESSAGE_URL', None) and request.user.is_authenticated and not seen_motd(request):
         return redirect("okerr:motd")
 
     if 'afterlogin_redirect' in request.session:
@@ -368,8 +396,18 @@ def afterlogin(request):
     else:
         log.info('{} {} AFTERLOGIN no afterlogin_redirect. skey: {}'.format(remoteip, request.get_host(), request.session.session_key))
 
+    make_tip(request)
     return redirect('okerr:index')
 
+def make_tip(request):
+    profile = request.user.profile
+
+    if profile.training_stage is None:
+        notify(request, _('You can take quick built-in training to learn Okerr.\n'
+                          'Open your Profile (from top-right corner) and start training at any time'))
+    elif profile.training_stage != 'basic:DONE':
+        notify(request, _('After you will complete training, you will not only learn Okerr,'
+                          ' but also will get higher plan as reward (permanently)'))
 
 
 def relocate(request, project, indicator = None):
@@ -418,7 +456,7 @@ def index(request):
         if ninv>0:
             return redirect('okerr:acceptinvite')
 
-    preferred = request.COOKIES.get('preferred_project',None)
+    preferred = request.COOKIES.get('preferred_project', None)
     if preferred:
         project = Project.get_by_textid(preferred)
         pm = ProjectMember.objects.filter(email=request.user.email, project=project, project__deleted_at__isnull = True).first()
@@ -511,71 +549,8 @@ def chproject(request):
     newpath = path.replace(textid1, textid2)
     return redirect(newpath)
 
-#
-# vpid is passed to view as project id
-#
-# called as two different path, so must be careful when redirect to my view
-# use redirect(request.path)
-#
-#
-
 @login_required(login_url='myauth:login')
-def UNUSED_index(request,vpid=None):
-    p = request.user.profile
-    msg=[]
-
-
-
-    """
-
-    """
-    def curproject(request):
-        """ fill vpid and project """
-
-        # try to take vpid from session
-        if 'vpid' in request.session:
-            # check if this is valid vpid
-            vpid = int(request.session['vpid'])
-            try:
-                project = request.user.projectmember_set.get(project__id=vpid).project
-                return project
-            except ObjectDoesNotExist:
-                pass
-
-        # no vpid? ok, init by first project
-        pm = request.user.projectmember_set.first()
-        if pm is None:
-            return None
-        project = pm.project
-        vpid = project.id
-        request.session['vpid']=vpid
-        return project
-
-    project = curproject(request)
-    if project:
-        pid = project.id
-    else:
-        pid = None
-
-    if 'danger' in request.session:
-        danger=request.session['danger']
-    else:
-        danger=False
-
-    if not 'onceafterlogin' in request.session:
-        # check invites
-        request.session['onceafterlogin']=True
-        ninv = ProjectInvite.objects.filter(email=request.user.username, left__gt=0).count()
-        if ninv>0:
-            return redirect('okerr:acceptinvite')
-
-    context={'profile': p,'msg':msg, 'pid': pid, 'project': project, 'danger': danger }
-
-    return render(request,'okerrui/index.html',context)
-
-
-@login_required(login_url='myauth:login')
-def add(request,tid):
+def add(request, tid):
 
     remoteip = get_remoteip(request)
 
@@ -1428,9 +1403,9 @@ def policy(request, textid, pname):
             'recovery_retry_schedule': {'type': 'str'},
             'reduction': {'type': 'str'},
             'url_statuschange': {'type': 'str'},
-            'autocreate':{'type':'bool'},
-            'httpupdate':{'type':'bool'},
-            'smtpupdate':{'type':'bool'},
+            'autocreate': {'type': 'bool'},
+            'httpupdate': {'type': 'bool'},
+            'smtpupdate': {'type': 'bool'},
        }
 
         changed = post2obj(policy, fields, request, msg)
@@ -1514,7 +1489,7 @@ def indicator(request,iid):
 
     redis = get_redis(settings.OKERR_REDIS_DB)
 
-    i=get_object_or_404(Indicator,pk=iid)
+    i=get_object_or_404(Indicator, pk=iid)
     # !!! make sure it can show only your indicators
     # basic checks - if user can access to this indicator
     if not i.project.member(request.user):
@@ -1525,11 +1500,11 @@ def indicator(request,iid):
         return HttpResponseNotFound('No such indicator')
 
     # now, if user can change anything
-    iadmin_commands = ['change','changeargs','delete','settag','deltag','copy']
+    iadmin_commands = ['change', 'changeargs', 'delete', 'settag', 'deltag', 'copy']
 
-    iargs={}
+    iargs = {}
     for ianame in Indicator.iarglist():
-        iargs[ianame]=i.getiarg(request.user,ianame, None)
+        iargs[ianame] = i.getiarg(request.user, ianame, None)
 
     if request.POST and not i.project.iadmin(request.user):
         for cmd in iadmin_commands:
@@ -1959,11 +1934,18 @@ def uptimelog(request, textid, iname):
     return render(request, 'okerrui/uptimelog.html', ctx)
 
 
+def toggle_interface_level(request, path):
+    profile = request.user.profile
+    profile.set_jarg('full_interface', not profile.get_jarg_full_interface())
+    profile.save()
+    return redirect(path)
+
+
 def eula(request):
     # shows for non-logged in users too
     # only logged in can accept
-    msg=[]
-    context={'msg':msg}
+    msg = []
+    context = {'msg': msg}
 
     if request.POST:
         cmd = request.POST.get('cmd','')
@@ -4035,7 +4017,7 @@ def create_user(email, partner_name=None, partner_id=None, partner_access=False)
     if user:
         raise ValueError('User {} already exists'.format(email))
 
-    profile = Profile.objects.filter(partner_name = partner_name, partner_id = partner_id).first()
+    profile = Profile.objects.filter(partner_name=partner_name, partner_id=partner_id).first()
     if profile:
         raise ValueError('User {}:{} already exists'.format(partner_name, partner_id))
 

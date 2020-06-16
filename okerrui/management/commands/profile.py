@@ -28,7 +28,7 @@ class Command(BaseCommand):
         parser.add_argument('--rename', default=None, metavar='NEW-EMAIL', help='New email')
         parser.add_argument('--patrol', action='store_true', default=False, help='patrol profiles')
         parser.add_argument('--tstage', default=None, help='set training stage (magic codes: prev, next, first)')
-        parser.add_argument('-b',dest='batch', default=False,action='store_true', help='brief output for batch mode')
+        parser.add_argument('-b', dest='batch', default=False,action='store_true', help='brief output for batch mode')
         parser.add_argument('--really', default=False,action='store_true', help='really. (for dangerous operations)')
 
         g = parser.add_argument_group('New profile options')
@@ -119,13 +119,19 @@ class Command(BaseCommand):
                 # tstage = tasks[section][0]['code']
                 tstage = None
             elif options['tstage'] == 'next':
-                section, curstage = p.training_stage.split(':', 1)
-                idx = stagelist.index(curstage)
-                tstage = stagelist[idx + 1]
+                if p.training_stage is not None:
+                    section, curstage = p.training_stage.split(':', 1)
+                    idx = stagelist.index(curstage)
+                    tstage = stagelist[idx + 1]
+                else:
+                    tstage = stagelist[0]
             elif options['tstage'] == 'prev':
                 section, curstage = p.training_stage.split(':', 1)
                 idx = stagelist.index(curstage)
-                tstage = stagelist[idx - 1]
+                if idx:
+                    tstage = stagelist[idx - 1]
+                else:
+                    print("already first stage")
             elif options['tstage'] == 'list':
                 print(stagelist)
                 return

@@ -52,9 +52,9 @@ logger = logmessage.models.Logger()
 
 
 
-def create_user(request, email, password=None):
+def create_user(request, email, password=None, send_email=True):
 
-    context={}
+    context = {}
     loginurl=request.build_absolute_uri(reverse('myauth:login'))
     remoteip = get_remoteip(request)
 
@@ -78,25 +78,26 @@ def create_user(request, email, password=None):
     context['username'] = email
     context['password'] = password
     context['user'] = user
-    
-    # send email
-    subj = 'Okerr registration information'
 
-    plaintext = get_template('afterreg.txt')
-    htmly = get_template('afterreg.html')
 
-    mail_ctx = { 
-        'username': email, 
-        'password': password, 
-        'loginurl': loginurl,
-        'hostname': settings.HOSTNAME,
-        'MYMAIL_FOOTER': settings.MYMAIL_FOOTER,                    
-        }
+    if send_email:
+        subj = 'Okerr registration information'
 
-    text_content = plaintext.render(mail_ctx)
-    html_content = htmly.render(mail_ctx)        
-           
-    myutils.send_email(email, subject=subj, text=text_content, html=html_content, what='signup')
+        plaintext = get_template('afterreg.txt')
+        htmly = get_template('afterreg.html')
+
+        mail_ctx = {
+            'username': email,
+            'password': password,
+            'loginurl': loginurl,
+            'hostname': settings.HOSTNAME,
+            'MYMAIL_FOOTER': settings.MYMAIL_FOOTER,
+            }
+
+        text_content = plaintext.render(mail_ctx)
+        html_content = htmly.render(mail_ctx)
+
+        myutils.send_email(email, subject=subj, text=text_content, html=html_content, what='signup')
     
     logger.log('registered user: {} from ip: {}'.format(user.username, remoteip), kind='reg')
 
@@ -112,10 +113,10 @@ def verify(request):
 
     remoteip = get_remoteip(request)
 
-    context={}
-    if request.GET.get('email',None) and request.GET.get('code',None):
-        email=request.GET['email']
-        code=request.GET['code']
+    context = {}
+    if request.GET.get('email', None) and request.GET.get('code', None):
+        email = request.GET['email']
+        code = request.GET['code']
         
         if SignupRequest.objects.filter(email=email,code=code).count()==1:
             # good! create user, delete request
@@ -152,7 +153,7 @@ def verify(request):
                        
                 myutils.send_email(email, subject=subj, text=text_content, html=html_content, what='signup')
                     
-                return render(request,'myauth/empty.html',context)
+                return render(request, 'myauth/empty.html',context)
                 
 
             # create user           
@@ -160,7 +161,7 @@ def verify(request):
                 
             #if user:
             log.info("created user {}".format(context['username']))               
-            return render(request,'myauth/registered.html',context)
+            return render(request, 'myauth/registered.html', context)
             #else:
             #    context['error_message']="failed to create user %s" % user.name
             #    log.warning("fail to create user '{}'".format(email))
@@ -169,20 +170,20 @@ def verify(request):
             context['error_message']='Sorry, bad verification code'
             log.warning("bad reg verification code email '{}' code '{}'".format(email,code))
            
-    return render(request,'myauth/verify.html',context)
+    return render(request, 'myauth/verify.html',context)
 
 @login_required(login_url='/login')
 def profile(request):
 
     sudoers = getattr(settings, 'SUDOERS', list())
 
-    msg=[]
-    context={'msg':msg}
-    profile=request.user.profile   
-    context['profile']=profile
-    context['groups']=profile.groupstext()
-    context['perks']=profile.perkstext()
-    context['args']=profile.groupargs()
+    msg = []
+    context = {'msg': msg}
+    profile = request.user.profile
+    context['profile'] = profile
+    context['groups'] = profile.groupstext()
+    context['perks'] = profile.perkstext()
+    context['args'] = profile.groupargs()
     context['qi'] = profile.get_qindicators()    
     context['oauth2_bound'] = list()
     context['oauth2_notbound'] = list()
@@ -203,13 +204,13 @@ def profile(request):
     if 'danger' in request.session:
         msg.append('danger is set')
     
-    if request.COOKIES.get('noredirect',''):
+    if request.COOKIES.get('noredirect', ''):
         msg.append('noredirect is set')
 
     if request.POST.get('oauth_clean', None):
         Oauth2Binding.rmprofile(profile)
 
-    if request.POST.get('change', None):
+    if request.POST.get('change', False):
         # context['error_message']='submitted'
         request.user.first_name=request.POST.get('first_name', '')
         request.user.last_name=request.POST.get('last_name', '')
@@ -224,14 +225,13 @@ def profile(request):
                     notify(request, 'Enabled bonus code {}'.format(bonuscodename))
                     return redirect('myauth:profile')
 
-
             if hasattr(settings, 'DANGER_CODE') and bonuscodename == settings.DANGER_CODE:
                 log.info("set DANGER for user {}".format(request.user.username))
                 notify(request, 'set DANGER for {}'.format(request.user))
                 request.session['danger'] = True
-                #return render(request,'myauth/profile.html',context)
+                # return render(request,'myauth/profile.html',context)
                 return redirect('myauth:profile')
-                #return HttpResponseRedirect("")
+                # return HttpResponseRedirect("")
 
             if bonuscodename.startswith('sudo:') and request.user.email in sudoers:
                 sudo, username = bonuscodename.split(':', 1)
@@ -240,7 +240,7 @@ def profile(request):
                     olduser = request.user
                     user.backend = 'django.contrib.auth.backends.ModelBackend'
                     log.info('SUDO {} sudo to {}'.format(request.user, user))                
-                    django_login(request,user)
+                    django_login(request, user)
                     request.session['presudo']=olduser.email
                     return redirect(request.path)
 
@@ -329,7 +329,7 @@ def profile(request):
                     profile.schedulenext()
                     log.info('user {user} changed sumtime to {hh}:{mm}'\
                     ' ({sumtime}), next summary: {nextsummary}'.format(
-                        user=request.user.username,hh=hh,mm=mm,
+                        user=request.user.username, hh=hh, mm=mm,
                         sumtime=profile.sumtime,
                         nextsummary=profile.nextsummary))
                 else:
@@ -357,7 +357,7 @@ def profile(request):
             else:
                 notify(request, 'bad delete confirmation phrase')
 
-        if request.POST.get('telegram_name','') != profile.telegram_name:
+        if request.POST.get('telegram_name', '') != profile.telegram_name:
             profile.telegram_name = request.POST.get('telegram_name')
             profile.telegram_chat_id = None
             if profile.telegram_name:
@@ -379,17 +379,36 @@ def profile(request):
 
 
 def signup(request):
-    vlink=request.build_absolute_uri(reverse('myauth:verify'))
+    vlink = request.build_absolute_uri(reverse('myauth:verify'))
 
     remoteip=get_remoteip(request)
         
     User = get_user_model()
-    msg=[]
-    context={'msg':msg}
-    if request.POST.get('email',None):        
+    msg = []
+    context = {'msg': msg}
+    if request.POST.get('email', None):
         email = request.POST.get('email')
 
-        if not request.POST.get('iaccept',False):
+        # fake registration part
+
+        fake_domain = getattr(settings, 'FAKE_DOMAIN', None)
+        if fake_domain and email.endswith(fake_domain):
+            if User.objects.filter(username=email).first():
+                notify(request, _('Already has registered user {}').format(email))
+                return redirect(request.path)
+            user = create_user(request, email=email,
+                               password=getattr(settings, 'FAKE_DOMAIN_PASS', email[:-len(fake_domain)]),
+                               send_email=False)['user']
+            user.profile.sendalert = False
+            user.profile.sendsummary = False
+            user.profile.save()
+            log.info("created user {}".format(email))
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            django_login(request, user)
+            request.session['firstlogin'] = True
+            return redirect(afterlogin)
+
+        if not request.POST.get('iaccept', False):
             msg.append(_('You have to accept EULA to start using okerr'))
         elif validate_email(email):
 
@@ -398,20 +417,19 @@ def signup(request):
                 context = create_user(request, email)  
                 log.info("created user {}".format(context['username']))
                 context['user'].backend = 'django.contrib.auth.backends.ModelBackend'                                               
-                django_login(request, context['user'])                
+                django_login(request, context['user'])
+                request.session['firstlogin'] = True
                 return redirect(afterlogin)
 
-                
-                return render(request,'myauth/registered.html',context)
-        
             # check, maybe already recently signed up
             if SignupRequest.objects.filter(email=email).count() > 0:
                 msg.append(_('Already has signup from {}').format(email))
             elif User.objects.filter(username=email).first():
                 msg.append(_('Already has registered user {}').format(email)) 
             else:
+
                 sr = SignupRequest()
-                sr.email=email
+                sr.email = email
                 sr.gencode()
                 sr.save()
     
@@ -435,10 +453,10 @@ def signup(request):
 
                 logger.log('signup email {} from ip: {}'.format(email, remoteip), kind='reg')
                      
-                context['email']=email
-                return render(request,'myauth/aftersignup.html',context)               
+                context['email'] = email
+                return render(request, 'myauth/aftersignup.html', context)
         else:
-            context['error_message']='bad email'  
+            context['error_message'] = 'bad email'
             
     try:
         context['email'] = request.session['oauth2_email']
@@ -461,7 +479,7 @@ def logout(request):
             # del request.session['presudo']
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             log.info('BackSUDO {} sudo to {}'.format(request.user, user))                
-            django_login(request,user)
+            django_login(request, user)
             return redirect('myauth:profile')
 
     django_logout(request) 
@@ -475,7 +493,7 @@ def recover(request):
 
     if not email:
         email = request.POST.get('email', None)
-        return render(request,'myauth/recover.html', context)
+        return render(request, 'myauth/recover.html', context)
 
     thkey = 'myauth:recover:'+email
     
@@ -625,12 +643,12 @@ def login(request):
 
     context['prelogin'] = None
 
-    if settings.ENABLE_PRELOGIN:
-        r = requests.get('http://okerr.com/motd/prelogin.txt')
+    if getattr(settings, 'PRELOGIN_MESSAGE_URL', None):
+        r = requests.get(settings.PRELOGIN_MESSAGE_URL)
         if r.status_code == 200:
             context['prelogin'] = r.text
 
-    return render(request,'myauth/login.html', context)
+    return render(request, 'myauth/login.html', context)
 
 def demologin(request):
     demouser = "okerrdemo@maildrop.cc"

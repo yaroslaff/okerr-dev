@@ -243,7 +243,6 @@ def training(request, code=None):
 
                 return True
 
-
         if code == 'telegram':
             if not profile.telegram_name:
                 notify(request, str(_("Telegram username not set in profile")))

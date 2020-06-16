@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <script>
 function changeproject(){
@@ -38,9 +39,11 @@ function changeproject(){
 </span>
 
 (<acronym title="textid(s): {% for tid in project.projecttextid_set.all %}{{tid}} {%endfor%}">{{project.get_textid}}</acronym>)&nbsp;
-<span title="indicators"><a href="{% url 'okerr:pi' project.get_textid %}"><img src="{% static 'iflags/OK.png' %}"></a></span>
-<span title="scripts and servers"><a href="{% url 'okerr:servers' project.get_textid %}"><img src="{% static 'computer.png' %}"></a></span>
-<span title="project settings"><a href="{% url 'okerr:project' project.get_textid %}"><img src="{% static 'wrench.png' %}"></a></span>
-<span title="project as JSON structure"><a href={% url 'okerr:pjson' project.get_textid %}><img src="{% static 'page.png' %}"></a></span>
-<span title="project logs"><a href={% url 'okerr:project_log' project.get_textid '' %}><img src="{% static 'text_columns.png' %}"></a></span>
+<span title='{% trans "indicators" %}'><a href="{% url 'okerr:pi' project.get_textid %}"><img src="{% static 'iflags/OK.png' %}"></a></span>
+{% if user.profile.get_jarg_full_interface %}
+    <span title="{% trans 'scripts and servers' %}"><a href="{% url 'okerr:servers' project.get_textid %}"><img src="{% static 'computer.png' %}"></a></span>
+    <span title="{% trans 'project context' %}"><a href={% url 'okerr:pjson' project.get_textid %}><img src="{% static 'page.png' %}"></a></span>
+    <span title="{% trans 'project logs' %}"><a href={% url 'okerr:project_log' project.get_textid '' %}><img src="{% static 'text_columns.png' %}"></a></span>
+{% endif %}
+<span title="{% trans 'project settings' %}"><a href="{% url 'okerr:project' project.get_textid %}"><img src="{% static 'wrench.png' %}"></a></span>
 

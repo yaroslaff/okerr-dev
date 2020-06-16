@@ -6,6 +6,12 @@
 <script>
 'use strict';
 
+{% if user.profile.get_jarg_full_interface %}
+    var full_interface = true;
+{% else %}
+    var full_interface = false;
+{% endif %}
+
 
 function sendsummary(){
 
@@ -54,7 +60,20 @@ class Project {
         var l = this.cbn.push(i)    
         return l-1
     }    
-    
+
+
+    // project.anyselected
+    anySelected(){
+        for(var ii in this.indicators){
+           var i = this.indicators[ii]
+            if(i.selected){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     // project.addpolicy
     addpolicy(p){
         var pid = p.id
@@ -173,7 +192,9 @@ class Project {
             div.removeChild(div.firstChild);
         }
 
-        this.itree.drawTags(idname)
+        if(full_interface){
+            this.itree.drawTags(idname)
+        }
         this.itree.draw(idname)
         this.itree.drawMassCmd(idname)
     }
@@ -186,7 +207,8 @@ class Project {
     }
     
     groupselect(s, cbnfrom){
-        var step=1;        
+        var step=1;
+
         if(cbnfrom > this.lastcheckbox){
             step = -1
         }                
@@ -269,6 +291,11 @@ class Indicator {
                 i.project.groupselect(target.checked, i.cbn)
             }
             i.project.lastcheckbox = i.cbn
+
+            var massdiv = document.getElementById('massOpDiv')
+
+            massdiv.hidden = ! i.project.anySelected()
+
         }
     }
 
@@ -339,15 +366,12 @@ class Indicator {
         //    }
         //})
 
-
         this.checkbox = cb
         if (this.cbn == null) {
             this.cbn = this.project.get_cbn(this)
         }
 
         c.appendChild(cb)
-
-
 
         c = r.insertCell(1)
         c.className="min"
@@ -1163,7 +1187,10 @@ class iTree {
 
         var div = document.getElementById(idname) //.innerHTML += '<br>'+iname;
         var massdiv = document.createElement("div")
+        massdiv.id = "massOpDiv"
         massdiv.className = "massOpButtons"
+        massdiv.hidden = true // hidden by default
+
 
         var bMaintenance = document.createElement("input")
         bMaintenance.setAttribute("type","button")
@@ -1207,29 +1234,8 @@ class iTree {
         bMaintenance.onclick = this.doMassCmd('delete')
         massdiv.appendChild(bMaintenance)
 
-        /*
-        var ssdiv = document.createElement("div")
-
-        var bMaintenance = document.createElement("input")
-        bMaintenance.setAttribute("type","button")
-        bMaintenance.className = "massButton"
-        bMaintenance.setAttribute("value","{% trans 'send summary' %}")
-        bMaintenance.setAttribute("name","summary")
-        // bMaintenance.onclick = this.doMassCmd('retest')
-        bMaintenance.onclick = sendsummary_fn()
-
-        var sumdesc = document.createElement("input")
-        sumdesc.setAttribute("type","text")
-        sumdesc.setAttribute("name","sumdesc2")
-        sumdesc.setAttribute("id","sumdesc2")
-        sumdesc.setAttribute("placeholder","{% trans 'Summary description ...' %}")
-        ssdiv.appendChild(sumdesc)
-        ssdiv.appendChild(bMaintenance)
-        massdiv.appendChild(ssdiv)*/
-
-
-
         div.appendChild(massdiv)
+
     }
 
     // iTree.tagFilter
@@ -1375,18 +1381,19 @@ function changesort(){
         {% include 'okerrui/projectlinks.html' %}
     {% endwith %}
 
-    <span title="show all" style="cursor: pointer; cursor: hand;" onclick="showall()"><img src="{% static 'arrow_out.png' %}"></span>
-    <span title="hide all" style="cursor: pointer; cursor: hand;" onclick="hideall()"><img src="{% static 'arrow_in.png' %}"></span>
-
-    <span title="refresh" style="cursor: pointer; cursor: hand;" onclick="refresh()"><img src="{% static 'arrow_refresh.png' %}"></span>
-
-    <span>
-    <select id="sortorder" onchange="changesort()">
-      <option value="name">name</option>
-      <option value="status">status</option>
-    </select>
-    </span>
-
+    <div align="right" style="display: inline; float: right;">
+        <span title="show all" style="cursor: pointer; cursor: hand;" onclick="showall()"><img src="{% static 'arrow_out.png' %}"></span>
+        <span title="hide all" style="cursor: pointer; cursor: hand;" onclick="hideall()"><img src="{% static 'arrow_in.png' %}"></span>
+        <span title="refresh" style="cursor: pointer; cursor: hand;" onclick="refresh()"><img src="{% static 'arrow_refresh.png' %}"></span>
+    </div>
+    {% if user.profile.get_jarg_full_interface %}
+        <span>
+        <select id="sortorder" onchange="changesort()">
+          <option value="name">name</option>
+          <option value="status">status</option>
+        </select>
+        </span>
+    {% endif %}
 
     {% if project.limited %}
     <span class="redalert">WARNING! THIS PROJECT IS LIMITED</span>
@@ -1404,18 +1411,6 @@ function changesort(){
 
     </div>
 
-        {%comment%}
-        {% for project in profile.projects %}
-            {% if pid == None or project.id == pid %}
-                <tr><td>
-                {% include "okerrui/projectindicators.html" %}
-                <p>
-                </td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-        {%endcomment%}
-
         {# add indicator #}
         <form style="padding: 15px; display: inline;" action="{% url 'okerr:add' project.get_textid %}" method="post">
         {% csrf_token %}
@@ -1423,11 +1418,13 @@ function changesort(){
         <button class='massButton' name='add' value='1'>{% trans 'Create indicator' %}</button>
         </form>
 
-        <span style="padding: 15px; display: inline;">
-        {% csrf_token %}
-        <input type=text id="sumdesc" placeholder="{% trans 'Summary description ...' %}">
-        <button class='massButton' onclick=sendsummary()>{% trans 'send summary' %}</button>
-        </span>
+        {% if user.profile.get_jarg_full_interface %}
+            <span style="padding: 15px; display: inline;">
+            {% csrf_token %}
+            <input type=text id="sumdesc" placeholder="{% trans 'Summary description ...' %}">
+            <button class='massButton' onclick=sendsummary()>{% trans 'send summary' %}</button>
+            </span>
+        {% endif %}
 
     {% else %}
         {# no projects #}
