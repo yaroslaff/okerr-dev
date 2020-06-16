@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-15 19:20+0000\n"
+"POT-Creation-Date: 2020-06-16 20:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,7 +69,7 @@ msgstr ""
 msgid "Already has signup from {}"
 msgstr "Уже есть заявка на регистрацию с адреса {}"
 
-#: myauth/views.py:510 okerrui/views.py:3146
+#: myauth/views.py:510 okerrui/views.py:3151
 msgid "Already had such request for user {} recently. Try again later"
 msgstr "Уже был такой запрос от пользователя {} недавно. Попробуйте позже."
 
@@ -89,7 +89,7 @@ msgstr "Аккаунт отключен"
 msgid "Wrong login/password"
 msgstr "Плохой логин/пароль"
 
-#: okerrui/models.py:1379
+#: okerrui/models.py:1380
 #, fuzzy
 #| msgid ""
 #| "Incorrect alert reduction. Example:\n"
@@ -102,7 +102,7 @@ msgstr ""
 "Ошибка в режиме сокращения алертов. Пример:\n"
 "0s 00:30-02:00 5m 14:00-14:30 10s"
 
-#: okerrui/models.py:1390
+#: okerrui/models.py:1391
 msgid "Period {}s is less then minperiod {}s"
 msgstr "Период в {}s меньше, чем minperiod {}s"
 
@@ -335,7 +335,7 @@ msgstr "Вам нужно создать хотя бы один проект ч�
 
 #: okerrui/training.py:498
 msgid "Mission accomplished!"
-msgstr ""
+msgstr "Миссия завершена!"
 
 #: okerrui/training.py:500
 msgid "Training stage \"{}\" completed!"
@@ -347,7 +347,7 @@ msgid ""
 "Open your Profile (from top-right corner) and start training at any time"
 msgstr ""
 "Вы можете пройти встроенный быстрый вводный курс чтобы освоить Okerr.\n"
-"Откройте свой профиль (ссылка в правом-верхнем углу) и начните тренинг у "
+"Откройте свой профиль (ссылка в правом-верхнем углу) и начните тренинг в "
 "любое время"
 
 #: okerrui/views.py:409
@@ -415,70 +415,70 @@ msgstr ""
 msgid "Can not rename \"Default\" policy"
 msgstr "Нельзя переименовывать политику \"Default\""
 
-#: okerrui/views.py:2440
+#: okerrui/views.py:2445
 msgid "Not valid JSON data"
 msgstr "Не валидные данные JSON"
 
-#: okerrui/views.py:2857 okerrui/views.py:2977
+#: okerrui/views.py:2862 okerrui/views.py:2982
 msgid "Bad syntax"
 msgstr "Синтаксическая ошибка"
 
-#: okerrui/views.py:3126
+#: okerrui/views.py:3131
 msgid "Invalid email address: \"{}\""
 msgstr "Неправильный формат адреса: \"{}\""
 
-#: okerrui/views.py:3134 okerrui/views.py:3259
+#: okerrui/views.py:3139 okerrui/views.py:3264
 msgid "Already {} subscribers. Cannot subscribe more. Sorry."
 msgstr "Уже есть {} подписчик(ов). К сожалению, нельзя подписать больше."
 
-#: okerrui/views.py:3138
+#: okerrui/views.py:3143
 msgid "Address \"{}\" already subscribed"
 msgstr "Адрес \"{}\" уже подписан"
 
-#: okerrui/views.py:3169
+#: okerrui/views.py:3174
 msgid "Please click on link in confirmational email we sent to {}"
 msgstr "Пожалуйста, перейдите по ссылке из сообщения, которое мы выслали на {}"
 
-#: okerrui/views.py:3210
+#: okerrui/views.py:3215
 msgid "{} not subscribed"
 msgstr "{} не подписан"
 
-#: okerrui/views.py:3219
+#: okerrui/views.py:3224
 msgid "You are unsubscribed now"
 msgstr "Теперь вы отписаны"
 
-#: okerrui/views.py:3253
+#: okerrui/views.py:3258
 msgid "{} already subscribed"
 msgstr "{} уже подписан"
 
-#: okerrui/views.py:3268
+#: okerrui/views.py:3273
 msgid ""
 "You are subscribed! You will get message to {} when blog will be updated"
 msgstr ""
 "Теперь вы будете получать сообщения на адрес {} когда этот блог будет "
 "обновлен"
 
-#: okerrui/views.py:3454
+#: okerrui/views.py:3459
 msgid "No current value for DNS record"
 msgstr "Нет текущено значения для DNS записи"
 
-#: okerrui/views.py:3479
+#: okerrui/views.py:3484
 msgid "Invalid IP address"
 msgstr "Неправильный IP адрес"
 
-#: okerrui/views.py:3483
+#: okerrui/views.py:3488
 msgid "Already has this indicator in this record"
 msgstr "Уже используется такой индикатор"
 
-#: okerrui/views.py:3487
+#: okerrui/views.py:3492
 msgid "Already has this priority in this record"
 msgstr "Уже используется такой приоритет"
 
-#: okerrui/views.py:5243 okerrui/views.py:5262
+#: okerrui/views.py:5248 okerrui/views.py:5267
 msgid "Bound profile to {}"
 msgstr "Профиль привязан к {}"
 
-#: okerrui/views.py:5272
+#: okerrui/views.py:5277
 msgid "Not found user bound to this {} account. Link it in profile."
 msgstr ""
 "Не найден пользователь привязанный к этому аккаунту {}.\n"
@@ -806,57 +806,6 @@ msgstr "Я принимаю пользовательское соглашени�
 msgid "Signup"
 msgstr "Зарегистрироваться"
 
-#: templates/okerrui/UNUSED_projectindicators.html:84
-#: templates/okerrui/projectindicators-list.html:87
-msgid "User tags"
-msgstr "Пользовательские метки"
-
-#: templates/okerrui/UNUSED_projectindicators.html:110
-#: templates/okerrui/projectindicators-list.html:127
-msgid "System tags"
-msgstr "Системные метки"
-
-#: templates/okerrui/UNUSED_projectindicators.html:130
-#: templates/okerrui/projectindicators-list.html:163
-msgid "Reset"
-msgstr ""
-
-#: templates/okerrui/UNUSED_projectindicators.html:164
-#: templates/okerrui/indicator.html:287
-#: templates/okerrui/projectindicators-list.html:242
-msgid "Set maintenance"
-msgstr "Режим настройки"
-
-#: templates/okerrui/UNUSED_projectindicators.html:167
-#: templates/okerrui/indicator.html:285
-#: templates/okerrui/projectindicators-list.html:245
-msgid "Stop maintenance"
-msgstr "Выйти из режима настройки"
-
-#: templates/okerrui/UNUSED_projectindicators.html:170
-#: templates/okerrui/projectindicators-list.html:248
-msgid "Retest ASAP"
-msgstr "Перепроверить сразу"
-
-#: templates/okerrui/UNUSED_projectindicators.html:175
-#: templates/okerrui/projectindicators-list.html:253
-msgid "Delete (danger)"
-msgstr "Удалить (опасно)"
-
-#: templates/okerrui/UNUSED_projectindicators.html:182
-#: templates/okerrui/projectindicators-list.html:260
-msgid "remark"
-msgstr "Комментарий"
-
-#: templates/okerrui/UNUSED_projectindicators.html:185
-#: templates/okerrui/projectindicators-list.html:263
-msgid "send summary to all members"
-msgstr "Разослать сводку всем участникам"
-
-#: templates/okerrui/UNUSED_projectindicators.html:190
-msgid "No indicators with this tag set"
-msgstr "Нет индикаторов с таким набором меток"
-
 #: templates/okerrui/acceptinvite.html:5
 msgid "Accept invitation"
 msgstr "Принять приглашение"
@@ -922,35 +871,35 @@ msgstr "Приглашения"
 msgid "Server time"
 msgstr "Серверное время"
 
-#: templates/okerrui/base.html:71
+#: templates/okerrui/base.html:72
 msgid "Interface"
 msgstr "Интерфейс"
 
-#: templates/okerrui/base.html:74
+#: templates/okerrui/base.html:75
 msgid "Full"
 msgstr "Полный"
 
-#: templates/okerrui/base.html:76
+#: templates/okerrui/base.html:77
 msgid "Simple"
 msgstr "Простой"
 
-#: templates/okerrui/base.html:80
+#: templates/okerrui/base.html:82
 msgid "Wiki"
 msgstr "Wiki"
 
-#: templates/okerrui/base.html:82 templates/okerrui/base.html:131
+#: templates/okerrui/base.html:84 templates/okerrui/base.html:133
 msgid "Support"
 msgstr "Техподдержка"
 
-#: templates/okerrui/base.html:129
+#: templates/okerrui/base.html:131
 msgid "End-user license agreement"
 msgstr "Пользовательское соглашение"
 
-#: templates/okerrui/base.html:130
+#: templates/okerrui/base.html:132
 msgid "Documentation"
 msgstr "Документация"
 
-#: templates/okerrui/base.html:132
+#: templates/okerrui/base.html:134
 msgid "Logout"
 msgstr "Выход"
 
@@ -1172,6 +1121,16 @@ msgstr "Применить"
 #: templates/okerrui/indicator.html:267
 msgid "Apply and retest ASAP"
 msgstr "Сохранить и перепроверить"
+
+#: templates/okerrui/indicator.html:285
+#: templates/okerrui/projectindicators-list.html:245
+msgid "Stop maintenance"
+msgstr "Выйти из режима настройки"
+
+#: templates/okerrui/indicator.html:287
+#: templates/okerrui/projectindicators-list.html:242
+msgid "Set maintenance"
+msgstr "Режим настройки"
 
 #: templates/okerrui/indicator.html:294 templates/okerrui/policy.html:105
 #: templates/okerrui/project.html:197 templates/okerrui/project.html:493
@@ -1602,6 +1561,18 @@ msgstr "Удалить проект"
 msgid "indicator(s)"
 msgstr "индикатор(ов)"
 
+#: templates/okerrui/projectindicators-list.html:87
+msgid "User tags"
+msgstr "Пользовательские метки"
+
+#: templates/okerrui/projectindicators-list.html:127
+msgid "System tags"
+msgstr "Системные метки"
+
+#: templates/okerrui/projectindicators-list.html:163
+msgid "Reset"
+msgstr ""
+
 #: templates/okerrui/projectindicators-list.html:190
 msgid "Flags"
 msgstr "Флаги"
@@ -1613,6 +1584,22 @@ msgstr "Возраст"
 #: templates/okerrui/projectindicators-list.html:194
 msgid "Status Age"
 msgstr "Возраст статуса"
+
+#: templates/okerrui/projectindicators-list.html:248
+msgid "Retest ASAP"
+msgstr "Перепроверить сразу"
+
+#: templates/okerrui/projectindicators-list.html:253
+msgid "Delete (danger)"
+msgstr "Удалить (опасно)"
+
+#: templates/okerrui/projectindicators-list.html:260
+msgid "remark"
+msgstr "Комментарий"
+
+#: templates/okerrui/projectindicators-list.html:263
+msgid "send summary to all members"
+msgstr "Разослать сводку всем участникам"
 
 #: templates/okerrui/projectindicators-list.html:270
 msgid "No indicators with this tag set in this subtree"
@@ -1894,6 +1881,9 @@ msgstr "Вы можете"
 #: templates/statuspage-update.html:15
 msgid "Unsubscribe"
 msgstr "Отписаться"
+
+#~ msgid "No indicators with this tag set"
+#~ msgstr "Нет индикаторов с таким набором меток"
 
 #~ msgid "Interface level"
 #~ msgstr "Уровень интерфейса"
