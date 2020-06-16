@@ -1939,6 +1939,10 @@ def toggle_interface_level(request, path):
         profile = request.user.profile
         profile.set_jarg('full_interface', not profile.get_jarg_full_interface())
         profile.save()
+
+    if not path.startswith('/'):
+        path = '/' + path
+
     return redirect(path)
 
 
