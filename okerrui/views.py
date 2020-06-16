@@ -1935,9 +1935,10 @@ def uptimelog(request, textid, iname):
 
 
 def toggle_interface_level(request, path):
-    profile = request.user.profile
-    profile.set_jarg('full_interface', not profile.get_jarg_full_interface())
-    profile.save()
+    if request.user.is_authenticated:
+        profile = request.user.profile
+        profile.set_jarg('full_interface', not profile.get_jarg_full_interface())
+        profile.save()
     return redirect(path)
 
 
@@ -1948,8 +1949,8 @@ def eula(request):
     context = {'msg': msg}
 
     if request.POST:
-        cmd = request.POST.get('cmd','')
-        agree = request.POST.get('agree',False)
+        cmd = request.POST.get('cmd', '')
+        agree = request.POST.get('agree', False)
         if cmd=='accept_eula':
             if agree:
                 profile = request.user.profile

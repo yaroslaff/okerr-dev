@@ -68,14 +68,16 @@
             {{ loopage }} seconds
             </span>
             <br>
-            {% trans 'Interface' %}:
-            <a href="{% url 'okerr:toggle_interface_level' request.path %}">
-            {% if user.profile.get_jarg_full_interface %}
-                    {% trans 'Full' %}
-            {% else %}
-                    {% trans 'Simple' %}
+            {% if user.is_authenticated %}
+                {% trans 'Interface' %}:
+                <a href="{% url 'okerr:toggle_interface_level' request.path %}">
+                {% if user.profile.get_jarg_full_interface %}
+                        {% trans 'Full' %}
+                {% else %}
+                        {% trans 'Simple' %}
+                {% endif %}
+                    </a>
             {% endif %}
-                </a>
             &nbsp;
             <a href="https://gitlab.com/yaroslaff/okerr-dev/-/wikis/"><img src="{% static 'help.png' %}"> {% trans 'Wiki' %}</a>
             &nbsp;
