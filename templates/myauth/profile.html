@@ -45,7 +45,7 @@
     <tr>
     <td>{% trans 'Training' %}</td>
     <td>
-        {% if profile.training_stage == 'DONE' %}
+        {% if profile.training_stage == 'basic:DONE' %}
             {% trans 'Completed' %}
         {% elif profile.training_stage %}
             <a href="{% url 'okerr:training' %}">{% trans 'Continue' %}</a>
