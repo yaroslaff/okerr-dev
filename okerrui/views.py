@@ -2226,8 +2226,8 @@ def update(request):
 @csrf_exempt
 def bonusverify(request):
     remoteip = get_remoteip(request)
-    email=request.POST.get('email','')
-    bonuscode=request.POST.get('bonuscode','')
+    email=request.POST.get('email', '')
+    bonuscode=request.POST.get('bonuscode', '')
     log.info('BONUSVERIFY {} {} {}'.format(remoteip,bonuscode,email))
 
     return HttpResponse('0',status=200)

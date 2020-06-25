@@ -11,6 +11,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "okerr.settings")
 from django.conf import settings
 from django.utils import timezone
 from django.core.mail import EmailMultiAlternatives
+from django.utils.translation import get_language as django_get_language
+
 import requests
 
 import string
@@ -27,6 +29,13 @@ import traceback
 import logging
 import logging.handlers
 
+
+def get_language():
+    languages = ['en', 'ru']
+    lang = django_get_language()
+    if lang in languages:
+        return lang
+    return languages[0]
 
 def get_verified_reverse(ip):
 
