@@ -2793,10 +2793,12 @@ class Indicator(TransModel):
             return None
 
         # maybe too early. UNUSED?
-        if self.retry and timezone.now() < self.expected:
+        """
+        if self.retry and self.expected and timezone.now() < self.expected:
             assert (False)
             # print('too early update for {} (retry: {})'.format(self.name, self.retry))
             return int((self.expected - timezone.now()).total_seconds())
+        """
 
         try:
             delay = sch[self.retry]
