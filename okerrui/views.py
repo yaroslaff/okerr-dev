@@ -23,7 +23,7 @@ from django.utils.translation import ugettext_lazy as _, pgettext
 from django.contrib.auth import get_user_model
 from oauth2_provider.views.generic import ProtectedResourceView
 from django.http import Http404
-from django.utils.translation import to_locale, get_language
+from django.utils.translation import to_locale, django_get_language
 
 import requests_oauthlib
 import oauthlib
@@ -38,7 +38,7 @@ import time
 import json
 from myutils import shortstr, unixtime2dt, dt2unixtime, \
     get_remoteip, send_email, timesuffix2sec, dhms, strcharset, \
-    nsresolve, get_redis, get_verified_reverse
+    nsresolve, get_redis, get_verified_reverse, get_language
 from tree import Tree
 import myutils
 import re
@@ -1951,11 +1951,12 @@ def eula(request):
     # only logged in can accept
     msg = []
     context = {'msg': msg}
+    context['LANGUAGE_CODE'] = get_language()
 
     if request.POST:
         cmd = request.POST.get('cmd', '')
         agree = request.POST.get('agree', False)
-        if cmd=='accept_eula':
+        if cmd == 'accept_eula':
             if agree:
                 profile = request.user.profile
                 eulaver = int(SystemVariable.get('eulaver', -1))
@@ -1967,7 +1968,7 @@ def eula(request):
                 pa.save()
                 log.info('EULA_ACCEPT u: {} ip: {} eulaver {}'.format(
                     request.user.username,
-                    request.META.get('REMOTE_ADDR','???'),
+                    request.META.get('REMOTE_ADDR', '???'),
                     eulaver
                     ))
                 return redirect('okerr:index')
