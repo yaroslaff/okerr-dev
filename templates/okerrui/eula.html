@@ -3,7 +3,7 @@
 {% block content %}
 
 <center>
-{% with "eula."|add:LANGUAGE_CODE|add:".txt" as loceula %}
+{% with "eula."|add:request.LANGUAGE_CODE|add:".txt" as loceula %}
 <textarea readonly rows=20 cols=80>{% include loceula %}</textarea>
 {% endwith %}
 <p>

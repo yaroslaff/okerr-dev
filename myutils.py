@@ -30,7 +30,7 @@ import logging
 import logging.handlers
 
 
-def get_language():
+def UNUSED_get_language():
     languages = ['en', 'ru']
     lang = django_get_language()
     if lang in languages:
