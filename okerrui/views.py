@@ -23,7 +23,7 @@ from django.utils.translation import ugettext_lazy as _, pgettext
 from django.contrib.auth import get_user_model
 from oauth2_provider.views.generic import ProtectedResourceView
 from django.http import Http404
-from django.utils.translation import to_locale, django_get_language
+# from django.utils.translation import to_locale, get_language as django_get_language
 
 import requests_oauthlib
 import oauthlib
