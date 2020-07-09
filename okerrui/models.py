@@ -2166,14 +2166,14 @@ class Indicator(TransModel):
         return self._status
 
     # indicator.okerrm
-    # DISABLED MAINTENANCE SILENT OK ERR
+    # DISABLED MAINTENANCE /*SILENT*/ OK ERR
     def okerrm(self):
         if self.disabled:
             return 'DISABLED'
         elif self.maintenance:
             return 'MAINTENANCE'
-        elif self.silent:
-            return 'SILENT'
+        # elif self.silent:
+        #     return 'SILENT'
         else:
             return self.status
 

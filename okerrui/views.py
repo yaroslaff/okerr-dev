@@ -1157,7 +1157,7 @@ def pjson(request,pid):
     if not project.member(request.user):
         return HttpResponse('', status=403)
 
-    content = json.dumps(project.datastruct(),sort_keys=True,indent=4, separators=(',', ': '))
+    content = json.dumps(project.datastruct(), sort_keys=True, indent=4, separators=(',', ': '))
     return HttpResponse(content, content_type='text/plain')
 
 
