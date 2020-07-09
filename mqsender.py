@@ -305,9 +305,14 @@ def mainloop(args):
             for i in Indicator.objects.filter(lockpid=pid):
                 # print i,i.lockpid,i.lockat
 
+                iid = i.id
+                ipid = i.project.id
+                iname = i.name
+
                 try:
                     data = i.tproc()
                 except Exception as e:
+                    log.error("Pre-saved data: iid: {} ipid: {} name: {}".format(iid, ipid, iname))
                     log.error("Exception type: {} exception: {}".format(type(e), e))
                     log.error("Problem processing indicator #{}".format(i.id))
                     log.error("Indicator: {}".format(i))
