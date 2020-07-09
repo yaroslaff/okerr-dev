@@ -19,6 +19,7 @@ import random
 import string
 
 import myutils
+from django.utils.translation import gettext_lazy as _
 
 #log = logging.getLogger('okerr')
 
@@ -407,6 +408,12 @@ DATABASES = {
         }
     }
 }
+
+# Only this two languages are supported now
+LANGUAGES = [
+  ('ru', _('Russian')),
+  ('en', _('English')),
+]
 
 
 #
