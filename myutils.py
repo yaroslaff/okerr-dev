@@ -29,14 +29,6 @@ import traceback
 import logging
 import logging.handlers
 
-
-def UNUSED_get_language():
-    languages = ['en', 'ru']
-    lang = django_get_language()
-    if lang in languages:
-        return lang
-    return languages[0]
-
 def get_verified_reverse(ip):
 
     try:

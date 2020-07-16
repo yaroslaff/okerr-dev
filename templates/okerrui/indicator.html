@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load age %}
+{% get_current_language as LANGUAGE_CODE %}
 
 {% block title%}{{i.name}}{%endblock%}
 
@@ -154,8 +155,8 @@
                     {% endif %}
                 {% endfor %}
                 </select>
-                <a href="http://okerr.readthedocs.io/ru/latest/manual/checkmethods/{{i.cm.codename}}/"><img src="{% static 'help.png' %}"></a>                
-                </td>                
+                <a href="https://gitlab.com/yaroslaff/okerr-dev/-/wikis/{{LANGUAGE_CODE}}/cm/{{i.cm.codename}}/"><img src="{% static 'help.png' %}"></a>
+                </td>
             </tr>
  
 
