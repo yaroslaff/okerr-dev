@@ -3096,6 +3096,7 @@ def cat(request):
 #####
 
 
+
 def status(request, textid, addr):
     if not addr:
         addr = 'index'
@@ -3109,7 +3110,7 @@ def status(request, textid, addr):
     if project.ci != myci():
         rs = RemoteServer(ci = project.ci)
         newurl = urljoin(
-            rs.url, reverse('okerr:status', kwargs = {'textid': textid, 'addr': addr} ) )
+            rs.url, reverse('okerr:status', kwargs={'textid': textid, 'addr': addr}))
 
         return redirect(newurl)
 
@@ -3137,11 +3138,11 @@ def status(request, textid, addr):
         limit = profile.getarg('status_maxsubscribers')
         nsubscribers = sp.statussubscription_set.count()
         if nsubscribers >=limit:
-            notify(request,_('Already {} subscribers. Cannot subscribe more. Sorry.').format(nsubscribers))
+            notify(request, _('Already {} subscribers. Cannot subscribe more. Sorry.').format(nsubscribers))
             return redirect(request.path)
 
         if sp.is_subscribed(email):
-            notify(request,_('Address "{}" already subscribed').format(email))
+            notify(request, _('Address "{}" already subscribed').format(email))
             return redirect(request.path)
         try:
             th = Throttle.get('statuspage:subscribe:'+email)
@@ -3182,6 +3183,43 @@ def status(request, textid, addr):
     ctx['chapters'] = sp.get_chapters()
 
     return render(request,'okerrui/status.html',ctx)
+
+
+def jstatus(request, textid, addr):
+    if not addr:
+        addr = 'index'
+
+    remoteip = get_remoteip(request)
+
+    project = Project.get_by_textid(textid)
+    if project is None:
+        return HttpResponseNotFound()
+
+    if project.ci != myci():
+        rs = RemoteServer(ci = project.ci)
+        newurl = urljoin(
+            rs.url, reverse('okerr:status', kwargs={'textid': textid, 'addr': addr}))
+
+        return redirect(newurl)
+
+
+    profile = project.owner.profile
+
+    sp = get_object_or_404(StatusPage, project=project, addr=addr)
+
+    if not sp.public and not request.user.is_authenticated:
+        # not public
+        return redirect('myauth:login')
+
+    #ctx = dict()
+    #ctx['sp'] = sp
+    #ctx['project'] = project
+    #ctx['chapters'] = sp.get_chapters()
+
+    content = sp.export()
+
+    content_text = json.dumps(content, sort_keys=True, indent=4, separators=(',', ': '))
+    return HttpResponse(content_text, content_type='application/json')
 
 def statusunsubscribe(request, textid, addr, date, code, email):
     print("status unsubscribe", email)
@@ -3590,12 +3628,12 @@ def get_who(request):
 
 def api_checkmethods(request):
     c = CheckMethod.getCheckMethods()
-    content = json.dumps(c,sort_keys=True,indent=4, separators=(',', ': '))
+    content = json.dumps(c,sort_keys=True, indent=4, separators=(',', ': '))
     return HttpResponse(content, content_type='text/plain')
 
 
 @csrf_exempt
-def api_delete(request,pid,iname):
+def api_delete(request, pid, iname):
 
     remoteip = get_remoteip(request)
 

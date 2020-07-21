@@ -22,16 +22,16 @@ from django.conf import settings
 
 urlpatterns = [
     # Examples:
-    re_path(r'^$',okerrui.views.index),
+    re_path(r'^$', okerrui.views.index),
     #url(r'^okerr/',include('okerrui.urls' ,namespace='okerr')),
-    re_path(r'',include('myauth.urls', namespace='myauth')),
+    re_path(r'', include('myauth.urls', namespace='myauth')),
     #url(r'^auth/',include('myauth.urls',namespace='myauth')),
     #re_path(r'^admin/', include(admin.site.urls)),
     path(r'admin/', admin.site.urls),
     re_path(r'^i18n/', include('django.conf.urls.i18n')),
-    re_path(r'',include('okerrui.urls' ,namespace='okerr')),
+    re_path(r'', include('okerrui.urls' ,namespace='okerr')),
     # url('', include('social_django.urls', namespace='social')),
-    re_path(r'moveauth/',include('moveauth.urls' , namespace='moveauth')),
+    re_path(r'moveauth/', include('moveauth.urls' , namespace='moveauth')),
     re_path(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
 

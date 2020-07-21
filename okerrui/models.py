@@ -5739,6 +5739,21 @@ class StatusPage(models.Model):
         return '{}/{} pub: {} title: {} ({} indicators)'.format(self.project.get_textid(), self.addr, self.public,
                                                                  self.title, self.statusindicator_set.count())
 
+    def export(self):
+        d = dict()
+        d['addr'] = self.addr
+        d['textid'] = self.project.get_textid()
+        d['name'] = self.project.name
+        d['title'] = self.title
+        d['chapters'] = dict()
+
+        for si in self.statusindicator_set.all():
+            if si.chapter not in d['chapters']:
+                d['chapters'][si.chapter] = list()
+            d['chapters'][si.chapter].append(si.export())
+
+        return d
+
     def all_si(self):
         return self.statusindicator_set.order_by('weight')
 
@@ -5792,6 +5807,15 @@ class StatusIndicator(models.Model):
     def __str__(self):
         return '{}: {}'.format(self.status_page.addr, self.indicator.name)
 
+    def export(self):
+        d = dict()
+        d['title'] = self.title
+        d['desc'] = self.desc
+        d['chapter'] = self.chapter
+        d['weight'] = self.weight
+        d['status'] = self.indicator.status
+        d['details'] = self.indicator.details
+        return d
 
 class StatusSubscription(models.Model):
     status_page = models.ForeignKey(StatusPage, on_delete=models.CASCADE)

@@ -290,13 +290,13 @@ AUTHENTICATION_BACKENDS = (
 
 
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR,'locale'),
+    os.path.join(BASE_DIR, 'locale'),
 #    os.path.join(BASE_DIR,'okerrui/locale'),
 #    os.path.join(BASE_DIR,'templates/okerrui/locale')
     )
 
 STATICFILES_DIRS = (
-#    os.path.join(BASE_DIR,"static"),
+#    os.path.join(BASE_DIR, "static"),
 )
 
 

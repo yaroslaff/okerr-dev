@@ -94,10 +94,13 @@ urlpatterns = [
     #
 
     # STATUSPAGE
-    url(r'^status/(?P<textid>[^/]+)/(?P<addr>.*)',views.status, name='status'),
-    url(r'^statuspage/(?P<textid>[^/]+)/(?P<addr>.*)',views.statuspage, name='statuspage'),
-    url(r'^statussubscribe/(?P<textid>[^/]+)/(?P<addr>[^/]+)/(?P<date>[^/]+)/(?P<email>[^/]+)/(?P<code>.+)',views.statussubscribe, name='statussubscribe'),
-    url(r'^statusunsubscribe/(?P<textid>[^/]+)/(?P<addr>[^/]+)/(?P<date>[^/]+)/(?P<email>[^/]+)/(?P<code>.+)',views.statusunsubscribe, name='statusunsubscribe'),
+    url(r'^status/(?P<textid>[^/]+)/(?P<addr>.*)', views.status, name='status'),
+    url(r'^jstatus/(?P<textid>[^/]+)/(?P<addr>.*)', views.jstatus, name='jstatus'),
+    url(r'^statuspage/(?P<textid>[^/]+)/(?P<addr>.*)', views.statuspage, name='statuspage'),
+    url(r'^statussubscribe/(?P<textid>[^/]+)/(?P<addr>[^/]+)/(?P<date>[^/]+)/(?P<email>[^/]+)/(?P<code>.+)',
+        views.statussubscribe, name='statussubscribe'),
+    url(r'^statusunsubscribe/(?P<textid>[^/]+)/(?P<addr>[^/]+)/(?P<date>[^/]+)/(?P<email>[^/]+)/(?P<code>.+)',
+        views.statusunsubscribe, name='statusunsubscribe'),
 
 
 
