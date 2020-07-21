@@ -5821,8 +5821,8 @@ class StatusIndicator(models.Model):
         d['weight'] = self.weight
         d['status'] = self.indicator.status
         d['details'] = self.indicator.details
-        d['updated'] = self.indicator.updated
-        d['changed'] = self.indicator.changed
+        d['updated'] = self.indicator.updated.strftime("%d/%m/%Y %H:%M:%S")
+        d['changed'] = self.indicator.changed.strftime("%d/%m/%Y %H:%M:%S")
         return d
 
 class StatusSubscription(models.Model):
