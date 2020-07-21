@@ -3117,14 +3117,17 @@ def status(request, textid, addr):
 
     profile = project.owner.profile
 
+
     sp = get_object_or_404(StatusPage, project=project, addr=addr)
 
-    if not sp.public and not request.user.is_authenticated:
-        # not public
-        return redirect('myauth:login')
+    if not sp.public:
+        # private status pages
+        if not request.user.is_authenticated:
+            return redirect('myauth:login')
+        if not sp.project.member(request.user):
+            return redirect('myauth:login')
 
-
-    if request.POST.get('subscribe',False):
+    if request.POST.get('subscribe', False):
         email = request.POST.get('email')
         plaintext = get_template('statuspage-subscribe.txt')
         htmly     = get_template('statuspage-subscribe.html')
@@ -3168,21 +3171,20 @@ def status(request, textid, addr):
 
         text_content = plaintext.render(d)
         html_content = htmly.render(d)
-        subject = u'Subscribe to {}'.format(sp.title)
+        subject = 'Subscribe to {}'.format(sp.title)
 
         send_email(email, subject=subject, html=html_content, what="status subscribe")
 
-        project.log(u'email: {} ip: {} requested subscribe to statuspage {}'.format(email, remoteip, addr))
-        notify(request,_('Please click on link in confirmational email we sent to {}').format(email))
+        project.log('email: {} ip: {} requested subscribe to statuspage {}'.format(email, remoteip, addr))
+        notify(request, _('Please click on link in confirmational email we sent to {}').format(email))
         return redirect(request.path)
-
 
     ctx = dict()
     ctx['sp'] = sp
     ctx['project'] = project
     ctx['chapters'] = sp.get_chapters()
 
-    return render(request,'okerrui/status.html',ctx)
+    return render(request, 'okerrui/status.html', ctx)
 
 
 def jstatus(request, textid, addr):
@@ -3207,14 +3209,12 @@ def jstatus(request, textid, addr):
 
     sp = get_object_or_404(StatusPage, project=project, addr=addr)
 
-    if not sp.public and not request.user.is_authenticated:
-        # not public
-        return redirect('myauth:login')
-
-    #ctx = dict()
-    #ctx['sp'] = sp
-    #ctx['project'] = project
-    #ctx['chapters'] = sp.get_chapters()
+    if not sp.public:
+        # private status pages
+        if not request.user.is_authenticated:
+            return redirect('myauth:login')
+        if not sp.project.member(request.user):
+            return redirect('myauth:login')
 
     content = sp.export()
 
@@ -3222,7 +3222,6 @@ def jstatus(request, textid, addr):
     return HttpResponse(content_text, content_type='application/json')
 
 def statusunsubscribe(request, textid, addr, date, code, email):
-    print("status unsubscribe", email)
 
     remoteip = get_remoteip(request)
 
