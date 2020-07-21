@@ -5739,6 +5739,7 @@ class StatusPage(models.Model):
         return '{}/{} pub: {} title: {} ({} indicators)'.format(self.project.get_textid(), self.addr, self.public,
                                                                  self.title, self.statusindicator_set.count())
 
+    # statuspage.export
     def export(self):
         d = dict()
         d['addr'] = self.addr
@@ -5751,6 +5752,10 @@ class StatusPage(models.Model):
             if si.chapter not in d['chapters']:
                 d['chapters'][si.chapter] = list()
             d['chapters'][si.chapter].append(si.export())
+
+        d['blog'] = list()
+        for blog_record in self.blogrecords():
+            d['blog'].append(blog_record.export())
 
         return d
 
@@ -5807,6 +5812,7 @@ class StatusIndicator(models.Model):
     def __str__(self):
         return '{}: {}'.format(self.status_page.addr, self.indicator.name)
 
+    # statusindicator.export
     def export(self):
         d = dict()
         d['title'] = self.title
@@ -5834,6 +5840,10 @@ class StatusBlog(models.Model):
 
     def __str__(self):
         return "StatusBlog ({})".format(shortdate(self.created))
+
+    # statusblog.export
+    def export(self):
+        return {'created:': self.created.strftime("%d/%m/%Y %H:%M:%S"), 'text': self.text}
 
     def send_updates(self, base_url):
         for ss in self.status_page.statussubscription_set.all():
