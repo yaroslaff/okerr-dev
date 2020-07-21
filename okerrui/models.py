@@ -5820,9 +5820,17 @@ class StatusIndicator(models.Model):
         d['chapter'] = self.chapter
         d['weight'] = self.weight
         d['status'] = self.indicator.status
-        d['details'] = self.indicator.details
+        if self.details:
+            d['details'] = self.indicator.details
+        else:
+            d['details'] = None
         d['updated'] = self.indicator.updated.strftime("%d/%m/%Y %H:%M:%S")
         d['changed'] = self.indicator.changed.strftime("%d/%m/%Y %H:%M:%S")
+
+        d['updated_age'] = str(chopms(timezone.now() - self.indicator.updated))
+        d['changed_age'] = str(chopms(timezone.now() - self.indicator.changed))
+
+
         return d
 
 class StatusSubscription(models.Model):
