@@ -5746,6 +5746,7 @@ class StatusPage(models.Model):
         d['textid'] = self.project.get_textid()
         d['name'] = self.project.name
         d['title'] = self.title
+        d['desc'] = self.desc
         d['chapters'] = dict()
 
         for si in self.statusindicator_set.all():
