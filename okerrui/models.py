@@ -5854,7 +5854,7 @@ class StatusBlog(models.Model):
 
     # statusblog.export
     def export(self):
-        return {'created:': self.created.strftime("%d/%m/%Y %H:%M:%S"), 'text': self.text}
+        return {'created': self.created.strftime("%d/%m/%Y %H:%M:%S"), 'text': self.text}
 
     def send_updates(self, base_url):
         for ss in self.status_page.statussubscription_set.all():
