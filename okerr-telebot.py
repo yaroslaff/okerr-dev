@@ -164,12 +164,11 @@ def get_reply_markup(chat_id):
 
         if main_rs.api_admin_chat_id(chat_id):
             markup.row(
-                telebot.types.KeyboardButton('/off'),
-                telebot.types.KeyboardButton('/help')
-            )
+                telebot.types.KeyboardButton('/help'),
+                telebot.types.KeyboardButton('/recheck')
+            ),
             markup.row(
                 telebot.types.KeyboardButton('/sum'),
-                telebot.types.KeyboardButton('/recheck')
             )
         else:
             markup.row(
