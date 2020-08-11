@@ -3219,7 +3219,11 @@ def jstatus(request, textid, addr):
     content = sp.export()
 
     content_text = json.dumps(content, sort_keys=True, indent=4, separators=(',', ': '))
-    return HttpResponse(content_text, content_type='application/json')
+    r = HttpResponse(content_text, content_type='application/json')
+    if sp.public:
+        r['Access-Control-Allow-Origin'] = '*'
+
+    return r
 
 def statusunsubscribe(request, textid, addr, date, code, email):
 
