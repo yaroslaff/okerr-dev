@@ -3198,11 +3198,14 @@ def jstatus(request, textid, addr):
         return HttpResponseNotFound()
 
     if project.ci != myci():
-        rs = RemoteServer(ci = project.ci)
+        rs = RemoteServer(ci=project.ci)
         newurl = urljoin(
             rs.url, reverse('okerr:jstatus', kwargs={'textid': textid, 'addr': addr}))
 
-        return redirect(newurl)
+        redirect_response = HttpResponseRedirect(newurl)
+        redirect_response['Access-Control-Allow-Origin'] = '*'
+        return redirect_response
+        # return redirect(newurl)
 
 
     profile = project.owner.profile
@@ -3292,23 +3295,23 @@ def statussubscribe(request, textid, addr, date, code, email):
     try:
         sp.verify_code(date, email, 'subscribe', code)
     except ValueError as e:
-        notify(request,str(e))
+        notify(request, str(e))
         return redirect('okerr:status', textid, addr)
 
 
     if sp.is_subscribed(email):
-        notify(request,_('{} already subscribed').format(email))
+        notify(request, _('{} already subscribed').format(email))
         return redirect('okerr:status', textid, addr)
 
     limit = profile.getarg('status_maxsubscribers')
     nsubscribers = sp.statussubscription_set.count()
-    if nsubscribers >=limit:
-        notify(request,_('Already {} subscribers. Cannot subscribe more. Sorry.').format(nsubscribers))
+    if nsubscribers >= limit:
+        notify(request, _('Already {} subscribers. Cannot subscribe more. Sorry.').format(nsubscribers))
         return redirect('okerr:status', textid, addr)
 
     ss = StatusSubscription(status_page = sp, email=email, ip=remoteip)
     ss.save()
-    project.log(u'email: {} ip: {} subscribed to status page {}'.format(
+    project.log('email: {} ip: {} subscribed to status page {}'.format(
         email, remoteip, sp.addr))
 
 
