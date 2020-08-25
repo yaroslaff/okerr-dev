@@ -14,7 +14,7 @@ from myutils import *
 class Command(BaseCommand):
     help = 'fix models and instances'
 
-    models = [ Project, Policy, Indicator, Profile, ProjectMember, SystemVariable ]
+    models = [ Project, Policy, Indicator, Profile, ProjectMember, ]  # SystemVariable ]
 
     def add_arguments(self,parser):
         parser.add_argument('--save', default=False, action='store_true', help='save results')
@@ -27,11 +27,11 @@ class Command(BaseCommand):
         
         User = get_user_model()
 
-        if options['verbosity']>=2:
-            print "set verbose"
-            verbose=True
+        if options['verbosity'] >= 2:
+            print("set verbose")
+            verbose = True
         else:
-            verbose=False
+            verbose = False
 
         
         if options['delete']:
@@ -47,7 +47,7 @@ class Command(BaseCommand):
                 
                 for o in model.objects.filter(deleted_at__isnull=False):
                     if options['save']:
-                        print "delete",o
+                        print("delete",o)
                         if hasattr(o,'predelete'):
                             o.predelete()
                         o.delete()
@@ -67,20 +67,20 @@ class Command(BaseCommand):
                 model.fix_static(verbose=verbose, save=options['save'])
 
                 
-            print "fix model",mname
+            print("fix model",mname)
             if getattr(model, 'fix',None) is None:
-                print "{} has no fix() method".format(mname)
+                print("{} has no fix() method".format(mname))
                 continue
 
             # fix each instance
             for i in model.objects.all():
                 
                 if options['verbosity'] >=2:
-                    print "check {}: {}".format(mname, i)
+                    print("check {}: {}".format(mname, i))
 
                 if i.fix(verbose=verbose):
                     if options['save']:
-                        print "SAVE",i
+                        print("SAVE",i)
                         i.save()
             
 
