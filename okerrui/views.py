@@ -3200,7 +3200,7 @@ def jstatus(request, textid, addr):
     if project.ci != myci():
         rs = RemoteServer(ci = project.ci)
         newurl = urljoin(
-            rs.url, reverse('okerr:status', kwargs={'textid': textid, 'addr': addr}))
+            rs.url, reverse('okerr:jstatus', kwargs={'textid': textid, 'addr': addr}))
 
         return redirect(newurl)
 
