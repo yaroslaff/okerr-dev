@@ -24,4 +24,5 @@ https://gitlab.com/yaroslaff/okerr-dev/-/wikis/
 - [Okerr client (okerrupdate) repositoty](https://gitlab.com/yaroslaff/okerrupdate) and [okerrupdate wiki doc](https://gitlab.com/yaroslaff/okerrupdate/wikis/)
 - [Okerrbench network server benchmark](https://gitlab.com/yaroslaff/okerrbench)
 - [Okerr custom status page](https://gitlab.com/yaroslaff/okerr-status)
+- [Okerr JS-powered static status page](https://gitlab.com/yaroslaff/okerrstatusjs)
 - [Okerr network sensor](https://gitlab.com/yaroslaff/sensor)
