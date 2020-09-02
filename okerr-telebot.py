@@ -525,6 +525,11 @@ def main():
     log.info("Start polling...")
 
     # updater.start_polling()
+
+    bot.infinity_polling()
+    log.error("END OF INFINITY")
+
+    """
     try:
         bot.infinity_polling()
         # bot.polling(none_stop=True)
@@ -549,6 +554,6 @@ def main():
     updater.stop()    
     print("stopped after {}s".format(int(time.time() - stop_time)))
     print("Bye.")
-
+    """
 
 main()
