@@ -353,8 +353,6 @@ def motd(request, return_url=None):
 
 def firstlogin(request, return_url=None):
 
-    print("firstlogin")
-
     if return_url is None:
         return_url = 'okerr:afterlogin'
 
@@ -376,6 +374,11 @@ def firstlogin(request, return_url=None):
 
 
 def afterlogin(request):
+
+    # sanity check. anon user?
+    if not request.user.is_authenticated:
+        # anon? not here
+        return redirect('okerr:index')
 
     first_login = (timezone.now() - request.user.date_joined).total_seconds() < 30
 
