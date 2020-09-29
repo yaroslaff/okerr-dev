@@ -407,7 +407,7 @@ def make_tip(request):
 
     if profile.training_stage is None:
         notify(request, _('You can take quick built-in training to learn Okerr.\n'
-                          'Open your Profile (from top-right corner) and start training at any time'))
+                          'Open your Profile (clicking on your email in top-right corner) and start training at any time'))
     elif profile.training_stage != 'basic:DONE':
         notify(request, _('After you will complete training, you will not only learn Okerr,'
                           ' but also will get higher plan as reward (permanently)'))

@@ -7,3 +7,4 @@ nohup.out
 .bashrc
 *.bak
 .bash*
+workspace.code-workspace
