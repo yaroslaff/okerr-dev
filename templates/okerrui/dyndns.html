@@ -224,10 +224,16 @@
 {% endfor %}</textarea>
 <br>
 
+
+<form method=post>
+    {% csrf_token %}
+    <input type=text name='new_name' value='{{ddr.name}}'>
+    <button class='massButton' name='rename'>{% trans 'Rename' %} {{ddr.name}}</button>
+</form>
+
 <form method=post>
     {% csrf_token %}
     <input type=hidden name='host' value='{{ddr.hostname}}'>
-    <br>
     <button class='massButton' name='delete' onclick="return confirm('Are you sure?')">{% trans 'Delete' %} {{ddr.name}}</button>
 </form>
 

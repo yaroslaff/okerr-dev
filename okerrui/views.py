@@ -3495,6 +3495,11 @@ def dyndns(request, textid, name):
         ddr.log('Configured method: {}'.format(method))
         return redirect(request.path)
 
+    if 'rename' in request.POST:
+        ddr.name = request.POST.get('new_name', 'noname')
+        ddr.save()
+        return redirect('okerr:dyndns', p.get_textid(), ddr.name)
+
     if 'configure' in request.POST:
 
         ddr.set_fields(request.POST)
