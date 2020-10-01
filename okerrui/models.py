@@ -5925,6 +5925,8 @@ class DynDNSRecord(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     method = models.CharField(max_length=200, default=None)  # dyndns method
 
+    name = models.CharField(max_length=200, default='www', null=False, blank=False)
+
     hostname = models.CharField(max_length=200, default='www', null=False, blank=False)
     domain = models.CharField(max_length=200, default=None, null=True)
 
