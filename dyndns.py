@@ -18,7 +18,10 @@ class DDNSBase(object):
         self.login = login
         self.secret = secret
         if domain:
-            self.fqdn = hostname + '.' + domain
+            if hostname:
+                self.fqdn = hostname + '.' + domain
+            else:
+                self.fqdn = domain
         else:
             self.fqdn = hostname
 

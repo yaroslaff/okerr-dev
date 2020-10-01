@@ -449,7 +449,7 @@ function alert_handler(){
             {% if project.dyndnsrecord_set.count %}
             <table class='humantable2'>
                 <tr>
-                    <th>hostname</th>
+                    <th>name</th>
                     <th>fqdn</th>
                     <th>N</th>
                     <th>value</th>
@@ -458,12 +458,12 @@ function alert_handler(){
                 </tr>
             {% for ddr in project.dyndnsrecord_set.all %}
                 <tr>
-                    <td><a href="{% url 'okerr:dyndns' project.get_textid ddr.hostname %}">{{ddr.hostname}}</a></td>
+                    <td><a href="{% url 'okerr:dyndns' project.get_textid ddr.name %}">{{ddr.name}}</a></td>
                     <td>{{ddr.fqdn}}</td>
                     <td>{{ddr.dyndnsrecordvalue_set.count}}</td>
                     <td>{{ddr.curvalue}}</td>
                     <td>{{ddr.get_real_value}}</td>
-                    <td><a href="{% url 'okerr:dyndns' project.get_textid ddr.hostname %}">{% trans 'Edit' %}</a></td>
+                    <td><a href="{% url 'okerr:dyndns' project.get_textid ddr.name %}">{% trans 'Edit' %}</a></td>
                 </tr>
             {% endfor %}
             </table> 
@@ -473,7 +473,7 @@ function alert_handler(){
             <form method=post>
                 <input type=hidden name='adddyndns' value='1'>
                 {% csrf_token %}
-                host: <input type=text name='host'>
+                {% trans 'name' %}: <input type=text name='name' placeholder="Test">
 
                 <button class='massButton'>{% trans 'Add' %}</button>
             </form>

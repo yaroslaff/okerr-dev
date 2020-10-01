@@ -109,7 +109,7 @@ urlpatterns = [
     url(r'training', training.training, name='training'),
 
     # DYNDNS
-    url(r'dyndns/(?P<textid>[^/]+)/(?P<host>.*)', views.dyndns, name='dyndns'),
+    url(r'dyndns/(?P<textid>[^/]+)/(?P<name>.*)', views.dyndns, name='dyndns'),
 
 
 #    url(r'^project_backup/(?P<pid>\d+)?', views.project_backup, name='project_backup'),

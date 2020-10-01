@@ -901,13 +901,13 @@ def project(request, pid):
 
 
     if request.POST.get('adddyndns', False):
-        host = request.POST.get('host','')
-        if not host:
-            notify(request, _("Hostname must not be empty"))
+        name = request.POST.get('name','')
+        if not name:
+            notify(request, _("Name must not be empty"))
             return redirect(request.path)
 
-        if project.dyndnsrecord_set.filter(hostname=host).count():
-            notify(request, 'Already have dynamic DNS for {}'.format(host))
+        if project.dyndnsrecord_set.filter(name=name).count():
+            notify(request, 'Already have dynamic DNS for {}'.format(name))
             return redirect(request.path)
 
         count = project.dyndnsrecord_set.count()
@@ -917,10 +917,10 @@ def project(request, pid):
             notify(request, 'Already have {}/{} dynamic DNS records'.format(count, limit))
             return redirect(request.path)
 
-        ddr = DynDNSRecord(method = DynDNSRecord.def_method, project = project, hostname = host)
-        ddr.log('created failover scheme')
+        ddr = DynDNSRecord(method = DynDNSRecord.def_method, project = project, name = name)
+        ddr.log('created failover scheme {}'.format(name))
         ddr.save()
-        return redirect('okerr:dyndns', project.get_textid(), host)
+        return redirect('okerr:dyndns', project.get_textid(), name)
 
 
 
@@ -3460,7 +3460,7 @@ def statuspage(request, textid, addr):
 #####
 
 @login_required(login_url='myauth:login')
-def dyndns(request, textid, host):
+def dyndns(request, textid, name):
 
     public_ns = [
         ('google-public-dns-b.google.com', '8.8.8.8'),
@@ -3477,8 +3477,11 @@ def dyndns(request, textid, host):
     p.check_user_access(request.user, 'tadmin')
 
     try:
-        ddr = p.dyndnsrecord_set.get(hostname=host)
+        ddr = p.dyndnsrecord_set.filter(name=name).first()
     except DynDNSRecord.DoesNotExist:
+        return redirect('okerr:project', p.get_textid())
+
+    if ddr is None:
         return redirect('okerr:project', p.get_textid())
 
     if request.POST.get('method', None):
@@ -3494,14 +3497,10 @@ def dyndns(request, textid, host):
 
     if 'configure' in request.POST:
 
-        if not request.POST.get('hostname'):
-            notify(request, _("Hostname must not be empty"))
-            return redirect(request.path)
-
         ddr.set_fields(request.POST)
         ddr.save()
         ddr.log('saved new config')
-        return redirect('okerr:dyndns', p.get_textid(), ddr.hostname)
+        return redirect('okerr:dyndns', p.get_textid(), ddr.name)
 
     if 'push' in request.POST:
         # push
@@ -3568,14 +3567,7 @@ def dyndns(request, textid, host):
 
 
 
-    if 'delete' in request.POST:
-        host = request.POST.get('host','')
-        if not host:
-            return redirect(request.path)
-        try:
-            ddr = p.dyndnsrecord_set.get(hostname=host)
-        except DynDNSRecord.DoesNotExist:
-            return redirect(request.path)
+    if 'delete' in request.POST:        
         ddr.delete()
         return redirect('okerr:project', p.get_textid())
 

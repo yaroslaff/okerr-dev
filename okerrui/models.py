@@ -6495,10 +6495,10 @@ class BonusActivation(models.Model):
                 ba.verification_failed_since = None
                 ba.save()
             except BonusNotFound as e:
-                log.info("ZZZZ not bonus for BA {}".format(ba))
+                log.info("Not bonus for BA {}".format(ba))
                 ba.delete()
             except BonusVerificationFailed as e:
-                log.info("ZZZ exception: {}".format(e))
+                log.info("BonusVerification exception: {}".format(e))
                 if ba.verification_failed_since is None:
                     ba.verification_failed_since = timezone.now()
 

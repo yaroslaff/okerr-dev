@@ -13,7 +13,7 @@
 {% with project=project prefix="" %}
     {% include 'okerrui/projectlinks.html' %}
 {% endwith %}
-<h2>Host {{ ddr.fqdn }}</h2>
+<h2>Failover {{ ddr.name }}: {{ddr.fqdn}}</h2>
 
 <div class="container">
     <div>
@@ -228,7 +228,7 @@
     {% csrf_token %}
     <input type=hidden name='host' value='{{ddr.hostname}}'>
     <br>
-    <button class='massButton' name='delete' onclick="return confirm('Are you sure?')">{% trans 'Delete' %} {{ddr.hostname}}</button>
+    <button class='massButton' name='delete' onclick="return confirm('Are you sure?')">{% trans 'Delete' %} {{ddr.name}}</button>
 </form>
 
 
