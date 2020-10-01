@@ -6213,6 +6213,8 @@ class DynDNSRecord(models.Model):
             return socket.gethostbyname(self.fqdn())
         except socket.gaierror:
             return None
+        except UnicodeError:
+            return None
 
     def values(self):
         return self.dyndnsrecordvalue_set.order_by('-priority')
