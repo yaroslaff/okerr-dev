@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-29 07:33+0000\n"
+"POT-Creation-Date: 2020-10-01 10:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,7 +69,7 @@ msgstr ""
 msgid "Already has signup from {}"
 msgstr "Уже есть заявка на регистрацию с адреса {}"
 
-#: myauth/views.py:510 okerrui/views.py:3159
+#: myauth/views.py:510 okerrui/views.py:3160
 msgid "Already had such request for user {} recently. Try again later"
 msgstr "Уже был такой запрос от пользователя {} недавно. Попробуйте позже."
 
@@ -360,8 +360,8 @@ msgid ""
 "training at any time"
 msgstr ""
 "Вы можете пройти встроенный быстрый вводный курс чтобы освоить Okerr.\n"
-"Откройте свой профиль (кликнул на свой емейл в правом-верхнем углу) и начните тренинг в "
-"любое время"
+"Откройте свой профиль (кликнул на свой емейл в правом-верхнем углу) и "
+"начните тренинг в любое время"
 
 #: okerrui/views.py:412
 msgid ""
@@ -406,92 +406,96 @@ msgstr "Файл бэкапа"
 
 #: okerrui/views.py:855
 msgid "Copy this key (it will not be displayed in UI):\n"
-msgstr ""
+msgstr "Скопировать этот ключ (он не будет показан в UI):\n"
 
 #: okerrui/views.py:862
 msgid "Deleted API key: {} / {}"
-msgstr ""
+msgstr "Удален API ключ: {} / {}"
 
 #: okerrui/views.py:871
 msgid "Policy name must be unique"
 msgstr "Имя политики должно быть уникальным"
 
-#: okerrui/views.py:1346
+#: okerrui/views.py:906 okerrui/views.py:3498
+msgid "Hostname must not be empty"
+msgstr "Имя хоста не может быть пустым"
+
+#: okerrui/views.py:1347
 msgid "Can not delete \"Default\" policy"
 msgstr "Нелья удалять полику \"Default\""
 
-#: okerrui/views.py:1352
+#: okerrui/views.py:1353
 msgid "Can not delete policy {} because {} indicators ({} ...) are using it"
-msgstr ""
+msgstr "Нелья удалить политику {} потому что ее используют {} индикатор(ов). ({} ...)"
 
-#: okerrui/views.py:1387
+#: okerrui/views.py:1388
 msgid "Can not rename \"Default\" policy"
 msgstr "Нельзя переименовывать политику \"Default\""
 
-#: okerrui/views.py:2449
+#: okerrui/views.py:2450
 msgid "Not valid JSON data"
 msgstr "Не валидные данные JSON"
 
-#: okerrui/views.py:2866 okerrui/views.py:2986
+#: okerrui/views.py:2867 okerrui/views.py:2987
 msgid "Bad syntax"
 msgstr "Синтаксическая ошибка"
 
-#: okerrui/views.py:3139
+#: okerrui/views.py:3140
 msgid "Invalid email address: \"{}\""
 msgstr "Неправильный формат адреса: \"{}\""
 
-#: okerrui/views.py:3147 okerrui/views.py:3312
+#: okerrui/views.py:3148 okerrui/views.py:3313
 msgid "Already {} subscribers. Cannot subscribe more. Sorry."
 msgstr "Уже есть {} подписчик(ов). К сожалению, нельзя подписать больше."
 
-#: okerrui/views.py:3151
+#: okerrui/views.py:3152
 msgid "Address \"{}\" already subscribed"
 msgstr "Адрес \"{}\" уже подписан"
 
-#: okerrui/views.py:3182
+#: okerrui/views.py:3183
 msgid "Please click on link in confirmational email we sent to {}"
 msgstr "Пожалуйста, перейдите по ссылке из сообщения, которое мы выслали на {}"
 
-#: okerrui/views.py:3263
+#: okerrui/views.py:3264
 msgid "{} not subscribed"
 msgstr "{} не подписан"
 
-#: okerrui/views.py:3272
+#: okerrui/views.py:3273
 msgid "You are unsubscribed now"
 msgstr "Теперь вы отписаны"
 
-#: okerrui/views.py:3306
+#: okerrui/views.py:3307
 msgid "{} already subscribed"
 msgstr "{} уже подписан"
 
-#: okerrui/views.py:3321
+#: okerrui/views.py:3322
 msgid ""
 "You are subscribed! You will get message to {} when blog will be updated"
 msgstr ""
 "Теперь вы будете получать сообщения на адрес {} когда этот блог будет "
 "обновлен"
 
-#: okerrui/views.py:3507
+#: okerrui/views.py:3513
 msgid "No current value for DNS record"
 msgstr "Нет текущено значения для DNS записи"
 
-#: okerrui/views.py:3532
+#: okerrui/views.py:3538
 msgid "Invalid IP address"
 msgstr "Неправильный IP адрес"
 
-#: okerrui/views.py:3536
+#: okerrui/views.py:3542
 msgid "Already has this indicator in this record"
 msgstr "Уже используется такой индикатор"
 
-#: okerrui/views.py:3540
+#: okerrui/views.py:3546
 msgid "Already has this priority in this record"
 msgstr "Уже используется такой приоритет"
 
-#: okerrui/views.py:5296 okerrui/views.py:5315
+#: okerrui/views.py:5302 okerrui/views.py:5321
 msgid "Bound profile to {}"
 msgstr "Профиль привязан к {}"
 
-#: okerrui/views.py:5325
+#: okerrui/views.py:5331
 msgid "Not found user bound to this {} account. Link it in profile."
 msgstr ""
 "Не найден пользователь привязанный к этому аккаунту {}.\n"

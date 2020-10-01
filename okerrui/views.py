@@ -903,6 +903,7 @@ def project(request, pid):
     if request.POST.get('adddyndns', False):
         host = request.POST.get('host','')
         if not host:
+            notify(request, _("Hostname must not be empty"))
             return redirect(request.path)
 
         if project.dyndnsrecord_set.filter(hostname=host).count():
@@ -3492,6 +3493,11 @@ def dyndns(request, textid, host):
         return redirect(request.path)
 
     if 'configure' in request.POST:
+
+        if not request.POST.get('hostname'):
+            notify(request, _("Hostname must not be empty"))
+            return redirect(request.path)
+
         ddr.set_fields(request.POST)
         ddr.save()
         ddr.log('saved new config')

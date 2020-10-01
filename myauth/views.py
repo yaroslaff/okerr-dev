@@ -644,9 +644,12 @@ def login(request):
     context['prelogin'] = None
 
     if getattr(settings, 'PRELOGIN_MESSAGE_URL', None):
-        r = requests.get(settings.PRELOGIN_MESSAGE_URL)
-        if r.status_code == 200:
-            context['prelogin'] = r.text
+        try:
+            r = requests.get(settings.PRELOGIN_MESSAGE_URL, timeout=2)
+            if r.status_code == 200:
+                context['prelogin'] = r.text
+        except requests.RequestException as e:
+            pass
 
     return render(request, 'myauth/login.html', context)
 

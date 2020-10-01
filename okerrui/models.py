@@ -5925,7 +5925,7 @@ class DynDNSRecord(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     method = models.CharField(max_length=200, default=None)  # dyndns method
 
-    hostname = models.CharField(max_length=200, default='www', null=False)
+    hostname = models.CharField(max_length=200, default='www', null=False, blank=False)
     domain = models.CharField(max_length=200, default=None, null=True)
 
     login = models.CharField(max_length=200, default=None, null=True)
@@ -5941,6 +5941,9 @@ class DynDNSRecord(models.Model):
     changed = models.DateTimeField(default=timezone.now)
     status = models.TextField(default=None, null=True)
     cache = models.TextField(default='')
+
+    class Meta:
+        unique_together = ('hostname', 'domain')
 
     # def_method = 'okerr/yapdd'
     def_method = 'okerr/cloudflare'
@@ -6201,6 +6204,7 @@ class DynDNSRecord(models.Model):
 
     def get_real_value(self):
         fqdn = self.fqdn()
+
         if not fqdn:
             return None
         try:
