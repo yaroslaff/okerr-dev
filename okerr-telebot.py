@@ -525,15 +525,15 @@ def main():
 
     op.setlog(log)
 
-    log.info("Start polling (pid: {} started: {}})...".format(os.getpid(), started))
+    log.info("Start polling (pid: {} started: {})...".format(os.getpid(), started.strftime("%Y/%m/%d %H:%M:%S")))
 
     # updater.start_polling()
 
     bot.infinity_polling()
     log.error("END OF INFINITY (pid: {} now: {} age: {})".format(
         os.getpid(),
-        datetime.datetime.now(),
-        datetime.datetime.now() - started()
+        datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
+        (datetime.datetime.now() - started())
     ))
 
     """
