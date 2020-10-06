@@ -17,6 +17,7 @@ import time
 import signal
 import sys, os
 import socket
+import datetime
 
 import django
 #from django.core.urlresolvers import reverse
@@ -477,6 +478,8 @@ def main():
     global bot
     global main_rs
 
+    started = datetime.datetime.now()
+
     try:
         def_server = getattr(settings, 'SERVER_URL')
     except AttributeError:
@@ -522,12 +525,16 @@ def main():
 
     op.setlog(log)
 
-    log.info("Start polling...")
+    log.info("Start polling (pid: {} started: {}})...".format(os.getpid(), started))
 
     # updater.start_polling()
 
     bot.infinity_polling()
-    log.error("END OF INFINITY")
+    log.error("END OF INFINITY (pid: {} now: {} age: {})".format(
+        os.getpid(),
+        datetime.datetime.now(),
+        datetime.datetime.now() - started()
+    ))
 
     """
     try:
@@ -557,3 +564,4 @@ def main():
     """
 
 main()
+print("After main")
