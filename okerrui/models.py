@@ -1,7 +1,8 @@
 # coding=utf-8
 
 from django.db import models, IntegrityError, connection, transaction
-from django.db.models import Q, Sum, Max, Min
+from django.db.models import Q, Sum, Max, Min, ProtectedError
+from django.db.utils import DataError
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, PermissionDenied
@@ -566,10 +567,14 @@ class Project(TransModel):
 
     # project.log
     def log(self, message, typecode='project'):
-        LogRecord(project=self,
-                  indicator=None,
-                  typecode=LogRecord.get_typecode(typecode),
-                  message=message.replace('\n', ' ')).save()
+        try:
+            LogRecord(project=self,
+                    indicator=None,
+                    typecode=LogRecord.get_typecode(typecode),
+                    message=message.replace('\n', ' ')[:1000]).save()
+        except DataError as e:
+            log.error("Data error in project.log, message ({}): {}".format(len(message), message[:100]))
+
 
     # project.stats
     def stats(self):
@@ -717,7 +722,11 @@ class Project(TransModel):
         self.indicator_set.all().delete()
         self.projectmember_set.all().delete()
         self.projecttextid_set.all().delete()
-        self.policy_set.all().delete()
+        try:
+            self.policy_set.all().delete()
+        except ProtectedError:
+            log.error('Got ProtectedError in project.predelete. id: {} textid: {}'.format(
+                self.id, self.get_textid()))
 
     # project.getntextid
     @staticmethod

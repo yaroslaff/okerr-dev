@@ -8,6 +8,8 @@ After=okerr.service
 Type=simple
 ExecStart=%VENV%/bin/python %OKERR%/mqsender.py
 EnvironmentFile=/etc/okerr/env/mqsender
+Restart=always
+RestartSec=30
 
 [Install]
 WantedBy=okerr.service

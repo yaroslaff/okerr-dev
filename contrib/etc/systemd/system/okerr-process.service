@@ -7,6 +7,8 @@ After=okerr.service
 [Service]
 Type=simple
 ExecStart=%VENV%/bin/python %OKERR%/process.py
+Restart=always
+RestartSec=30
 
 [Install]
 WantedBy=okerr.service
