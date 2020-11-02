@@ -533,7 +533,7 @@ def main():
     log.error("END OF INFINITY (pid: {} now: {} age: {})".format(
         os.getpid(),
         datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-        (datetime.datetime.now() - started())
+        (datetime.datetime.now() - started)
     ))
 
     """
