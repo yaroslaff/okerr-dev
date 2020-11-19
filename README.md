@@ -16,11 +16,8 @@ But better read wiki page for [Installation](https://gitlab.com/yaroslaff/okerr-
 
 # Documentation
 
-- [English okerr documentation](https://okerr.readthedocs.io/en/latest/) 
-- [English documentation (git repo)](https://github.com/yaroslaff/okerr-doc-en)
-- [Russian okerr documentation](https://okerr.readthedocs.io/ru/latest/) 
-- [Russian documentation (git repo)](https://github.com/yaroslaff/okerr-doc-ru)
-
+- [English okerr documentation](https://okerr.readthedocs.io/en/latest/) [(git repo)](https://github.com/yaroslaff/okerr-doc-en)
+- [Russian okerr documentation](https://okerr.readthedocs.io/ru/latest/) [(git repo)](https://github.com/yaroslaff/okerr-doc-ru)
 
 
 # Other okerr resources
