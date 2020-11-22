@@ -15,7 +15,10 @@
 
 {% block content %}
 
-<script src="//static.okerr.com/Chart.js"></script>
+<!-- <script src="//static.okerr.com/Chart.js"></script> -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 
 <table border=0>
 
@@ -51,7 +54,7 @@
                 <div style="float:left;width:90%;">{% trans "Indicator" %} {{ i.name }}</div>
             </td>
             <td>
-                <a href="https://gitlab.com/yaroslaff/okerr-dev/-/wikis/Indicators"  target="_blank">
+                <a href="https://okerr.readthedocs.io/{{LANGUAGE_CODE}}/latest/User/Indicators.html"  target="_blank">
                     <img src="{% static 'help.png' %}"></a>
             </td>
         </tr>
@@ -155,8 +158,7 @@
                     {% endif %}
                 {% endfor %}
                 </select>
-                <a href="https://gitlab.com/yaroslaff/okerr-dev/-/wikis/{{LANGUAGE_CODE}}/cm/{{i.cm.codename}}
-"><img src="{% static 'help.png' %}"></a>
+                <a href="https://okerr.readthedocs.io/{{LANGUAGE_CODE}}/latest/cm/{{i.cm.codename}}.html"><img src="{% static 'help.png' %}"></a>
                 </td>
             </tr>
  
@@ -366,7 +368,7 @@
         <tr class=title>
             <td><div style="float:left;width:90%;">{% trans 'User-specific settings' %}</div></td>
             <td>
-                <a href="https://gitlab.com/yaroslaff/okerr-dev/-/wikis/Indicators"  target="_blank">
+                <a href="https://okerr.readthedocs.io/{{LANGUAGE_CODE}}/latest/User/Indicators.html"  target="_blank">
                     <img src="{% static 'help.png' %}"></a>
             </td>
         </tr>
@@ -417,6 +419,56 @@
 
         {% endif %}
 
+        {% if i.cm.codename == 'numerical' %}
+        <tr class=title><td>{% trans 'Graph' %}</td></tr>
+        <tr><td>                    
+
+            <canvas id="myChart"></canvas>
+            
+            <script>
+            var ctx = document.getElementById("myChart").getContext("2d");
+
+            var ulog = [];
+
+            fetch('/api/updatelog/{{textid}}/{{i.name}}')
+                .then((response) => {
+                    return response.json()
+                })
+                .then((ulog) => {
+
+                    var data = {
+                        datasets: [
+                            {
+                                label: '{{i.name}}',
+                                data: ulog                    
+                            }
+                        ]
+                    }
+                    
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: data,
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    type: 'time',
+                                }]
+                            },
+                            legend: {
+                                display: false
+                            }
+                        }
+                    });
+
+                });
+
+
+            </script>
+
+        </td></tr>
+        {% endif %}
+
+
 
         <tr class=title><td>{% trans 'Uptime' %}</td></tr>
         <tr><td>        
@@ -426,14 +478,9 @@
         </tr>
         <tr>
             <td>
-                <div id="canvas-holder">
-                    <canvas id="chart-area-hour" width="100" height="100"></canvas>
+                <div id="canvas-holder-h">
+                    <canvas id="chart-area-hour" width="300" height="100"></canvas>
                 </div>
-            </td>
-            <td valign=top>
-                OK: {{uptime.hour.OK|stringformat:".2f"}}%<br>
-                ERR: {{uptime.hour.ERR|stringformat:".2f"}}%<br>
-                {% trans 'Maintenance' %}: {{uptime.hour.maintenance|stringformat:".2f"}}%<br>
             </td>
         </tr>
 
@@ -442,15 +489,10 @@
         </tr>
         <tr>
             <td>
-                <div id="canvas-holder">
-                    <canvas id="chart-area-day" width="100" height="100"></canvas>
+                <div id="canvas-holder-d">
+                    <canvas id="chart-area-day" width="300" height="100"></canvas>
                 </div>
             </td>
-            <td valign=top>
-                OK: {{uptime.day.OK|stringformat:".2f"}}%<br>
-                ERR: {{uptime.day.ERR|stringformat:".2f"}}%<br>
-                {% trans 'Maintenance' %}: {{uptime.day.maintenance|stringformat:".2f"}}%<br>
-            </td>            
         </tr>
 
         <tr>
@@ -458,14 +500,9 @@
         </tr>
         <tr>
             <td>
-                <div id="canvas-holder">
-                    <canvas id="chart-area-month" width="100" height="100"></canvas>
+                <div id="canvas-holder-m">
+                    <canvas id="chart-area-month" width="300" height="100"></canvas>
                 </div>
-            </td>
-            <td valign=top>
-                OK: {{uptime.month.OK|stringformat:".2f"}}%<br>
-                ERR: {{uptime.month.ERR|stringformat:".2f"}}%<br>
-                {% trans 'Maintenance' %}: {{uptime.month.maintenance|stringformat:".2f"}}%<br>
             </td>            
         </tr>
                 
@@ -508,87 +545,77 @@
         
 	<script>
 
-		var DataHour = [
-				{
-					value: {{uptime.hour.OK|stringformat:".4f"}},
-					color:"#007700",
-					highlight: "#007700",
-					label: "OK"
-				},
-				{
-					value: {{uptime.hour.ERR|stringformat:".4f"}},
-					color: "#FF0000",
-					highlight: "#FF0000",
-					label: "ERR"
-				},
-				{
-					value: {{uptime.hour.maintenance|stringformat:".4f"}},
-					color: "#444444",
-					highlight: "#444444",
-					label: "Maintenance"
-				},
-			];
+        var pieColors = ['#00aa00', '#aa0000', '#666666'];
 
+        var dataHour = {
+            labels: ['OK', 'ERR', 'Maintenance'],
+            datasets: [
+                {data: [
+                    {{uptime.hour.OK|stringformat:".1f"}},
+                    {{uptime.hour.ERR|stringformat:".1f"}},
+                    {{uptime.hour.maintenance|stringformat:".1f"}}                
+                ],
+                backgroundColor: pieColors,
+                },
+            ]
+        };
 
-		var DataDay = [
-				{
-					value: {{uptime.day.OK|stringformat:".4f"}},
-					color:"#007700",
-					highlight: "#007700",
-					label: "OK"
-				},
-				{
-					value: {{uptime.day.ERR|stringformat:".4f"}},
-					color: "#FF0000",
-					highlight: "#FF0000",
-					label: "ERR"
-				},
-				{
-					value: {{uptime.day.maintenance|stringformat:".4f"}},
-					color: "#444444",
-					highlight: "#444444",
-					label: "Maintenance"
-				},
-			];
+        var dataDay = {
+            labels: ['OK', 'ERR', 'Maintenance'],
+            datasets: [
+                {data: [
+                    {{uptime.day.OK|stringformat:".1f"}},
+                    {{uptime.day.ERR|stringformat:".1f"}},
+                    {{uptime.day.maintenance|stringformat:".1f"}}                
+                ],
+                backgroundColor: pieColors,
+                },
+            ]
+        };
 
-		var DataMonth = [
-				{
-					value: {{uptime.month.OK|stringformat:".4f"}},
-					color:"#007700",
-					highlight: "#007700",
-					label: "OK"
-				},
-				{
-					value: {{uptime.month.ERR|stringformat:".4f"}},
-					color: "#F00",
-					highlight: "#F00",
-					label: "ERR"
-				},
-				{
-					value: {{uptime.month.maintenance|stringformat:".4f"}},
-					color: "#444444",
-					highlight: "#444444",
-					label: "Maintenance"
-				},
-			];
+        var dataMonth = {
+            labels: ['OK', 'ERR', 'Maintenance'],
+            datasets: [
+                {data: [
+                    {{uptime.month.OK|stringformat:".1f"}},
+                    {{uptime.month.ERR|stringformat:".1f"}},
+                    {{uptime.month.maintenance|stringformat:".1f"}}                
+                ],
+                backgroundColor: pieColors,
+                },
+            ]
+        };
 
+        window.onload = function(){
+            
+            var pieOptions = {
+                animation: false,
+                legend: {position: 'right'}
+            };
 
-			window.onload = function(){
-				
-				var pieOptions = {
-                    animation: false
-                };
+            
+            var ctx = document.getElementById("chart-area-hour").getContext("2d");
+            window.myPie = new Chart(ctx, {
+                type: 'pie', 
+                data: dataHour,
+                options: pieOptions
+            })
 
-				
-				var ctx = document.getElementById("chart-area-hour").getContext("2d");
-				window.myPie = new Chart(ctx).Pie(DataHour, pieOptions);
-				
-				var ctx = document.getElementById("chart-area-day").getContext("2d");
-				window.myPie = new Chart(ctx).Pie(DataDay, pieOptions);
-				
-				var ctx = document.getElementById("chart-area-month").getContext("2d");
-				window.myPie = new Chart(ctx).Pie(DataMonth, pieOptions);
-			};
+            var ctx = document.getElementById("chart-area-day").getContext("2d");
+            window.myPie = new Chart(ctx, {
+                type: 'pie', 
+                data: dataDay,
+                options: pieOptions
+            })
+
+            var ctx = document.getElementById("chart-area-month").getContext("2d");
+            window.myPie = new Chart(ctx, {
+                type: 'pie', 
+                data: dataMonth,
+                options: pieOptions
+            })
+
+        };
 
 
 

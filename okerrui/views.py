@@ -3805,6 +3805,28 @@ def api_tagfilter(request,pid,tagline):
             ilist.append(str(i.name)+'\n')
     return HttpResponse(''.join(ilist), content_type='text/plain; charset=utf-8')
 
+
+def api_updatelog(request,pid,iid):
+    p = getProjectHTTPAuth(request,pid)
+    data=list()
+
+    if need_relocate(p):
+        return relocate(request, p, mkticket=False)
+
+    try:
+        i = p.get_indicator(iid, deleted=False)
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound("No indicator with id {} in project with textid {}".format(iid, pid))
+
+    for up in i.updatelog_set.all():
+        u = dict()
+        u['t'] = up.created.strftime('%Y-%m-%d %H:%M:%S')
+        u['y'] = up.value
+        data.append(u)
+
+    return HttpResponse(json.dumps(data, indent=4), content_type='application/json')
+
+
 def api_indicator(request,pid,iid):
 
     p = getProjectHTTPAuth(request,pid)

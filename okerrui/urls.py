@@ -127,7 +127,9 @@ urlpatterns = [
 #    url(r'^api/getiid/(?P<pid>.+)/(?P<idname>.*)', views.api_getiid, name='api_getiid'),
     url(r'^api/filter/(?P<pid>[^/]+)/(?P<kvlist>.*)', views.api_filter, name='api_filter'),
     url(r'^api/tagfilter/(?P<pid>[^/]+)/(?P<tagline>.*)?', views.api_tagfilter, name='api_tagfilter'),
+    url(r'^api/updatelog/(?P<pid>[^/]+)/(?P<iid>.+)', views.api_updatelog, name='api_updatelog'),
     url(r'^api/indicator/(?P<pid>[^/]+)/(?P<iid>.+)', views.api_indicator, name='api_indicator'),
+    
     url(r'^api/set/(?P<pid>[^/]+)/(?P<iid>.+)', views.api_set, name='api_set'),
     url(r'^api/get/(?P<pid>[^/]+)/(?P<iid>.+)/(?P<argname>.+)', views.api_get, name='api_getarg'),
     url(r'^api/create/(?P<pid>[^/]+)/(?P<iname>.+)', views.api_create, name='api_create'),

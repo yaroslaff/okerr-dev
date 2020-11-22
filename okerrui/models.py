@@ -3648,6 +3648,11 @@ class Indicator(TransModel):
 
         self.details = details
 
+        # UpdateLog
+        print("update numerical", status)
+        UpdateLog(indicator=self, profile=self.project.owner.profile, value=status).save()
+
+
         if len(minlimstr):
             # minlim check
             try:
@@ -4081,7 +4086,6 @@ class Indicator(TransModel):
 
         # return i
         return None
-
 
 class Profile(TransModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -4962,6 +4966,14 @@ class Profile(TransModel):
         self.transaction_postload(d)
         self.save()
 
+class UpdateLog(TransModel):
+    indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE, null=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    value = models.CharField(max_length=200, default='', null=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "{} {} {}".format(self.indicator, self.created, self.value)
 
 class LogRecord(models.Model):
     # user = models.ForeignKey(settings.AUTH_USER_MODEL)
