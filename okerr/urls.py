@@ -27,7 +27,7 @@ urlpatterns = [
     re_path(r'', include('myauth.urls', namespace='myauth')),
     #url(r'^auth/',include('myauth.urls',namespace='myauth')),
     #re_path(r'^admin/', include(admin.site.urls)),
-    path(r'admin/', admin.site.urls),
+    # path(r'admin/', admin.site.urls),
     re_path(r'^i18n/', include('django.conf.urls.i18n')),
     re_path(r'', include('okerrui.urls' ,namespace='okerr')),
     # url('', include('social_django.urls', namespace='social')),
@@ -40,3 +40,6 @@ if settings.DEBUG:
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
