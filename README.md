@@ -28,3 +28,4 @@ But better read wiki page for [Installation](https://gitlab.com/yaroslaff/okerr-
 - [Okerr custom status page](https://github.com/yaroslaff/okerr-status)
 - [Okerr JS-powered static status page](https://github.com/yaroslaff/okerrstatusjs)
 - [Okerr network sensor](https://github.com/yaroslaff/sensor)
+- [Demo ISP](https://github.com/yaroslaff/demoisp) prototype client for ISP/hoster/webstudio providing paid okerr access to customers

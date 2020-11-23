@@ -3820,7 +3820,8 @@ def api_updatelog(request,pid,iid):
 
     for up in i.updatelog_set.all():
         u = dict()
-        u['t'] = up.created.strftime('%Y-%m-%d %H:%M:%S')
+        # u['t'] = up.created.strftime('%Y-%m-%d %H:%M:%S')
+        u['t'] = int(time.mktime(up.created.timetuple()))
         u['y'] = up.value
         data.append(u)
 
