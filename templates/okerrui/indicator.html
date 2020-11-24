@@ -46,7 +46,13 @@
             })
             .then((ulog) => {
 
+                // filter out too old records
                 ulog_filtered = ulog.filter(d => { return d.t > start})
+                
+                // modify time to unixtime*1000
+                ulog_filtered.forEach((e, i) => {
+				        e.t = e.t * 1000;
+			        }, ulog_filtered)
 
                 var data = {
                     datasets: [
