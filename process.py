@@ -71,6 +71,7 @@ class MyDaemon(Daemon):
 def get_redis():
     return redis.Redis(unix_socket_path='/var/run/redis/redis.sock', decode_responses=True)
 
+
 def mysignal(signal, frame):
     global stop
     log.debug("stop")
@@ -288,7 +289,11 @@ def unlockmy():
 def loop(ci, send_mail=True):
 
 
-    #log.info('{} loop iteration...'.format(os.getpid()))
+
+
+    log.info('{} loop iteration...'.format(os.getpid()))
+    r = get_redis()
+    r.set('process_lastloop', str(int(time.time())))
     
     # print "last loop:",SystemVariable.get('lastloopunixtime')
   
@@ -566,6 +571,10 @@ stop = False
                 
 django.setup()
 log = logging.getLogger('okerr')                
+
+r = get_redis()
+r.set('process_started', str(int(time.time())))
+
 main()
 
 
