@@ -2399,12 +2399,15 @@ class Indicator(TransModel):
                             log.info('created post req {} {}'.format(keyname, self.policy.url_statuschange))
                             success = True
                         except redis.ConnectionError as e:
-                            log.error("redis http_post failed ({}): {} (cwd: {})".format(tryn, str(e), os.getcwd()))
+                            log.error("redis http_post failed for {} ({}): {} (cwd: {})".format(
+                                self,
+                                tryn, str(e), os.getcwd()))
+                            log.error('uid: {}'.format(os.getuid()))
+                            log.error("redis: {}".format(redis))
                             tryn += 1
                             time.sleep(0.5)
                             r = get_redis()
                             print("ZZZ got redis", r)
-                            log.info("redis: ", redis)
 
                 else:
                     log.error("no redis from get_redis()")
