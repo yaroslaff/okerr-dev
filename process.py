@@ -465,11 +465,19 @@ def main():
             log.info("no logging to stderr, use --stderr")
 
     # drop privileges
-    requid = pwd.getpwnam(args.user).pw_uid
+    req_user = pwd.getpwnam(args.user).pw_uid
+    req_uid = user.pw_uid
+    req_gid = pwnam.pw_gid
+    req_groups = [g.gr_gid for g in grp.getgrall() if args.user in g.gr_mem]
+    log.info("req groups: {}".format(req_groups))
+    log.info("req gid: {}".format(req_gid))
 
-    if os.getuid() != requid:
-        log.debug("set uid {} = {}".format(args.user, requid))
-        os.setuid(requid)
+    if os.getuid() != req_uid:
+
+        os.setgid(req_gid)
+        os.setgroups(req_groups)
+        log.info("set uid {} = {}".format(args.user, req_uid))
+        os.setuid(req_uid)
 
     if args.ci is None:
         ci = myci()
