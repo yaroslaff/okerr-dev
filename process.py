@@ -290,8 +290,18 @@ def loop(ci, send_mail=True):
 
     log.info('{} loop iteration...'.format(os.getpid()))
     r = myutils.get_redis()
-    r.set('process_lastloop', str(int(time.time())))
-    
+    try:
+        r.set('process_lastloop', str(int(time.time())))
+    except redis.exceptions.ConnectionError as e:
+        log.error('Connection Error: {}'.format(e))
+        for path in ['/', '/var/', '/var/run', '/var/run/redis']:
+            log.info("{}: {}".format(path, os.listdir(path)))
+
+        print("access: r:{} w:{}".format(
+            os.access('/var/run/redis/redis.sock', os.R_OK),
+            os.access('/var/run/redis/redis.sock', os.W_OK),
+        ))
+
     # print "last loop:",SystemVariable.get('lastloopunixtime')
   
     now = calendar.timegm(datetime.utcnow().utctimetuple())
