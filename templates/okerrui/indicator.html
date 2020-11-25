@@ -44,8 +44,8 @@
         start = time() - period
 
         var ulog = [];
-        var url = '/api/updatelog/{{textid}}/{{i.name}}'
-        // var url = '/static/temp.json' 
+        // var url = '/api/updatelog/{{textid}}/{{i.name}}'
+        var url = '/static/temp.json' 
 
         fetch(url)
             .then((response) => {
@@ -496,13 +496,15 @@
 
         {% if i.cm.codename == 'numerical' %}
         <tr class=title><td>{% trans 'Graph' %}</td></tr>
-        <tr><td align="right">                    
-            <button onclick="drawGraph(3600)">1h</button>
-            <button onclick="drawGraph(6*3600)">6h</button>
-            <button onclick="drawGraph(86400)">1d</button>
-            <button onclick="drawGraph(10*86400)">10d</button>
-            <button onclick="drawGraph(30*86400)">30d</button>
-            <canvas id="myChart"></canvas>
+        <tr><td align="right">
+            <div class="graph">                    
+                <button onclick="drawGraph(3600)">1h</button>
+                <button onclick="drawGraph(6*3600)">6h</button>
+                <button onclick="drawGraph(86400)">1d</button>
+                <button onclick="drawGraph(10*86400)">10d</button>
+                <button onclick="drawGraph(30*86400)">30d</button>
+                <canvas id="myChart"></canvas>
+            </div>
         </td></tr>
         {% endif %}
 

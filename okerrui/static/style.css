@@ -15,8 +15,6 @@ body {
     border-collapse: separate;
 }
 
-
-
 .humantable2 {
     padding: 2px;
     border-spacing: 0px;
@@ -40,6 +38,10 @@ body {
     background: #CCC;
 }
 
+.graph {
+    width: 500px;
+    min-height: 300px;
+}
 
 table {
     border-spacing: 0px; 
