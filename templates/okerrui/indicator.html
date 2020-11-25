@@ -45,7 +45,7 @@
 
         var ulog = [];
         var url = '/api/updatelog/{{textid}}/{{i.name}}'
-        // var url = '/static/temp.json' 
+        //var url = '/static/temp.json' 
 
         fetch(url)
             .then((response) => {
@@ -95,7 +95,7 @@
 
 
 
-<table border=0 width="100%">
+<table border=0 align="center">
 
 {% if i.maintenance %}
         <tr>
@@ -665,7 +665,7 @@
     </td></tr>
 </table>
 
-<table>
+<table align="center">
         <tr class="title">
             <td>
                 <div style="float:left;">{% trans "Log records" %}</div>
