@@ -299,7 +299,7 @@ def loop(ci, send_mail=True):
         for path in ['/', '/var/', '/var/run', '/var/run/redis']:
             log.info("{}: {}".format(path, os.listdir(path)))
 
-        log.info("access: r:{} w:{}".format(
+        log.info("loop access: r:{} w:{}".format(
             os.access('/var/run/redis/redis.sock', os.R_OK),
             os.access('/var/run/redis/redis.sock', os.W_OK),
         ))
@@ -587,6 +587,12 @@ log = logging.getLogger('okerr')
 
 r = myutils.get_redis()
 r.set('process_started', str(int(time.time())))
+
+log.info("loop access: r:{} w:{}".format(
+    os.access('/var/run/redis/redis.sock', os.R_OK),
+    os.access('/var/run/redis/redis.sock', os.W_OK),
+))
+
 
 main()
 
