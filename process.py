@@ -303,6 +303,8 @@ def loop(ci, send_mail=True):
             os.access('/var/run/redis/redis.sock', os.R_OK),
             os.access('/var/run/redis/redis.sock', os.W_OK),
         ))
+        log.info("GID: {}".format(os.getegid()))
+        log.info("Groups: {}".format(os.getgroups()))
 
     # print "last loop:",SystemVariable.get('lastloopunixtime')
   
