@@ -388,8 +388,13 @@ def afterlogin(request):
             getattr(settings, 'FIRSTLOGIN_MESSAGE_URL', None):
         return redirect('okerr:firstlogin')
 
-    if getattr(settings, 'MOTD_MESSAGE_URL', None) and request.user.is_authenticated and not seen_motd(request):
-        return redirect("okerr:motd")
+    try:
+        if getattr(settings, 'MOTD_MESSAGE_URL', None) and request.user.is_authenticated and not seen_motd(request):
+            return redirect("okerr:motd")
+
+    except requests.exceptions.ConnectionError as e:
+        # okerr.com unavailable? okay
+        pass
 
     if 'afterlogin_redirect' in request.session:
         log.info('{} AFTERLOGIN got url in session: {}'.format(remoteip, request.session['afterlogin_redirect']))
