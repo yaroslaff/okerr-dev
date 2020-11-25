@@ -2403,6 +2403,8 @@ class Indicator(TransModel):
                             tryn += 1
                             time.sleep(0.5)
                             r = get_redis()
+                            print("ZZZ got redis", r)
+                            log.info("redis: ", redis)
 
                 else:
                     log.error("no redis from get_redis()")

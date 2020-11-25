@@ -393,7 +393,7 @@ def afterlogin(request):
             return redirect("okerr:motd")
 
     except requests.exceptions.ConnectionError as e:
-        # okerr.com unavailable? okay
+        # okerr.com unavailable? ok.
         pass
 
     if 'afterlogin_redirect' in request.session:
