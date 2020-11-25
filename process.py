@@ -468,6 +468,7 @@ def main():
     pwnam = pwd.getpwnam(args.user)
     req_uid = pwnam.pw_uid
     req_gid = pwnam.pw_gid
+    
     req_groups = [g.gr_gid for g in grp.getgrall() if args.user in g.gr_mem]
     
     if os.getuid() != req_uid:
