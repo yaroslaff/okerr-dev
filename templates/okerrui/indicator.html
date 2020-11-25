@@ -95,7 +95,7 @@
 
 
 
-<table border=0>
+<table border=0 width="100%">
 
 {% if i.maintenance %}
         <tr>
@@ -496,13 +496,15 @@
 
         {% if i.cm.codename == 'numerical' %}
         <tr class=title><td>{% trans 'Graph' %}</td></tr>
-        <tr><td align="right">
-            <div class="graph">                    
-                <button onclick="drawGraph(3600)">1h</button>
-                <button onclick="drawGraph(6*3600)">6h</button>
-                <button onclick="drawGraph(86400)">1d</button>
-                <button onclick="drawGraph(10*86400)">10d</button>
-                <button onclick="drawGraph(30*86400)">30d</button>
+        <tr><td>
+            <div class="graph">
+                <span style="vertical-align: top; float: right;">                   
+                    <button onclick="drawGraph(3600)">1h</button>
+                    <button onclick="drawGraph(6*3600)">6h</button>
+                    <button onclick="drawGraph(86400)">1d</button>
+                    <button onclick="drawGraph(10*86400)">10d</button>
+                    <button onclick="drawGraph(30*86400)">30d</button>
+                </span>
                 <canvas id="myChart"></canvas>
             </div>
         </td></tr>

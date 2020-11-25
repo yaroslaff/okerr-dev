@@ -40,7 +40,9 @@ body {
 
 .graph {
     width: 500px;
+    min-width: 500px;
     min-height: 300px;
+    text-align: right;
 }
 
 table {
