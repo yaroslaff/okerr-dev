@@ -38,6 +38,8 @@ import telegram
 import telegram.ext
 from telegram.error import TelegramError
 
+import redis
+
 
 import django
 from django.urls import reverse
@@ -349,11 +351,15 @@ def maincode(ci, send_mail=True, lifetime=None, keepalive=True):
     if keepalive:
         log.info('Keepalive indicators...')
         c = 0
+        totali = Indicator.objects.filter(ci = ci, disabled = False).count()
         for i in Indicator.objects.filter(ci = ci, disabled = False):
             # log.debug('keep {}'.format(i))
             i.reanimate()
             i.save()
             c += 1
+            if not c % 100:
+                log.info('.. rescheduled {}/{} indicators'.format(c, totali))
+
         ka_time = time.time() - started;
         log.info('rescheduled {} indicators in {:.2f}s ({:.2f} i/s)'.format(c, ka_time, float(c)/ka_time))
 
