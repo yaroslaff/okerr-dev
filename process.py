@@ -286,11 +286,6 @@ def unlockmy():
         pass
 
 def loop(ci, send_mail=True):
-
-
-
-
-    log.info('{} loop iteration...'.format(os.getpid()))
     r = myutils.get_redis()
     try:
         r.set('process_lastloop', str(int(time.time())))
@@ -599,12 +594,6 @@ log = logging.getLogger('okerr')
 
 r = myutils.get_redis()
 r.set('process_started', str(int(time.time())))
-
-log.info("loop access: r:{} w:{}".format(
-    os.access('/var/run/redis/redis.sock', os.R_OK),
-    os.access('/var/run/redis/redis.sock', os.W_OK),
-))
-
 
 main()
 
