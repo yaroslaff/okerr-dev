@@ -465,7 +465,7 @@ def main():
             log.info("no logging to stderr, use --stderr")
 
     # drop privileges
-    pwnam = pwd.getpwnam(args.user).pw_uid
+    pwnam = pwd.getpwnam(args.user)
     req_uid = pwnam.pw_uid
     req_gid = pwnam.pw_gid
     req_groups = [g.gr_gid for g in grp.getgrall() if args.user in g.gr_mem]
