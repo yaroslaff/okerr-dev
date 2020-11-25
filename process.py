@@ -469,14 +469,15 @@ def main():
     req_uid = pwnam.pw_uid
     req_gid = pwnam.pw_gid
     req_groups = [g.gr_gid for g in grp.getgrall() if args.user in g.gr_mem]
-    log.info("req groups: {}".format(req_groups))
-    log.info("req gid: {}".format(req_gid))
-
+    
     if os.getuid() != req_uid:
-
+        # log.info("set gid: {}".format(req_gid))
         os.setgid(req_gid)
+
+        # log.info("set groups: {}".format(req_groups))
         os.setgroups(req_groups)
-        log.info("set uid {} = {}".format(args.user, req_uid))
+        log.info("switch to user {} u: {} g: {}".format(
+            args.user, req_uid, [ req_gid ] + req_groups))
         os.setuid(req_uid)
 
     if args.ci is None:
