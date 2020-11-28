@@ -23,7 +23,8 @@ from okerrui.models import (
     Profile,
     Throttle,
     DynDNSRecord,
-    BonusActivation
+    BonusActivation, 
+    UpdateLog
     )
 
 from moveauth.models import MoveAuthTicket
@@ -52,7 +53,8 @@ classes = [
     Impex,
     Profile,
     Throttle,
-    DynDNSRecord
+    DynDNSRecord,
+    UpdateLog
 ]
 
 

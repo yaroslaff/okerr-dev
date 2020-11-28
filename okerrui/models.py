@@ -4979,6 +4979,17 @@ class UpdateLog(TransModel):
 
     def __str__(self):
         return "{} {} {}".format(self.indicator, self.created, self.value)
+    
+    # updatelog.cron
+    def cron(self):
+        log.info("UpdateLog cron")
+        now = time.time()
+        lastrun = int(SystemVariable.get('updatelog.cron.last','0'))
+        if now > lastrun + 7200:
+            loginfo("UpdateLog run cron jobs")
+            SystemVariable.assign('updatelog.cron.last', str(now))
+
+
 
 class LogRecord(models.Model):
     # user = models.ForeignKey(settings.AUTH_USER_MODEL)
