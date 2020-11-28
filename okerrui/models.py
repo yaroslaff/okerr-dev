@@ -4981,6 +4981,7 @@ class UpdateLog(TransModel):
         return "{} {} {}".format(self.indicator, self.created, self.value)
     
     # updatelog.cron
+    @staticmethod
     def cron(self):
         log.info("UpdateLog cron")
         now = time.time()
