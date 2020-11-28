@@ -4986,7 +4986,7 @@ class UpdateLog(TransModel):
         now = time.time()
         lastrun = int(SystemVariable.get('updatelog.cron.last','0'))
         if now > lastrun + 7200:
-            loginfo("UpdateLog run cron jobs")
+            log.info("UpdateLog run cron jobs")
             SystemVariable.assign('updatelog.cron.last', str(now))
 
 
