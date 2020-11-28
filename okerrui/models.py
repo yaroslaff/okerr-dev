@@ -4982,7 +4982,7 @@ class UpdateLog(TransModel):
     
     # updatelog.cron
     @staticmethod
-    def cron(self):
+    def cron():
         log.info("UpdateLog cron")
         now = time.time()
         lastrun = int(SystemVariable.get('updatelog.cron.last','0'))
