@@ -539,9 +539,9 @@ def pi(request, textid):
     resp = render(request,'okerrui/index.html',context)
 
     if 'localhost' in request.META['HTTP_HOST']:
-        resp.set_cookie('preferred_project', textid)
+        resp.set_cookie('preferred_project', textid, samesite='Strict')
     elif 'okerr.com' in request.META['HTTP_HOST']:
-        resp.set_cookie('preferred_project', textid, domain='.okerr.com')
+        resp.set_cookie('preferred_project', textid, domain='.okerr.com', samesite='Strict')
 
     return resp
 
@@ -1904,9 +1904,9 @@ def indicator(request,iid):
 
     resp = render(request,'okerrui/indicator.html',context)
     if 'localhost' in request.META['HTTP_HOST']:
-        resp.set_cookie('preferred_project', i.project.get_textid())
+        resp.set_cookie('preferred_project', i.project.get_textid(), samesite='Strict')
     elif 'okerr.com' in request.META['HTTP_HOST']:
-        resp.set_cookie('preferred_project', i.project.get_textid(), domain='.okerr.com')
+        resp.set_cookie('preferred_project', i.project.get_textid(), domain='.okerr.com', samesite='Strict')
 
     return resp
 
