@@ -1728,7 +1728,7 @@ class CheckMethod(models.Model):
                 },
                 "substr": {
                     "textname": "Substring",
-                    "desc": "Look for this substring in server banned ",
+                    "desc": "Look for this substring in server banner",
                     "default": ""
                 },
             }  # tcpport.args

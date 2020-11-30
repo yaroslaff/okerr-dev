@@ -8,3 +8,5 @@ nohup.out
 *.bak
 .bash*
 workspace.code-workspace
+.vscode
+
