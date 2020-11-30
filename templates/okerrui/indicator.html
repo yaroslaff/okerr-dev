@@ -35,43 +35,73 @@
     }
 
     var myChart=null;
+    var chartRelative=false;
+    var last_period = null;
+
+    function ToggleRelAbs(){
+        chartRelative = !chartRelative;
+        drawGraph(last_period);
+    }
 
     function drawGraph(period){
+        last_period = period;
         var ctx = document.getElementById("myChart").getContext("2d");
         if(myChart){
             myChart.destroy();
         }
-        start = time() - period
 
         var ulog = [];
         var url = '/api/updatelog/{{textid}}/{{i.name}}'
-        //var url = '/static/temp.json' 
+        // var url = '/static/temp.json' 
 
         fetch(url)
             .then((response) => {
                 return response.json()
             })
             .then((ulog) => {
+                // sort it
+                ulog = ulog.sort((a,b) => {return a.t - b.t})
+                
+                var start = ulog[ulog.length - 1].t - period;
 
                 // filter out too old records
-                ulog_filtered = ulog.filter(d => { return d.t > start})
-                
+                ulog = ulog.filter(d => { return d.t > start})
+
+                if(chartRelative){
+                    prev = ulog[0].y
+                    // modify time to unixtime*1000
+                    ulog.forEach((e, i) => {
+                        y = e.y 
+                        e.y = e.y - prev
+                        prev = y                    
+			            }, ulog)
+                }
+
+
                 // modify time to unixtime*1000
-                ulog_filtered.forEach((e, i) => {
+                ulog.forEach((e, i) => {
 				        e.t = e.t * 1000;
-			        }, ulog_filtered)
+			        }, ulog)
 
                 var data = {
                     datasets: [
                         {
                             label: '{{i.name}}',
-                            data: ulog_filtered,
+                            data: ulog,
                             pointStyle: 'triangle',
                             radius: 1                                         
                         }
                     ]
                 }
                 
+                var unit = 'minute';
+                if(period > 3600){
+                    unit = 'hour'
+                }
+                if(period > 48*3600){
+                    unit = 'day'
+                }
+
                 myChart = new Chart(ctx, {
                     type: 'line',
                     data: data,
@@ -79,6 +109,13 @@
                         scales: {
                             xAxes: [{
                                 type: 'time',
+                                time: {
+                                    unit: unit,
+                                    displayFormats: {
+                                        minute: 'H:m',
+                                        hour: 'H:mm'
+                                    }
+                                }
                             }]
                         },
                         legend: {
@@ -504,6 +541,7 @@
                     <button onclick="drawGraph(86400)">1d</button>
                     <button onclick="drawGraph(10*86400)">10d</button>
                     <button onclick="drawGraph(30*86400)">30d</button>
+                    <button onclick="ToggleRelAbs();">rel/abs</button>
                 </span>
                 <canvas id="myChart"></canvas>
             </div>
