@@ -16,7 +16,7 @@ uwsgi
 requests-oauthlib
 validate-email
 configargparse
-# python-telegram-bot
+python-telegram-bot
 pytelegrambotapi
 okerrupdate
 redis
