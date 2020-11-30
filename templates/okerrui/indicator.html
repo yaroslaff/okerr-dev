@@ -42,6 +42,13 @@
         chartRelative = !chartRelative;
         drawGraph(last_period);
     }
+ 
+    function toggle_by_class(cls, on) {
+        var lst = document.getElementsByClassName(cls);
+        for(var i = 0; i < lst.length; ++i) {
+            lst[i].style.display = on ? '' : 'none';
+        }
+    }
 
     function drawGraph(period){
         last_period = period;
@@ -59,7 +66,16 @@
                 return response.json()
             })
             .then((ulog) => {
-                // sort it
+                if(ulog.length < 2){
+                    toggle_by_class('graph');
+                    toggle_by_class('nograph','on');
+                    return;
+                }else{
+                    toggle_by_class('graph','on');
+                    toggle_by_class('nograph');
+                }
+
+                // sort it                                
                 ulog = ulog.sort((a,b) => {return a.t - b.t})
                 
                 var start = ulog[ulog.length - 1].t - period;
@@ -544,6 +560,9 @@
                     <button onclick="ToggleRelAbs();">rel/abs</button>
                 </span>
                 <canvas id="myChart"></canvas>
+            </div>
+            <div class="nograph">
+                Sorry, no data to graph
             </div>
         </td></tr>
         {% endif %}
