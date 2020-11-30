@@ -5384,6 +5384,8 @@ def oauth2_select(request):
 
     bindings = Oauth2Binding.get_profiles(provider, user_id)
 
+    remoteip = get_remoteip(request)
+
     if selected:
         for b in bindings:
             if b.profile.user.email == selected:
