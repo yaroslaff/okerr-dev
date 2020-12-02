@@ -4987,11 +4987,9 @@ class UpdateLog(TransModel):
     # updatelog.cron
     @staticmethod
     def cron():
-        log.info("UpdateLog cron")
         now = int(time.time())
         lastrun = int(SystemVariable.get('updatelog.cron.last','0'))
         if now > lastrun + 7200:
-            log.info("UpdateLog run cron jobs")
             for profile in Profile.objects.filter(ci=myci()):
                 retention = profile.getarg('updatelog_retention')
                 before = timezone.now() - datetime.timedelta(days=retention)
