@@ -4995,9 +4995,9 @@ class UpdateLog(TransModel):
             for profile in Profile.objects.filter(ci=myci()):
                 retention = profile.getarg('updatelog_retention')
                 before = timezone.now() - datetime.timedelta(days=retention)
-                num = profile.updatelog_set.filter(created__lt=before).before()
+                num = profile.updatelog_set.filter(created__lt=before).delete()
                 if num:
-                    log.info("clean updatelog for profile {} c: {}".format(
+                    log.info("clean updatelog for profile {} deleted {}".format(
                         profile, num))
 
             SystemVariable.assign('updatelog.cron.last', str(now))
