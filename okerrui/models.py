@@ -4937,6 +4937,10 @@ class Profile(TransModel):
             'login': {
                 'type': max,
                 'default': 0
+            },
+            'updatelog_retention': {
+                'type': max,
+                'default': 1
             }
         }
 
@@ -4988,6 +4992,13 @@ class UpdateLog(TransModel):
         lastrun = int(SystemVariable.get('updatelog.cron.last','0'))
         if now > lastrun + 7200:
             log.info("UpdateLog run cron jobs")
+            for profile in Profile.objects.filter(ci=myci()):
+                retention = profile.getarg('updatelog_retention')
+                before = timezone.now() - datetime.datetime(day=retention)
+                num = Profile.updatelog_set.filter(created__lt=before).count()
+                log.info("clean updatelog for profile {} (ret: {}) before: {} c: {}".format(
+                    profile, retention, before, num))
+
             SystemVariable.assign('updatelog.cron.last', str(now))
 
 
