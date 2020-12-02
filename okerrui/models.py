@@ -4994,11 +4994,11 @@ class UpdateLog(TransModel):
             log.info("UpdateLog run cron jobs")
             for profile in Profile.objects.filter(ci=myci()):
                 retention = profile.getarg('updatelog_retention')
-                log.info('retention: {!r} ({})'.format(retention, type(retention)))
                 before = timezone.now() - datetime.timedelta(days=retention)
-                num = profile.updatelog_set.filter(created__lt=before).count()
-                log.info("clean updatelog for profile {} (ret: {}) before: {} c: {}".format(
-                    profile, retention, before, num))
+                num = profile.updatelog_set.filter(created__lt=before).before()
+                if num:
+                    log.info("clean updatelog for profile {} c: {}".format(
+                        profile, num))
 
             SystemVariable.assign('updatelog.cron.last', str(now))
 
