@@ -4982,7 +4982,10 @@ class UpdateLog(TransModel):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "{} {} {}".format(self.indicator, self.created, self.value)
+        return "{} {} {}".format(
+            self.indicator, 
+            self.created.strftime('[%Y-%m-%d %H:%M:%S]'), 
+            self.value)
     
     # updatelog.cron
     @staticmethod
