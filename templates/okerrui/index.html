@@ -697,7 +697,8 @@ class iTree {
 
             if(okerrm == 'OK' || okerrm == 'ERR'){
                 if(i.pending()){
-                    this.sumstatus['pending']++
+                    console.log('pending indicator %o', i);
+                    this.sumstatus['pending']++;
                 }
             }
 
