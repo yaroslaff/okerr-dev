@@ -16,6 +16,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "okerr.settings")
 import django
 from django.conf import settings
 from django.db import OperationalError, connection
+from MySQLdb import Error as MySQLError
 
 from django.utils import timezone
 
@@ -55,6 +56,18 @@ class TProcNoIndicator(TProcExc):
 class TProcForgetIndicator(TProcExc):
     pass
 
+
+def reconnect():
+    """
+    reconnects to db after OperationalError
+    """
+    while True:
+        try:
+            connection.connect()
+            return
+        except (OperationalError, MySQLError) as e:
+            print("Failed to reconnect, will retry...")
+            time.sleep(5)
 
 def get_redis(redis_dbi=0):
     if 'REDIS_HOST' in os.environ:
@@ -239,19 +252,6 @@ def get_routing_key(i, data):
     else:
         # available
         return qprefix + i.location
-
-
-def reconnect():
-    """
-    reconnects to db after OperationalError
-    """
-    while True:
-        try:
-            connection.connect()
-            return
-        except OperationalError:
-            print("Failed to reconnect, will retry...")
-            time.sleep(5)
 
 def mainloop(args):
     global redis_conn
