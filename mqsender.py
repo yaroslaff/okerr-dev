@@ -61,12 +61,14 @@ def reconnect():
     """
     reconnects to db after OperationalError
     """
+    log.info("reconnecting...")
     while True:
         try:
             connection.connect()
+            log.info("reconnected to db")
             return
         except (OperationalError, MySQLError) as e:
-            print("Failed to reconnect, will retry...")
+            log.error("Failed to reconnect, will retry...")
             time.sleep(5)
 
 def get_redis(redis_dbi=0):
