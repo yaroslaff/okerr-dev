@@ -3,6 +3,7 @@ import os, sys, time
 import logging, logging.handlers
 import argparse, json
 import datetime
+
 import pika
 import pika.exceptions
 import ssl
@@ -14,6 +15,7 @@ import socket
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "okerr.settings")
 import django
 from django.conf import settings
+from django.db import OperationalError, connection
 
 from django.utils import timezone
 
@@ -238,6 +240,18 @@ def get_routing_key(i, data):
         # available
         return qprefix + i.location
 
+
+def reconnect():
+    """
+    reconnects to db after OperationalError
+    """
+    while True:
+        try:
+            connection.connect()
+            return
+        except OperationalError:
+            print("Failed to reconnect, will retry...")
+            time.sleep(5)
 
 def mainloop(args):
     global redis_conn
@@ -509,8 +523,8 @@ def main():
                 print("Auth error: {}".format(e))
             else:
                 print("Caught exception {}: {}".format(type(e), e))
-
-            time.sleep(10)
+        except OperationalError:
+            reconnect()
 
 main()
 
