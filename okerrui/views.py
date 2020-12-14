@@ -691,7 +691,10 @@ def doop(request, textid):
 
     cmd=request.POST['masscmd']
 #    iid = int(request.POST['iid'])
-    i = project.get_indicator(name=request.POST['name'])
+    try:
+        i = project.get_indicator(name=request.POST['name'])
+    except Indicator.DoesNotExist as e:
+        return HttpResponseNotFound('no such indicator')
 
     if i.project.iadmin(request.user):
         if cmd == 'maintenance':
@@ -1485,7 +1488,7 @@ def ilocator(request,pid,iid):
     # Now, look for indicator
     try:
         i = project.get_indicator(iid, deleted=False)
-    except ObjectDoesNotExist:
+    except Indicator.DoesNotExist:
         return redirect('okerr:index')
 
     #return redirect('okerr:indicator',i.id)

@@ -380,7 +380,7 @@ class Project(TransModel):
     #
     # project.get_indicator
     #
-    # return indicator or throw error
+    # return indicator or throw Indicator.DoesNotExist (ObjectDoesNotExist)
     #
     # iid is 'autodetect'. (id or name)
     #
