@@ -63,7 +63,7 @@ class TProcForgetIndicator(TProcExc):
 def periodic_report():
     uptime = int(time.time() - started)
     used = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    log.info(f'uptime: {dhms_short(uptime)} used mem: {used}')
+    log.info(f'uptime: {dhms(uptime)} used mem: {used}')
 
 
 def reconnect():
