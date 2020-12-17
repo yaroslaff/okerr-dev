@@ -317,13 +317,13 @@ def dhms(sec, sep=" "):
     
     if isinstance(sec, datetime.timedelta):
         sec = sec.total_seconds()
-    
+
     for k in sorted(t,key=t.__getitem__,reverse=True):
         
         if added==2:
             return out.rstrip()
         
-        if sec>=t[k]:
+        if sec>=t[k] or t[k]==1:
             n = int(sec/t[k])
             sec-=n*t[k]
             out+="%d%s%s" % (n,k,sep)
