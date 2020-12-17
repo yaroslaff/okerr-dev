@@ -504,6 +504,7 @@ def main():
     args = parser.parse_args()
 
     log = logging.getLogger('mqsender')
+    log.propagate = False
 
     err = logging.StreamHandler(sys.stderr)
     err.setFormatter(logging.Formatter('%(asctime)s %(message)s',
