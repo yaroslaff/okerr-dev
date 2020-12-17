@@ -323,11 +323,13 @@ def dhms(sec, sep=" "):
         if added==2:
             return out.rstrip()
         
-        if sec>=t[k] or t[k]==1:
+        if sec>=t[k]:
             n = int(sec/t[k])
             sec-=n*t[k]
             out+="%d%s%s" % (n,k,sep)
             added += 1
+
+    out = out or '0s' # default
     return out.rstrip()
 
 
