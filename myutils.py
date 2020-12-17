@@ -313,7 +313,7 @@ def shortdate(dt=None,tzname=None):
 def dhms(sec, sep=" "):
     out=""
     added=0
-    t={'d': 86400,'h': 3600,'m': 60,'s': 0}
+    t={'d': 86400,'h': 3600,'m': 60,'s': 1}
     
     if isinstance(sec, datetime.timedelta):
         sec = sec.total_seconds()
