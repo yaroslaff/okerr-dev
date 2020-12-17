@@ -11,6 +11,7 @@ from myutils import dt2unixtime, dhms, shorttime
 import traceback
 import redis
 import socket
+import resource
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "okerr.settings")
 import django
@@ -27,11 +28,13 @@ import okerrupdate
 django.setup()
 
 from okerrui.cluster import myci
-from okerrui.models import Project, Indicator
+from okerrui.models import Project, Indicator, dhms_short
 
 resultq = None
 redis_conn = None
 myindicator = None
+
+started = time.time()
 
 class TProcExc(Exception):
     def __init__(self, textid=None, name=None):
@@ -55,6 +58,12 @@ class TProcNoIndicator(TProcExc):
 
 class TProcForgetIndicator(TProcExc):
     pass
+
+
+def periodic_report():
+    uptime = int(time.time() - started)
+    used = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    log.info(f'uptime: {dhms_short(uptime)} used mem: {used}')
 
 
 def reconnect():
@@ -258,6 +267,9 @@ def get_routing_key(i, data):
 def mainloop(args):
     global redis_conn
 
+    report_last = 0
+    report_period = 600
+
     iupdate_last = time.time()
     iupdate_period = 600
     nput = 0
@@ -311,6 +323,13 @@ def mainloop(args):
 
 
     while True:
+
+        #
+        # report
+        #
+        if (time.time() > report_last + report_period):
+            periodic_report()
+            report_last = time.time()
 
         #
         # Part I: Send tasks
