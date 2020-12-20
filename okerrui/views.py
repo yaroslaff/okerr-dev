@@ -536,6 +536,10 @@ def pi(request, textid):
 
     context = {'profile': profile,'msg': msg, 'pid': project.id, 'project': project, 'danger': danger }
 
+    template_path = 'okerrui/index.html'
+    if 'debug' in request.session:
+        template_path = 'okerrui/index-debug.html'
+
     resp = render(request,'okerrui/index.html',context)
 
     if 'localhost' in request.META['HTTP_HOST']:
