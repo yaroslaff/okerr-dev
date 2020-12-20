@@ -1905,7 +1905,11 @@ def indicator(request,iid):
              'sensor_list': sensor_list
              }
 
-    resp = render(request,'okerrui/indicator.html',context)
+    template_path = 'okerrui/indicator.html'
+    if 'debug' in  request.session:
+        template_path = 'okerrui/indicator-debug.html'
+
+    resp = render(request, template_path, context)
     if 'localhost' in request.META['HTTP_HOST']:
         resp.set_cookie('preferred_project', i.project.get_textid(), samesite='Strict')
     elif 'okerr.com' in request.META['HTTP_HOST']:

@@ -1,0 +1,766 @@
+{% extends "okerrui/base.html" %}
+{% load i18n %}
+{% load static %}
+{% load age %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block title%}{{i.name}}{%endblock%}
+
+{%block favicon%}{%if i.status == "ERR" %}
+{% static 'iflags/ERR.png' %}
+{%else%}
+{% static 'iflags/OK.png' %}
+{%endif %}
+{%endblock%}
+
+{% block content %}
+
+<!-- <script src="//static.okerr.com/Chart.js"></script> -->
+
+<!--
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+-->
+
+<script src="{% static 'js/moment.min.js' %}"></script>
+<script src="{% static 'js/Chart.min.js' %}"></script>
+
+
+
+<script>
+
+
+    function time(){
+        return parseInt(new Date().getTime()/1000)
+    }
+
+    var myChart=null;
+    var chartRelative=false;
+    var last_period = null;
+
+    function ToggleRelAbs(){
+        chartRelative = !chartRelative;
+        drawGraph(last_period);
+    }
+ 
+    function toggle_by_class(cls, on) {
+        var lst = document.getElementsByClassName(cls);
+        for(var i = 0; i < lst.length; ++i) {
+            lst[i].style.display = on ? '' : 'none';
+        }
+    }
+
+    function drawGraph(period){
+        last_period = period;
+        var ctx = document.getElementById("myChart").getContext("2d");
+        if(myChart){
+            myChart.destroy();
+        }
+
+        var ulog = [];
+        var url = '/api/updatelog/{{textid}}/{{i.name}}'
+        // var url = '/static/temp.json' 
+
+        fetch(url)
+            .then((response) => {
+                return response.json()
+            })
+            .then((ulog) => {
+                if(ulog.length < 2){
+                    toggle_by_class('graph');
+                    toggle_by_class('nograph','on');
+                    return;
+                }else{
+                    toggle_by_class('graph','on');
+                    toggle_by_class('nograph');
+                }
+
+                // sort it                                
+                ulog = ulog.sort((a,b) => {return a.t - b.t})
+                
+                var start = ulog[ulog.length - 1].t - period;
+
+                // filter out too old records
+                ulog = ulog.filter(d => { return d.t > start})
+
+                if(chartRelative){
+                    prev = ulog[0].y
+                    // modify time to unixtime*1000
+                    ulog.forEach((e, i) => {
+                        y = e.y 
+                        e.y = e.y - prev
+                        prev = y                    
+			            }, ulog)
+                }
+
+
+                // modify time to unixtime*1000
+                ulog.forEach((e, i) => {
+				        e.t = e.t * 1000;
+			        }, ulog)
+
+                var data = {
+                    datasets: [
+                        {
+                            label: '{{i.name}}',
+                            data: ulog,
+                            pointStyle: 'triangle',
+                            radius: 1                                         
+                        }
+                    ]
+                }
+                
+                var unit = 'minute';
+                if(period > 3600){
+                    unit = 'hour'
+                }
+                if(period > 48*3600){
+                    unit = 'day'
+                }
+
+                myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    unit: unit,
+                                    displayFormats: {
+                                        minute: 'H:m',
+                                        hour: 'H:mm'
+                                    }
+                                }
+                            }]
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+
+
+
+
+
+
+<table border=0 align="center">
+
+{% if i.maintenance %}
+        <tr>
+            <td class=notifytitle colspan=2>{% trans "Maintenance mode" %}</td>
+        </tr>
+        <tr>
+            <td colspan=2 class=notify>{% trans 'No alerts are sent when indicator is in maintenance mode like now.'%}<br>
+            {% trans 'Do not forget to stop maintenance after you will finish with configuration.' %}
+            </td>
+        </tr>
+        
+{%endif%}
+
+
+
+{% if i.project.limited %}
+        <tr>
+            <td class=notifytitle colspan=2>{% trans "Limited project" %}</td>
+        </tr>
+        <tr>
+            <td colspan=2 class=notify>{% trans 'Project is limited. No changes will be applied.'%}</td>
+        </tr>
+        
+{%endif%}
+
+
+    <tr><td valign=top>
+    <table border=0> {# nested table: 1st row#}
+        <tr class=title>
+            <td>
+                <div style="float:left;width:90%;">{% trans "Indicator" %} {{ i.name }}</div>
+            </td>
+            <td>
+                <a href="https://okerr.readthedocs.io/{{LANGUAGE_CODE}}/latest/User/Indicators.html"  target="_blank">
+                    <img src="{% static 'help.png' %}"></a>
+            </td>
+        </tr>
+        <tr><td>
+            <form method=post>                
+            {% csrf_token %}
+            <input type=hidden name=autosubmit value="">
+            <table width=100%>
+            <tr>
+                <td>{% trans 'Name' %}:</td>
+                <td><input type=text name=name value='{{ i.name }}'></td>                
+            </tr>
+            <tr>
+                <td>{% trans 'Project' %}:</td>
+                <td>
+                    <a href="{% url 'okerr:pi' i.project.get_textid %}">{{i.project.name}}</a>
+                    <a href="{% url 'okerr:project' i.project.get_textid %}"><img src="{% static 'wrench.png' %}"></a>
+                    <a href="{% url 'okerr:servers' i.project.get_textid %}"><img src="{% static 'computer.png' %}"></a>
+
+            </tr>
+
+ 
+            <tr>
+                <td>{% trans 'Status' %}</td>
+                <td>{{i.status}}</td>
+            </tr>
+
+            <tr>
+                <td>{% trans 'Details' %}</td>
+                <td>{{i.details}}</td>
+            </tr>
+
+            <tr>
+                <td>{% trans 'Changed' %}</td>
+                <td>{{i.changed|date:"Y/m/d H:i:s"}} <span class="dull">({% age i.changed %} {% trans 'ago' %})</span></td>
+            </tr>
+
+            <tr>
+                <td>{% trans 'Updated' %}</td>
+                <td>{{i.updated|date:"Y/m/d H:i:s"}} <span class="dull">({% age i.updated %} {% trans 'ago' %})</span></td>
+            </tr>
+
+            <tr>
+                <td>{% trans 'Expected' %}</td>
+                <td>{% if i.expected %}{{i.expected|date:"Y/m/d H:i:s"}} <span class="dull">({% reverse_age i.expected %})</span>{% endif %}
+                {% if i.pending %}
+                <img src='{% static 'iflags/pending.png' %}'>
+                {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td>{% trans 'Scheduled' %}</td>
+                <td>{{i.scheduled|date:"Y/m/d H:i:s"}} <span class="dull">({% reverse_age i.scheduled %})</span></td>
+            </tr>
+            <tr>
+                <td>{% trans 'Maintenance mode' %}</td>
+                <td>{{i.maintenance}}</td>
+            </tr>
+
+            <tr>
+                <td>{% trans 'Disabled' %}</td>
+                <td>{% if i.disabled %}
+                    <input type=checkbox name=disabled checked>
+                    {%else%}
+                    <input type=checkbox name=disabled>
+                    {%endif%}
+                </td>
+            </tr>
+
+            <tr>
+                <td>{% trans 'Problem' %}</td>
+                <td>{% if i.problem %}
+                    <input type=checkbox name=problem checked>
+                    {%else%}
+                    <input type=checkbox name=problem>
+                    {%endif%}
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>{% trans 'Silent' %}</td>
+                <td>{% if i.silent %}
+                    <input type=checkbox name=silent checked>
+                    {%else%}
+                    <input type=checkbox name=silent>
+                    {%endif%}
+                </td>
+            </tr>
+
+
+            <tr>                
+                <td>{% trans 'Check Method' %}:</td>
+                <td><select name='cm' onchange="this.form['autosubmit'].value='1'; this.form.submit();">
+                {% for cm in checkmethods %}
+                    {% if i.cm == cm %}
+                    <option value={{cm.codename}} selected>{{cm}}
+                    {% else %}
+                    <option value={{cm.codename}}>{{cm}}
+                    {% endif %}
+                {% endfor %}
+                </select>
+                <a href="https://okerr.readthedocs.io/{{LANGUAGE_CODE}}/latest/cm/{{i.cm.codename}}.html"><img src="{% static 'help.png' %}"></a>
+                </td>
+            </tr>
+ 
+
+            <tr>                
+                <td>
+                
+                {% trans 'Policy' %}:                
+                </td>
+                <td><select name='policy'>
+                {% for policy in i.project.policy_set.all %}
+                    {% if i.policy == policy %}
+                    <option value='{{policy.name}}' selected>{{policy}}
+                    {% else %}
+                    <option value='{{policy.name}}'>{{policy}}
+                    {% endif %}
+                {% endfor %}
+                </select>
+                <a href="{% url 'okerr:policy' i.project.get_textid i.policy.name %}"><img src="{% static 'wrench.png' %}"></a>
+                </td>                
+            </tr>
+
+
+            {% if i.cm.active %}
+            <tr>
+                <td>
+                    {% trans 'Location suffix' %}
+                </td>
+                <td>
+                    <select name="location">
+                        {% for sensor in sensor_list %}
+                            {% if sensor == i.location %}
+                            <option selected value="{{sensor}}">{{sensor}}</option>
+                            {% else %}
+                                {% if sensor is not None %}
+                                    <option value="{{sensor}}">{{sensor}}</option>
+                                {% else %}
+                                    <option disabled="1"></option>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            {% else %}
+                    <input type=hidden name=location value="{{i.location}}"> {# we need location=location (often '') here, not None #}
+            {% endif %}
+
+
+            {% if i.origkeypath %}
+            <tr>                
+                <td>{% trans 'Request keypath' %}</td>
+                <td>
+                    <a href="{% url 'okerr:srvedit' i.project.get_textid okp1 okp2 %}">{{i.origkeypath}}</a>
+                </td>                
+            </tr>
+            {% endif %}
+            
+            {% if i.realkeypath %}
+            <tr>                
+                <td>{% trans 'Real keypath' %}</td>
+                <td>
+                    <a href="{% url 'okerr:srvedit' i.project.get_textid rkp1 rkp2 %}">{{i.realkeypath}}</a>
+                </td>                
+            </tr>
+            {% endif %}
+
+
+
+            {% if i.cm.codename == 'logic' %}
+            <tr>                
+                <td>{% trans 'Data structure' %}</td>
+                <td>
+                    <a href="{% url 'okerr:pdsjson' i.project.get_textid i.name %}">{% trans 'View' %}</a>
+                </td>                
+            </tr>
+            {% endif %}
+
+
+            
+            <tr>                
+                <td>{% trans 'Description' %}</td>
+                <td>
+                    <textarea name=desc class="checkarg">{{i.desc}}</textarea>    
+                </td>                
+            </tr>
+            
+ 
+            <p>
+        </td></tr>
+
+
+        {% for argname, arg in argvals.items %}                    
+            <tr>
+                <td><span title='{{arg.textname}}'>{{ argname }}</span></td>
+                <td>
+                <input type=text class='checkarg' name='{{argname}}'
+                    value='{{ arg.value }}'></td>
+            </tr>
+        {% endfor %}
+
+        </table>
+
+        <tr>
+            <td>                                        
+
+                {% if i.cm.passive %}
+                    <button class='massButton' name='apply' value='1'>{% trans 'Apply' %}</button>
+                {% else %}
+                    <button class='massButton' name='apply' value='1'>{% trans 'Apply and retest ASAP' %}</button>
+                {% endif %}
+
+                </form>
+                <button class='massButton' onclick="toggleDiv('manage_buttons');">...</button>
+                <p>
+            </td>
+        </tr>                
+
+
+
+        <tr>
+            <td colspan=2>
+                <div id="manage_buttons" style="display: none;">
+                    <form method=post>                
+                        {% csrf_token %}
+
+                        {% if i.maintenance %}
+                        <button class='massButton' name='stopmaintenance' value='1'>{% trans 'Stop maintenance' %}</button>
+                        {%else%}
+                        <button class='massButton' name='startmaintenance' value='1'>{% trans 'Set maintenance' %}</button>
+                        {%endif%}
+
+                        <button class='massButton' name='set_ok' value='1'>{% trans 'OK' %}</button>
+                        <button class='massButton' name='set_err' value='1'> {% trans 'ERR' %}</button>
+
+                        <button class='massButton' name='delete' value='1'
+                            onclick="return confirm('{% trans 'Are you sure?' %}')">{% trans 'Delete' %}</button>
+
+                    </form>
+
+                </div>                
+            </td>
+        </td>
+
+        {% if user.profile.get_jarg_full_interface %}
+        <tr class=title>          
+            <td>{% trans 'Tags' %}</td>
+        </tr>
+        <tr>
+            <td>
+                {%for tag in i.tags%}
+                    {{tag}}
+                    <form method=post name=deltag{{forloop.counter0}} style="display: inline">
+                    {% csrf_token %}
+                    <input type=hidden name=deltag value="1">
+                    <input type=hidden name=tag value="{{tag}}">
+                    </form> 
+                    [<a href="javascript:document.deltag{{forloop.counter0}}.submit();" style="text-decoration:none">x</a>]<br>
+                {%endfor%}
+                <form method=post>
+                    {% csrf_token %}                    
+                    <input type=text name=tag>
+                    <button class='massButton' name='settag' value='1'> {% trans 'Add tag' %}</button>
+
+                </form>
+            </td>
+        </tr>
+        {% endif %}
+
+        {% if user.profile.get_jarg_full_interface %}
+        <tr class=title><td>{% trans 'Copy indicator' %}</td></tr>
+        <tr><td>
+        
+            <form method=post>    
+                {% csrf_token %}
+                {% trans 'Name' %}: <input type=text name=copyname value='{{i.copyname}}'>
+                <button class='massButton' name='copy' value='1'>{% trans 'Copy' %}</button>
+            </form>
+
+        </td></tr>
+        {% endif %}
+
+    
+    </table> {# nested table, left #}    
+    </td><td valign=top>                
+    <table border=0> {# nested table, right #}
+
+        {% if tstage %}
+        <tr class=title>
+            <td>{% trans 'Training' %}</td>
+        </tr>
+        <tr><td>
+            {% include taskfile %}
+
+            <form method="post" action="{% url 'okerr:training' %}">
+                {% csrf_token %}
+                <input type="hidden" name="return_uri" value="{{request.path}}">
+                <button class='massButton' name='check' value='1'>{% trans 'Check' %}</button>
+            </form>
+
+        </td></tr>
+        {% endif %}
+
+
+        {% if user.profile.get_jarg_full_interface %}
+
+        <tr class=title>
+            <td><div style="float:left;width:90%;">{% trans 'User-specific settings' %}</div></td>
+            <td>
+                <a href="https://okerr.readthedocs.io/{{LANGUAGE_CODE}}/latest/User/Indicators.html"  target="_blank">
+                    <img src="{% static 'help.png' %}"></a>
+            </td>
+        </tr>
+        <tr><td>
+            <form method=post>
+            {% csrf_token %}
+            <table>
+                {% for ianame,ia in iargs.items %}        
+                <tr>
+                    <td><b>{% trans ianame %}</b>
+                    <td>
+                    {% if ia %}
+                        <input type="checkbox" name="{{ianame}}" checked>
+                    {% else %}
+                        <input type="checkbox" name="{{ianame}}">
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td>
+                        <button class='massButton' name='changeiargs' value='1'>{% trans 'Change' %}</button>
+                        <p>
+                    </td>
+                </tr>
+            </table>
+        </td></tr>
+        {% endif %}
+
+
+        {% if i.statusindicator_set.count %}
+            <tr class=title><td>{% trans 'Status pages' %}</td></tr>
+            {% for spi in i.statusindicator_set.all %}
+                <tr>
+                    <td><a href="{% url 'okerr:statuspage' i.project.get_textid spi.status_page.addr %}">{{spi.status_page.addr}}</a>: {{spi.status_page.title}}</td>
+                </tr>        
+            {% endfor %}
+
+        {% endif %}
+
+
+        {% if i.dyndnsrecordvalue_set.count %}
+            <tr class=title><td>{% trans 'Dynamic DNS' %}</td></tr>
+            {% for ddrv in i.dyndnsrecordvalue_set.all %}
+                <tr>
+                    <td><a href="{% url 'okerr:dyndns' i.project.get_textid ddrv.ddr.hostname %}">{{ddrv.ddr.fqdn}}</a>: {{ddrv.ddr.curvalue}}</td>
+                </tr>        
+            {% endfor %}
+
+        {% endif %}
+
+        {% if i.cm.codename == 'numerical' %}
+        <tr class=title><td>{% trans 'Graph' %}</td></tr>
+        <tr><td>
+            <div class="graph">
+                <span style="vertical-align: top; float: right;">                   
+                    <button onclick="drawGraph(3600)">1h</button>
+                    <button onclick="drawGraph(6*3600)">6h</button>
+                    <button onclick="drawGraph(86400)">1d</button>
+                    <button onclick="drawGraph(10*86400)">10d</button>
+                    <button onclick="drawGraph(30*86400)">30d</button>
+                    <button onclick="ToggleRelAbs();">rel/abs</button>
+                </span>
+                <canvas id="myChart"></canvas>
+            </div>
+            <div class="nograph">
+                Sorry, no data to graph
+            </div>
+        </td></tr>
+        {% endif %}
+
+
+
+        <tr class=title><td>{% trans 'Uptime' %}</td></tr>
+        <tr><td>        
+        <table class="humantable"> {#celltable uptime#}
+        <tr>
+            <td>{% trans 'Last 1 hour' %}</td>
+        </tr>
+        <tr>
+            <td>
+                <div id="canvas-holder-h">
+                    <canvas id="chart-area-hour" width="300" height="100"></canvas>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>{% trans 'Last 24 hours' %}</td>
+        </tr>
+        <tr>
+            <td>
+                <div id="canvas-holder-d">
+                    <canvas id="chart-area-day" width="300" height="100"></canvas>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>{% trans 'Month' %}</td>
+        </tr>
+        <tr>
+            <td>
+                <div id="canvas-holder-m">
+                    <canvas id="chart-area-month" width="300" height="100"></canvas>
+                </div>
+            </td>            
+        </tr>
+                
+        </table> {# celltable: uptime #}
+
+
+        <tr class=title><td>{% trans 'Uptime log' %}</td></tr>
+
+        {% for s in changes %}
+            <tr>
+                <td><span class="dull">{{s.created}}</span>
+                {{s.old}} > {{s.new}} <span class="dull"> ({{s.duration}})</span>  </td>
+            </tr>
+        {% endfor %}
+
+
+
+        {% if up %}
+            <tr class=title><td>{% trans 'Upper Level' %}</td></tr>
+            <tr><td>
+            <a href="{% url 'okerr:ilocator' i.project.get_textid up.name %}">{{up.name}}</a> ({{up.status}})
+            <table>
+            <tr><td>age:<td>{{up.age}}
+            <tr><td>statusage:<td>{{up.statusage}}
+            </table>
+            </td></tr>            
+        {% elif lo %}
+            <tr class=title><td>{% trans 'Lower Level' %}</td></tr>
+            <tr><td>
+            <a href="{% url 'okerr:ilocator' i.project.get_textid lo.name %}">{{lo.name}}</a> ({{lo.status}})
+            <table>
+            <tr><td>age:<td>{{lo.age}}
+            <tr><td>statusage:<td>{{lo.statusage}}
+            </table>
+            </td></tr>            
+        {% else %}
+        {% endif %}
+
+
+        
+	<script>
+
+        var pieColors = ['#00aa00', '#aa0000', '#666666'];
+
+        var dataHour = {
+            labels: ['OK', 'ERR', 'Maintenance'],
+            datasets: [
+                {data: [
+                    {{uptime.hour.OK|stringformat:".1f"}},
+                    {{uptime.hour.ERR|stringformat:".1f"}},
+                    {{uptime.hour.maintenance|stringformat:".1f"}}                
+                ],
+                backgroundColor: pieColors,
+                },
+            ]
+        };
+
+        var dataDay = {
+            labels: ['OK', 'ERR', 'Maintenance'],
+            datasets: [
+                {data: [
+                    {{uptime.day.OK|stringformat:".1f"}},
+                    {{uptime.day.ERR|stringformat:".1f"}},
+                    {{uptime.day.maintenance|stringformat:".1f"}}                
+                ],
+                backgroundColor: pieColors,
+                },
+            ]
+        };
+
+        var dataMonth = {
+            labels: ['OK', 'ERR', 'Maintenance'],
+            datasets: [
+                {data: [
+                    {{uptime.month.OK|stringformat:".1f"}},
+                    {{uptime.month.ERR|stringformat:".1f"}},
+                    {{uptime.month.maintenance|stringformat:".1f"}}                
+                ],
+                backgroundColor: pieColors,
+                },
+            ]
+        };
+
+        window.onload = function(){
+            
+            var pieOptions = {
+                animation: false,
+                legend: {position: 'right'}
+            };
+
+            
+            var ctx = document.getElementById("chart-area-hour").getContext("2d");
+            window.myPie = new Chart(ctx, {
+                type: 'pie', 
+                data: dataHour,
+                options: pieOptions
+            })
+
+            var ctx = document.getElementById("chart-area-day").getContext("2d");
+            window.myPie = new Chart(ctx, {
+                type: 'pie', 
+                data: dataDay,
+                options: pieOptions
+            })
+
+            var ctx = document.getElementById("chart-area-month").getContext("2d");
+            window.myPie = new Chart(ctx, {
+                type: 'pie', 
+                data: dataMonth,
+                options: pieOptions
+            })
+        };
+	</script>        
+                
+        </td></tr>        
+        </table> {# nested table: right #}
+
+    </td></tr>
+</table>
+
+<table align="center">
+        <tr class="title">
+            <td>
+                <div style="float:left;">{% trans "Log records" %}</div>
+            </td>
+            <td>
+                <script>
+                    function unlock_logs() {
+                        var textarea = document.getElementById('logs');
+                        var div = document.getElementById('div_logunlock');
+
+                        textarea.disabled = !textarea.disabled;
+                        if(textarea.disabled){
+                            div.innerText = "[ {% trans 'unlock' %} ]";
+                        }else{
+                            div.innerText = "[ {% trans 'lock' %} ]";
+                        }
+                    }
+                </script>
+                <div id='div_logunlock' style="float:right;" onclick="unlock_logs();">
+                    [ {% trans 'unlock' %} ]
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <textarea id=logs cols=100 rows=10 disabled=true>{{ logs | join:"&#10;" }}
+                </textarea>
+                <script>
+                    var textarea = document.getElementById('logs');
+                    textarea.scrollTop = textarea.scrollHeight;
+                </script>
+            </td>
+        </tr>
+</table>
+
+<script>
+    drawGraph(86400);
+</script>
+
+{% endblock %}
+

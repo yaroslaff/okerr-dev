@@ -233,6 +233,14 @@ def profile(request):
                 return redirect('myauth:profile')
                 # return HttpResponseRedirect("")
 
+            if hasattr(settings, 'DEBUG_CODE') and bonuscodename == settings.DEBUG_CODE:
+                log.info("set DEBUG for user {}".format(request.user.username))
+                notify(request, 'set DEBUG for {}'.format(request.user))
+                request.session['debug'] = True
+                # return render(request,'myauth/profile.html',context)
+                return redirect('myauth:profile')
+                # return HttpResponseRedirect("")
+
             if bonuscodename.startswith('sudo:') and request.user.email in sudoers:
                 sudo, username = bonuscodename.split(':', 1)
                 user = Profile.find_user(username)
