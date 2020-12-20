@@ -4,7 +4,7 @@
 {% load age %}
 {% get_current_language as LANGUAGE_CODE %}
 
-{% block title%}{{i.name}}{%endblock%}
+{% block title%}DEBUG {{i.name}}{%endblock%}
 
 {%block favicon%}{%if i.status == "ERR" %}
 {% static 'iflags/ERR.png' %}
