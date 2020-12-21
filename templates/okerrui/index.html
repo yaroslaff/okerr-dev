@@ -447,6 +447,9 @@ class Indicator {
 
     // indicator.pending
     pending(){
+        return ! this.flags.includes('pending')
+    }
+    pending_UNUSED(){
         var policy = this.project.policy(this.policy)
         var now = this.project.now
         var patience = policy.patience

@@ -6,9 +6,6 @@
 <script>
 'use strict';
 
-
-console.log('DEBUG');
-
 {% if user.profile.get_jarg_full_interface %}
     var full_interface = true;
 {% else %}
@@ -450,6 +447,9 @@ class Indicator {
 
     // indicator.pending
     pending(){
+        return ! this.flags.includes('pending')
+    }
+    pending_UNUSED(){
         var policy = this.project.policy(this.policy)
         var now = this.project.now
         var patience = policy.patience
@@ -1308,7 +1308,6 @@ function handler(){
         project.load(pdata)
         project.draw('jsid')
         setstatus()
-        console.log("DEBUG: loaded new indicators")
 
     } else {
         alert('something went wrong, please reload page.');
