@@ -681,6 +681,10 @@ form.myform > p > button:hover {
   background: #7dd8ff;
 }
 
+.smallButton {
+    padding: 0px;
+    font-size: small;
+  }
 
 /******* JS ALERT STOP *******/
 

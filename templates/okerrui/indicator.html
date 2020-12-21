@@ -569,13 +569,13 @@
         <tr><td>
             <div class="graph">
                 <span style="vertical-align: top; float: right;">                   
-                    <button onclick="drawGraph(3600, '1h')">1h</button>
-                    <button onclick="drawGraph(6*3600, '6h')">6h</button>
-                    <button onclick="drawGraph(86400, '1d')">1d</button>
-                    <button onclick="drawGraph(3*86400, '3d')">3d</button>
-                    <button onclick="drawGraph(10*86400,'10d')">10d</button>
-                    <button onclick="drawGraph(30*86400), '30d'">30d</button>
-                    <button id='btnToggleRelAbs' onclick="ToggleRelAbs();">rel</button>
+                    <button class="smallButton" onclick="drawGraph(3600, '1h')">1h</button>
+                    <button class="smallButton" onclick="drawGraph(6*3600, '6h')">6h</button>
+                    <button class="smallButton" onclick="drawGraph(86400, '1d')">1d</button>
+                    <button class="smallButton" onclick="drawGraph(3*86400, '3d')">3d</button>
+                    <button class="smallButton" onclick="drawGraph(10*86400,'10d')">10d</button>
+                    <button class="smallButton" onclick="drawGraph(30*86400), '30d'">30d</button>
+                    <button class="smallButton" id='btnToggleRelAbs' onclick="ToggleRelAbs();">rel</button>
                 </span>
                 <canvas id="myChart"></canvas>
             </div>
