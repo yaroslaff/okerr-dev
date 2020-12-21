@@ -40,7 +40,6 @@
 
     function ToggleRelAbs(){
         chartRelative = !chartRelative;
-        btn = document.getElementById('btnToggleRelAbs')
         console.log(btn)
 
         if(chartRelative){
@@ -48,7 +47,7 @@
         }else{
             btnTitle = 'abs'
         }
-        btn.innerText = btnTitle;
+        document.getElementById('btnToggleRelAbs').innerText = btnTitle;
         drawGraph(last_period);
     }
  
