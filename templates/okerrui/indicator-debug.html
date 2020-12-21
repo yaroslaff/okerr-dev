@@ -4,7 +4,7 @@
 {% load age %}
 {% get_current_language as LANGUAGE_CODE %}
 
-{% block title%}DEBUG {{i.name}}{%endblock%}
+{% block title%}{{i.name}}{%endblock%}
 
 {%block favicon%}{%if i.status == "ERR" %}
 {% static 'iflags/ERR.png' %}
@@ -37,10 +37,13 @@
     var myChart=null;
     var chartRelative=false;
     var last_period = null;
-
+    var last_period_human = null;
+    
     function ToggleRelAbs(){
         chartRelative = !chartRelative;
-        drawGraph(last_period);
+
+        document.getElementById('btnToggleRelAbs').innerText = chartRelative ? 'abs' : 'rel';
+        drawGraph(last_period, );
     }
  
     function toggle_by_class(cls, on) {
@@ -50,9 +53,19 @@
         }
     }
 
-    function drawGraph(period){
+    function drawGraph(period, phuman=null){
         last_period = period;
         var ctx = document.getElementById("myChart").getContext("2d");
+        var mode = chartRelative ? 'rel' : 'abs';
+
+        if(phuman==null){
+            phuman = last_period_human;
+        }
+        last_period_human = phuman;
+
+        const graphTitle = `{% trans 'Graph' %} (${phuman} / ${mode})`
+        document.getElementById("graphTitle").innerText=graphTitle;
+
         if(myChart){
             myChart.destroy();
         }
@@ -139,6 +152,9 @@
                         }
                     }
                 });
+            })
+            .catch(error => {
+                console.log("fetch failed", error)
             });
         }
     </script>
@@ -522,6 +538,7 @@
                     </td>
                 </tr>
             </table>
+            </form>
         </td></tr>
         {% endif %}
 
@@ -548,16 +565,17 @@
         {% endif %}
 
         {% if i.cm.codename == 'numerical' %}
-        <tr class=title><td>{% trans 'Graph' %}</td></tr>
+        <tr class=title><td id="graphTitle">{% trans 'Graph' %}</td></tr>
         <tr><td>
             <div class="graph">
                 <span style="vertical-align: top; float: right;">                   
-                    <button onclick="drawGraph(3600)">1h</button>
-                    <button onclick="drawGraph(6*3600)">6h</button>
-                    <button onclick="drawGraph(86400)">1d</button>
-                    <button onclick="drawGraph(10*86400)">10d</button>
-                    <button onclick="drawGraph(30*86400)">30d</button>
-                    <button onclick="ToggleRelAbs();">rel/abs</button>
+                    <button onclick="drawGraph(3600, '1h')">1h</button>
+                    <button onclick="drawGraph(6*3600, '6h')">6h</button>
+                    <button onclick="drawGraph(86400, '1d')">1d</button>
+                    <button onclick="drawGraph(3*86400, '3d')">1d</button>
+                    <button onclick="drawGraph(10*86400,'10d')">10d</button>
+                    <button onclick="drawGraph(30*86400), '30d'">30d</button>
+                    <button id='btnToggleRelAbs' onclick="ToggleRelAbs();">rel</button>
                 </span>
                 <canvas id="myChart"></canvas>
             </div>
@@ -759,7 +777,7 @@
 </table>
 
 <script>
-    drawGraph(86400);
+    drawGraph(86400, '1d');
 </script>
 
 {% endblock %}
