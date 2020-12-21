@@ -63,7 +63,7 @@
         }
         last_period_human = phuman;
 
-        const graphTitle = '{% trans 'Graph' %} (${phuman} / ${mode}' 
+        const graphTitle = "{% trans 'Graph' %} (${phuman} / ${mode})" 
         document.getElementById("graphTitle").innerText=graphTitle;
 
         if(myChart){
@@ -574,7 +574,7 @@
                     <button onclick="drawGraph(86400, '1d')">1d</button>
                     <button onclick="drawGraph(10*86400,'10d')">10d</button>
                     <button onclick="drawGraph(30*86400), '30d'">30d</button>
-                    <button id='btnToggleRelAbs' onclick="ToggleRelAbs();">rel/abs</button>
+                    <button id='btnToggleRelAbs' onclick="ToggleRelAbs();">rel</button>
                 </span>
                 <canvas id="myChart"></canvas>
             </div>
