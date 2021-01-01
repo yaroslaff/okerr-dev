@@ -4997,7 +4997,7 @@ class UpdateLog(TransModel):
                 retention = profile.getarg('updatelog_retention')
                 before = timezone.now() - datetime.timedelta(days=retention)
                 deleted = profile.updatelog_set.filter(created__lt=before).delete()
-                if deleted[0]:
+                if True or deleted[0]:
                     log.info("clean updatelog for profile {} deleted {} (retention: {}, {})".format(
                         profile, deleted[0], retention, shortdate(before)))
 
