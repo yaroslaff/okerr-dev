@@ -327,15 +327,20 @@ class Command(BaseCommand):
             iid = options['id']
             if not iid:
                 for p in Profile.objects.all():
+                    header_printed = False
+
+
                     u = p.user
-                    print("=== User: {}".format(u))
                     
                     for prj in u.project_set.filter():
-                        print("    project: {} textid: {}".format(prj, prj.get_textid()))                                                        
                         iq=Indicator.objects.filter(project=prj)
                         if options['sch']:
                             iq=iq.filter(scheduled__lt=now, disabled=False, ci=myci(), dead=False)
                         for i in iq:
+                            if not header_printed:
+                                print("=== User: {}".format(u))
+                                print("    project: {} textid: {}".format(prj, prj.get_textid()))                                                        
+                                header_printed=True
                             i.fulldump("  ")
                 return
             try:
