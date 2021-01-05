@@ -335,7 +335,7 @@ class Command(BaseCommand):
                     for prj in u.project_set.filter():
                         iq=Indicator.objects.filter(project=prj)
                         if options['sch']:
-                            iq=iq.filter(scheduled__lt=now, disabled=False, ci=myci(), dead=False)
+                            iq=iq.filter(scheduled__lt=now, disabled=False, ci=myci(), dead=False, problem=False)
                         for i in iq:
                             if not header_printed:
                                 print("=== User: {}".format(u))
