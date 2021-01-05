@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from django.core.management.base import BaseCommand, CommandError
 from okerrui.models import Profile,Group,Indicator,Project
+from okerrui.cluster import myci
 from optparse import make_option
 from datetime import datetime,timedelta
 from django.utils import timezone
@@ -333,7 +334,7 @@ class Command(BaseCommand):
                         print("    project: {}".format(prj))                                                        
                         iq=Indicator.objects.filter(project=prj)
                         if options['sch']:
-                            iq=iq.filter(scheduled__lt=now)
+                            iq=iq.filter(scheduled__lt=now, ci=myci())
                         for i in iq:
                             i.fulldump("  ")
                 return
