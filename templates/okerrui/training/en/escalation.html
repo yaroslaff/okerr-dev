@@ -42,6 +42,18 @@ Indicator will switch to 'ERR' if any indicator (with tag 'test') will be in 'ER
 Assign any policy without retry schedule for this escalation indicator.
 </p>
 
+
+<h3>Possible problem</h3>
+<p>
+If you will not assign tag 'test' to any indicator (you can try it to see), project data structure 
+will not have <code>age["test:uerrage"]</code> and logical indicator will produce failure 
+<code>Runtime error (KeyError): 'test:uerrage'</code> on execution and will set 'problem' flag.
+</p>
+
+<p>
+    To fix this problem, assign tag 'test' to indicators, remove 'problem' flag and "re-test ASAP" logical indicator.
+</p>
+
 <h3>Bonus: alerts subscription</h3>
 <p>
 By default, each user gets alerts about all status changes in project. At profile page you can uncheck 'Send alerts' to disable alerts. Then you can subscribe to particular (most important) indicators at each indicator page (checkbox 'subscribe'). After this, you will get alerts only regarding these indicators. Team leaders can handle escalations this way: they will not get distracted by usual problems (which will be handled by technical specialists), but will be notified when problem not fixed in allowed time.
