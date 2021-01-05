@@ -334,7 +334,7 @@ class Command(BaseCommand):
                         print("    project: {}".format(prj))                                                        
                         iq=Indicator.objects.filter(project=prj)
                         if options['sch']:
-                            iq=iq.filter(scheduled__lt=now, ci=myci())
+                            iq=iq.filter(scheduled__lt=now, disabled=False, ci=myci())
                         for i in iq:
                             i.fulldump("  ")
                 return
