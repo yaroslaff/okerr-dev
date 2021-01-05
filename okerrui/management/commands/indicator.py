@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from django.core.management.base import BaseCommand, CommandError
-from okerrui.models import Profile,Group,Indicator,Project
+from okerrui.models import CheckMethod, Profile,Group,Indicator,Project
 from okerrui.cluster import myci
 from optparse import make_option
 from datetime import datetime,timedelta
@@ -73,7 +73,7 @@ class Command(BaseCommand):
 
         if not iid:
             # no warning sometimes
-            if options['textid'] or options['keepasap'] or options['list']:                
+            if options['textid'] or options['keepasap'] or options['list'] or options['sch']:                
                 return                
             
             print("must have indicator id (--id)")
@@ -330,11 +330,12 @@ class Command(BaseCommand):
                     u = p.user
                     print("=== User: {}".format(u))
                     
-                    for prj in u.project_set.all():
-                        print("    project: {}".format(prj))                                                        
+                    for prj in u.project_set.filter():
+                        print("    project: {} textid: {}".format(prj, prj.get_textid()))                                                        
                         iq=Indicator.objects.filter(project=prj)
                         if options['sch']:
-                            iq=iq.filter(scheduled__lt=now, disabled=False, ci=myci())
+                            cm_ids = CheckMethod.objects.exclude(codename__in=CheckMethod.passive_list)
+                            iq=iq.filter(scheduled__lt=now, disabled=False, ci=myci(), cm__in=cm_ids)                            
                         for i in iq:
                             i.fulldump("  ")
                 return
