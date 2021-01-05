@@ -1845,7 +1845,7 @@ def indicator(request,iid):
         old = s['created']
 
     # training part
-    if i.name.startswith('test:') and request.user.profile.training_stage is not None and request.user.profile.training_stage != 'DONE':
+    if i.name.startswith('test:') and request.user.profile.training_stage is not None and request.user.profile.training_stage != 'basic:DONE':
         tstage = request.user.profile.training_stage
         taskfile = 'okerrui/training/{}/{}.html'.format(get_language(), tstage.split(':')[1])
     else:
