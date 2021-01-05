@@ -334,8 +334,7 @@ class Command(BaseCommand):
                         print("    project: {} textid: {}".format(prj, prj.get_textid()))                                                        
                         iq=Indicator.objects.filter(project=prj)
                         if options['sch']:
-                            cm_ids = CheckMethod.objects.exclude(codename__in=CheckMethod.passive_list)
-                            iq=iq.filter(scheduled__lt=now, disabled=False, ci=myci(), cm__in=cm_ids)                            
+                            iq=iq.filter(scheduled__lt=now, disabled=False, ci=myci(), dead=False)
                         for i in iq:
                             i.fulldump("  ")
                 return
