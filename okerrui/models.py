@@ -4010,6 +4010,10 @@ class Indicator(TransModel):
 
         # now we have indicator (old, or created it)
 
+        # if it's enabled
+        if i.disabled:
+            raise OkerrError('Indicator disabled')
+
         # check if wrong ci and warn
         if i.ci != myci() and not i.name.startswith('bench:'):
             log.warning(
