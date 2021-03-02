@@ -189,7 +189,7 @@ def send_mail_alerts():
 
             siteurl = settings.SITEURL.strip('/')
             count = p.mail_alerts().count()
-            log.info(f"Send alert {alertid} {count} alerts to {user.email}")
+            log.info(f"Send alert #{alertid} ({count} alerts) to {user.email}")
 
             d = { 'siteurl': siteurl,'user': user, 'profile':p , 
                 'alertid': alertid,
