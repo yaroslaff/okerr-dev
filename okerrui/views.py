@@ -4950,7 +4950,7 @@ def api_admin_tglink(request):
     out = dict()
     out['sync'] = list()
 
-    # log.info('tglink tgname: {} email: {} chat_id: {}'.format(tgname, email, chat_id))
+    log.info('tglink tgname: {} email: {} chat_id: {}'.format(tgname, email, chat_id))
 
     #try:
     #    chat_id = long(chat_id)
