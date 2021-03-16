@@ -138,7 +138,7 @@ def set_chat_id(email, tgname, chat_id):
         # sync if needed
         if rs.ci != myci():
             for username in r['sync']:
-                data = rs.get_user(email)
+                data = rs.get_user(username)
                 ie = Impex()           
                 ie.set_verbosity(0)
                 ie.preimport_cleanup(data)
