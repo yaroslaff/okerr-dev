@@ -4629,17 +4629,17 @@ class Profile(TransModel):
     @classmethod
     def run_async(cls):
         r = get_redis()
-        log.info(f"profile.async: {r.scard('force_sync')}")
+        synced = 0
+        started = time.time()
         while r.scard('force_sync'):
             data_str = r.spop('force_sync')
-            log.info(f"popped: {data_str}")
             if data_str is None:
                 log.info("Done")
                 break
 
             data = json.loads(data_str)
 
-            log.info(f"async process {data}")
+            log.info(f"sync user {data['email']} from {data['server']}")
             rs = RemoteServer(name=data['server'])
             user_data = rs.get_user(data['email'])
 
@@ -4647,6 +4647,11 @@ class Profile(TransModel):
             ie.set_verbosity(0)
             ie.preimport_cleanup(user_data)
             ie.import_data(user_data)
+            synced += 1
+
+        if synced:
+            passed = time.time() - started
+            log.info(f"synced {synced} user(s) in {passed:.2f} secods")
             
     # profile.assign
     def assign(self, group=None, time=None, add=False, force_assign=False):
