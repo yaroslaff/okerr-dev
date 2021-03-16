@@ -321,7 +321,7 @@ def loop(ci, send_mail=True):
     SystemVariable.assign('lastloopunixtime',str(now))
 
     # call fast async routines
-    Profile.async()
+    Profile.run_async()
 
     # unlockold(timedelta(minutes=1)) - not needed, done via indicator.cron
     n = lock(ci)
