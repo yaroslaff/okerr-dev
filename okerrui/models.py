@@ -4631,11 +4631,23 @@ class Profile(TransModel):
         r = get_redis()
         log.info(f"profile.async: {r.scard('force_sync')}")
         stop = False
-        while not stop:
-            data = r.spop('force_sync')
-            print("async process", data)
-        
+        while True:
+            data_str = r.spop('force_sync')
+            if data_str is None:
+                log.info("Done")
+                break
 
+            data = json.loads(data_str)
+
+            print("async process", data)
+            rs = RemoteServer(name=data['server'])
+            user_data = rs.get_user(data['email'])
+
+            ie = Impex()
+            ie.set_verbosity(0)
+            ie.preimport_cleanup(user_data)
+            ie.import_data(user_data)
+            
     # profile.assign
     def assign(self, group=None, time=None, add=False, force_assign=False):
 
