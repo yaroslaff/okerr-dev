@@ -4941,6 +4941,7 @@ def api_admin_chat_id(request, chat_id):
 def api_admin_tglink(request):
 
     if not security_check(request):
+        log.info(f"failed security check in api_admin_tglink ({get_remoteip(request)})")
         return HttpResponse(status=401)
 
     tgname = request.POST.get('tgname', None)
