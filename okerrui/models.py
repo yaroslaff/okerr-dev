@@ -4614,6 +4614,7 @@ class Profile(TransModel):
     def force_sync(self):
         
         log.info(f"force_sync for profile {self}")
+        
         rs = RemoteServer(name=settings.HOSTNAME)
 
         if rs.is_net():

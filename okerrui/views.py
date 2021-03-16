@@ -5070,15 +5070,20 @@ def api_admin_force_sync(request):
     server = request.POST.get('server', None)
 
     log.info('FORCESYNC {} {} from {}'.format(remoteip, email, server))
-    # url = settings.CLUSTER_URL[server]
-    rs = RemoteServer(name=server)
-    data = rs.get_user(email)
+    
+    r = get_redis() 
+    r.sadd('force_sync', json.dumps({'email': email, 'server': server}))
 
-    ie = Impex()
-    ie.set_verbosity(0)
-    ie.preimport_cleanup(data)
-    ie.import_data(data)
+    if False:
+        # url = settings.CLUSTER_URL[server]
+        rs = RemoteServer(name=server)
+        data = rs.get_user(email)
 
+        ie = Impex()
+        ie.set_verbosity(0)
+        ie.preimport_cleanup(data)
+        ie.import_data(data)
+        
     return HttpResponse('OK')
 
 def api_admin_log(request, mname, start):
