@@ -4630,16 +4630,16 @@ class Profile(TransModel):
     def run_async(cls):
         r = get_redis()
         log.info(f"profile.async: {r.scard('force_sync')}")
-        stop = False
-        while True:
+        while r.scard('force_sync'):
             data_str = r.spop('force_sync')
+            log.info(f"popped: {data_str}")
             if data_str is None:
                 log.info("Done")
                 break
 
             data = json.loads(data_str)
 
-            print("async process", data)
+            log.info(f"async process {data}")
             rs = RemoteServer(name=data['server'])
             user_data = rs.get_user(data['email'])
 
