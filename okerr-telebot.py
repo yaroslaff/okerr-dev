@@ -109,19 +109,23 @@ def unset_chat_id(chat_id):
 def set_chat_id(email, tgname, chat_id):            
     
     try:
-        # print "set chat id email: {} tgname: {} chat_id: {}".format(email, tgname, chat_id)    
+        profile = None
+        log.info(f"set chat id email: {email} tgname: {tgname} chat_id: {chat_id}")
         # find profile
         if email:
             # do not use tgname in this search!
             profile = Profile.objects.get(user__email=email)
         else:
             if tgname:
-                profile = Profile.objects.get(telegram_name = tgname)
+                # case-insensitive search for telegram_name
+                profile = Profile.objects.get(telegram_name__iexact = tgname)
             else:
                 profile = Profile.objects.get(telegram_name = str(chat_id))
-                    
+
+        log.info(f"got profile: {profile}")
+
         # verify profile
-        if profile.telegram_name != tgname and profile.telegram_name != str(chat_id):
+        if profile.telegram_name.lower() != tgname.lower() and profile.telegram_name != str(chat_id):
             if tgname:
                 return 'Set telegram name {} in profile'.format(tgname)
             else:
