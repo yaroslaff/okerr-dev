@@ -295,8 +295,6 @@ def unlockmy():
 
 def loop(ci, send_mail=True):
 
-    log.info("process loop")
-
     r = myutils.get_redis()
     try:
         r.set('process_lastloop', str(int(time.time())))
