@@ -294,6 +294,9 @@ def unlockmy():
         pass
 
 def loop(ci, send_mail=True):
+
+    log.info("process loop")
+
     r = myutils.get_redis()
     try:
         r.set('process_lastloop', str(int(time.time())))
@@ -309,13 +312,17 @@ def loop(ci, send_mail=True):
         log.info("GID: {}".format(os.getegid()))
         log.info("Groups: {}".format(os.getgroups()))
 
+
     # print "last loop:",SystemVariable.get('lastloopunixtime')
   
     now = calendar.timegm(datetime.utcnow().utctimetuple())
 
 
     SystemVariable.assign('lastloopunixtime',str(now))
-    
+
+    # call fast async routines
+    Profile.async()
+
     # unlockold(timedelta(minutes=1)) - not needed, done via indicator.cron
     n = lock(ci)
     log.debug("locked {} records".format(n))

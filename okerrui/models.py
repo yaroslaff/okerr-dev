@@ -4624,6 +4624,14 @@ class Profile(TransModel):
         else:
             log.info('skip sync all, because myself not networked')
 
+
+    # profile.async
+    @classmethod
+    def async(cls):
+        r = get_redis()
+        log.info(f"profile.async: {r.scard('force_async')}")
+        
+
     # profile.assign
     def assign(self, group=None, time=None, add=False, force_assign=False):
 
