@@ -4629,7 +4629,11 @@ class Profile(TransModel):
     @classmethod
     def run_async(cls):
         r = get_redis()
-        log.info(f"profile.async: {r.scard('force_async')}")
+        log.info(f"profile.async: {r.scard('force_sync')}")
+        stop = False
+        while not stop:
+            data = r.spop('force_sync')
+            print("async process", data)
         
 
     # profile.assign
