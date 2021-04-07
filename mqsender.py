@@ -241,7 +241,7 @@ def process_tproc_reply(channel, data):
         i.scheduled = None
         i.problem = True
         i.usave()
-
+        log.error("Permanent error with {} (problem: {}, sch: {})".format(i, i.problem, i.scheduled))
 
     else:
         # code not 200
