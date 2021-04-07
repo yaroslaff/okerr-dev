@@ -237,7 +237,7 @@ def process_tproc_reply(channel, data):
             data['code'], data['code_message'],
             data['name'], data['textid'], data['status']))
         i.last_fail_machine = name
-        i.log('Permanent error ({}): {}.'.format(data['code'], data['code_message']))
+        i.alert('Permanent error ({}): {}.'.format(data['code'], data['code_message']))
         i.scheduled = None
         i.problem = True
         i.usave()
