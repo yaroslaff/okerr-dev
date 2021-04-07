@@ -231,6 +231,18 @@ def process_tproc_reply(channel, data):
             send_kill(channel, data['_machine'],
                       "Too old mtime {} ({})".format(data['mtime'], dt2unixtime(i.mtime) - data['mtime']))
 
+    elif int(data['code']) >= 500 and int(data['code']) < 600:
+        log.info('apply_tproc_fail {} {} {}:"{}" {}@{} = {}'.format(
+            name, remoteip,
+            data['code'], data['code_message'],
+            data['name'], data['textid'], data['status']))
+        i.last_fail_machine = name
+        i.log('Permanent error ({}): {}.'.format(data['code'], data['code_message']))
+        i.scheduled = None
+        i.problem = True
+        i.usave()
+
+
     else:
         # code not 200
         log.info('apply_tproc_fail {} {} {}:"{}" {}@{} = {}'.format(
