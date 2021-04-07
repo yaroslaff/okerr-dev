@@ -238,10 +238,9 @@ def process_tproc_reply(channel, data):
             data['name'], data['textid'], data['status']))
         i.last_fail_machine = name
         i.alert('Permanent error ({}): {}.'.format(data['code'], data['code_message']))
-        i.scheduled = None
         i.problem = True
         i.usave()
-        log.error("Permanent error with {} (problem: {}, sch: {})".format(i, i.problem, i.scheduled))
+        log.error("Permanent error with {} (problem: {})".format(i, i.problem))
 
     else:
         # code not 200
