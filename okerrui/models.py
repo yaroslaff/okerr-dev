@@ -3950,6 +3950,8 @@ class Indicator(TransModel):
                     cmarr.pop(0)
 
                     for e in cmarr:
+                        if not e:
+                            continue
                         (k, v) = e.split('=')
                         cmdict[k.strip()] = v.strip()
                 except ValueError:
