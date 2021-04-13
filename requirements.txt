@@ -24,4 +24,4 @@ django-debug-toolbar
 markdown
 bleach
 bleach_whitelist
-okerrsensor @ git+https://gitlab.com/yaroslaff/sensor/
+okerrsensor @ git+https://github.com/yaroslaff/sensor/
