@@ -188,20 +188,22 @@ def send_mail_alerts():
             to = user.email
 
             siteurl = settings.SITEURL.strip('/')
-            count = p.mail_alerts().count()
-            log.info(f"Send alert #{alertid} ({count} alerts) to {user.email}")
+            alerts = p.mail_alerts()
+            log.info(f"Send alert #{alertid} ({len(alerts)} alerts) to {user.email}")
 
             d = { 'siteurl': siteurl,'user': user, 'profile':p , 
                 'alertid': alertid,
+                'alerts': alerts,
                 'hostname': settings.HOSTNAME,
                   'MYMAIL_FOOTER': settings.MYMAIL_FOOTER }
 
             alertid += 1
-            text_content = plaintext.render(d)
+            # text_content = plaintext.render(d)
             html_content = htmly.render(d)        
             # now delete all alerts for this user
-            AlertRecord.objects.filter(user=user, proto='mail').delete()        
-            
+            ndeleted = AlertRecord.objects.filter(user=user, proto='mail').delete()        
+            log.info(f"Deleted {ndeleted} mail alerts for user {user.email}")
+
             #log.info('send alerts to {}'.format(to))
             send_email(to, subject=subject, html=html_content, what='alert')
         else:

@@ -6,7 +6,7 @@ generated on: {% now "d M Y H:i:s" %}
 Alerts
 --
 
-{% for a in profile.mail_alerts %}
+{% for a in alerts %}
   {{a.created|date:"d M Y H:i:s"}} {{a.indicator.name}} {{a.message}}
 {% endfor %}
 

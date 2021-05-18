@@ -10,7 +10,7 @@
     <p>
     <h2>Alerts</h2>
     <table>
-    {% for a in profile.mail_alerts %}
+    {% for a in alerts %}
         <tr>
         <td>{{a.created|date:"d M Y H:i:s"}}</td>
         <td><a href="{{siteurl}}{% url 'okerr:ilocator' a.indicator.project.get_textid a.indicator.name %}">{{a.indicator.name}}</a></td>
