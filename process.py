@@ -202,7 +202,7 @@ def send_mail_alerts():
             html_content = htmly.render(d)        
             # now delete all alerts for this user
             ndeleted = AlertRecord.objects.filter(user=user, proto='mail').delete()        
-            log.info(f"Deleted {ndeleted} mail alerts for user {user.email}")
+            log.info(f"Deleted {ndeleted[0]} mail alerts for user {user.email}")
 
             #log.info('send alerts to {}'.format(to))
             send_email(to, subject=subject, html=html_content, what='alert')
