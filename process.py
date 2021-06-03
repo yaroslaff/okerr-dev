@@ -180,14 +180,18 @@ def send_mail_alerts():
 
     for arec in AlertRecord.objects.filter(proto='mail', release_time__lte=now).\
             values('user').annotate(maxcre=Max('created')):
+        
         age = timezone.now()-arec['maxcre']
         if(age > logage_threshold):
+            log.info(f"AlertRecord: {arec}")
             # send alerts for this user
             user = User.objects.get(pk=arec['user'])        
             p = user.profile
             to = user.email
 
             siteurl = settings.SITEURL.strip('/')
+            # p.mail_alerts() is:
+            #   self.user.alertrecord_set.filter(proto='mail', release_time__lte=now)
             alerts = p.mail_alerts()
             log.info(f"Send alert #{alertid} ({len(alerts)} alerts) to {user.email}")
 
