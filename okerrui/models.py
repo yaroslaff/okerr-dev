@@ -3654,7 +3654,6 @@ class Indicator(TransModel):
         self.details = details
 
         # UpdateLog
-        print("update numerical", status)
         UpdateLog(indicator=self, profile=self.project.owner.profile, value=status).save()
 
 
