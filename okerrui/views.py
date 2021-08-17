@@ -13,7 +13,7 @@ from django.forms.formsets import formset_factory
 from django.forms import ModelForm
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.db import connection, transaction
+from django.db import connection, transaction, IntegrityError
 from django.db.models import Count, Q, ProtectedError
 from django.conf import settings
 from django.template.loader import get_template
@@ -3519,8 +3519,16 @@ def dyndns(request, textid, name):
     if 'configure' in request.POST:
 
         ddr.set_fields(request.POST)
-        ddr.save()
-        ddr.log('saved new config')
+
+        # ZZZ Exception here for duplicate key 
+        try:
+            ddr.save()
+            ddr.log('saved new config')
+        
+        except IntegrityError as e:
+            notify(request, _('Already have failover for this hostname'))
+            return redirect(request.path)
+        
         return redirect('okerr:dyndns', p.get_textid(), ddr.name)
 
     if 'push' in request.POST:

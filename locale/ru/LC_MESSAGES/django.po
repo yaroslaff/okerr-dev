@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-23 14:13+0000\n"
+"POT-Creation-Date: 2021-08-17 16:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,73 +19,73 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: myauth/views.py:276
+#: myauth/views.py:284
 #, fuzzy
 #| msgid "Applied bonus code \"{}\""
 msgid "No bonus code '{}'"
 msgstr "Нет бонус кода '{}'"
 
-#: myauth/views.py:282
+#: myauth/views.py:290
 msgid "Not applied: {}"
 msgstr "Не применен: {}"
 
-#: myauth/views.py:285
+#: myauth/views.py:293
 msgid "Applied bonus code \"{}\""
 msgstr "Применен бонус код \"{}\""
 
-#: myauth/views.py:295
+#: myauth/views.py:303
 msgid "password changed"
 msgstr "пароль изменен"
 
-#: myauth/views.py:297
+#: myauth/views.py:305
 msgid "must provide valid current password"
 msgstr "нужно указать верный действующий пароль"
 
-#: myauth/views.py:299
+#: myauth/views.py:307
 msgid "passwords does not match"
 msgstr "пароли не совпадают"
 
-#: myauth/views.py:364
+#: myauth/views.py:372
 msgid ""
 "Configured telegram username. Now send /on command to telegram bot @OkerrBot"
 msgstr ""
 "Установлено имя пользователя telegram. Сейчас пошлите команду /on телеграм-"
 "боту @OkerrBot"
 
-#: myauth/views.py:366
+#: myauth/views.py:374
 msgid "Cleared telegram username. No messages will be send."
 msgstr "Сброшено имя пользователя telegram. Сообщения не будут отправляться"
 
-#: myauth/views.py:397 myauth/views.py:428
+#: myauth/views.py:405 myauth/views.py:436
 msgid "Already has registered user {}"
 msgstr "Уже есть зарегистрированный пользователь {}"
 
-#: myauth/views.py:412
+#: myauth/views.py:420
 msgid "You have to accept EULA to start using okerr"
 msgstr ""
 "Требуется принять пользовательское соглашение чтобы начать пользоваться okerr"
 
-#: myauth/views.py:426
+#: myauth/views.py:434
 msgid "Already has signup from {}"
 msgstr "Уже есть заявка на регистрацию с адреса {}"
 
-#: myauth/views.py:510 okerrui/views.py:3160
+#: myauth/views.py:518 okerrui/views.py:3176
 msgid "Already had such request for user {} recently. Try again later"
 msgstr "Уже был такой запрос от пользователя {} недавно. Попробуйте позже."
 
-#: myauth/views.py:607
+#: myauth/views.py:615
 msgid "Bad email address"
 msgstr "Неправильный e-mail адрес"
 
-#: myauth/views.py:628
+#: myauth/views.py:636
 msgid "User {} can not login (web login)"
 msgstr "Пользователь {} не имеет права для входа"
 
-#: myauth/views.py:638
+#: myauth/views.py:646
 msgid "Account disabled"
 msgstr "Аккаунт отключен"
 
-#: myauth/views.py:642
+#: myauth/views.py:650
 msgid "Wrong login/password"
 msgstr "Плохой логин/пароль"
 
@@ -349,7 +349,7 @@ msgstr "Миссия завершена!"
 msgid "Training stage \"{}\" completed!"
 msgstr "Этап {} тренинга завершен"
 
-#: okerrui/views.py:409
+#: okerrui/views.py:414
 #, fuzzy
 #| msgid ""
 #| "You can take quick built-in training to learn Okerr.\n"
@@ -363,7 +363,7 @@ msgstr ""
 "Откройте свой профиль (кликнул на свой емейл в правом-верхнем углу) и "
 "начните тренинг в любое время"
 
-#: okerrui/views.py:412
+#: okerrui/views.py:417
 msgid ""
 "After you will complete training, you will not only learn Okerr, but also "
 "will get higher plan as reward (permanently)"
@@ -371,134 +371,138 @@ msgstr ""
 "Когда вы завершите тренинг, вы не только освоите Okerr, но еще получите "
 "более высокий тариф в награду (навсегда)"
 
-#: okerrui/views.py:580
+#: okerrui/views.py:589
 msgid "Cannot create indicator without name"
 msgstr "Нельзя просто так взять и создать индикатор без имени"
 
-#: okerrui/views.py:585
+#: okerrui/views.py:594
 msgid "Bad indicator name"
 msgstr "Плохое имя индикатора"
 
-#: okerrui/views.py:596 okerrui/views.py:600
+#: okerrui/views.py:605 okerrui/views.py:609
 msgid "Indicator \"{}\" already exists in project \"{}\""
 msgstr "Индикатор \"{}\" уже есть в проекте \"{}\")"
 
-#: okerrui/views.py:605
+#: okerrui/views.py:614
 msgid "User already hit maxinidicator limit ({}). Indicator not created"
 msgstr ""
 "В проекте уже достигнут предел maxindicators: {}. Новый индикатор не создан."
 
-#: okerrui/views.py:609
+#: okerrui/views.py:618
 msgid "This project is limited. Indicator not created"
 msgstr "Функционал проекта ограничен. Индикатор не создан"
 
-#: okerrui/views.py:639
+#: okerrui/views.py:648
 msgid "You dont have permission to manage indicators in project {}"
 msgstr "У вас нет прав управлять индикаторами в проекте {}"
 
-#: okerrui/views.py:709
+#: okerrui/views.py:721
 msgid "Only disabled indicator can be deleted. Indicator {} not disabled."
 msgstr "Удалять можно только отключенные индикаторы. Индикатор {} не отключен."
 
-#: okerrui/views.py:801
+#: okerrui/views.py:813
 msgid "Backup file"
 msgstr "Файл бэкапа"
 
-#: okerrui/views.py:855
+#: okerrui/views.py:867
 msgid "Copy this key (it will not be displayed in UI):\n"
 msgstr "Скопировать этот ключ (он не будет показан в UI):\n"
 
-#: okerrui/views.py:862
+#: okerrui/views.py:874
 msgid "Deleted API key: {} / {}"
 msgstr "Удален API ключ: {} / {}"
 
-#: okerrui/views.py:871
+#: okerrui/views.py:883
 msgid "Policy name must be unique"
 msgstr "Имя политики должно быть уникальным"
 
-#: okerrui/views.py:906
+#: okerrui/views.py:918
 #, fuzzy
 #| msgid "Hostname must not be empty"
 msgid "Name must not be empty"
 msgstr "Имя хоста не может быть пустым"
 
-#: okerrui/views.py:1347
+#: okerrui/views.py:1359
 msgid "Can not delete \"Default\" policy"
 msgstr "Нелья удалять полику \"Default\""
 
-#: okerrui/views.py:1353
+#: okerrui/views.py:1365
 msgid "Can not delete policy {} because {} indicators ({} ...) are using it"
 msgstr ""
 "Нелья удалить политику {} потому что ее используют {} индикатор(ов). ({} ...)"
 
-#: okerrui/views.py:1388
+#: okerrui/views.py:1400
 msgid "Can not rename \"Default\" policy"
 msgstr "Нельзя переименовывать политику \"Default\""
 
-#: okerrui/views.py:2450
+#: okerrui/views.py:2466
 msgid "Not valid JSON data"
 msgstr "Не валидные данные JSON"
 
-#: okerrui/views.py:2867 okerrui/views.py:2987
+#: okerrui/views.py:2883 okerrui/views.py:3003
 msgid "Bad syntax"
 msgstr "Синтаксическая ошибка"
 
-#: okerrui/views.py:3140
+#: okerrui/views.py:3156
 msgid "Invalid email address: \"{}\""
 msgstr "Неправильный формат адреса: \"{}\""
 
-#: okerrui/views.py:3148 okerrui/views.py:3313
+#: okerrui/views.py:3164 okerrui/views.py:3329
 msgid "Already {} subscribers. Cannot subscribe more. Sorry."
 msgstr "Уже есть {} подписчик(ов). К сожалению, нельзя подписать больше."
 
-#: okerrui/views.py:3152
+#: okerrui/views.py:3168
 msgid "Address \"{}\" already subscribed"
 msgstr "Адрес \"{}\" уже подписан"
 
-#: okerrui/views.py:3183
+#: okerrui/views.py:3199
 msgid "Please click on link in confirmational email we sent to {}"
 msgstr "Пожалуйста, перейдите по ссылке из сообщения, которое мы выслали на {}"
 
-#: okerrui/views.py:3264
+#: okerrui/views.py:3280
 msgid "{} not subscribed"
 msgstr "{} не подписан"
 
-#: okerrui/views.py:3273
+#: okerrui/views.py:3289
 msgid "You are unsubscribed now"
 msgstr "Теперь вы отписаны"
 
-#: okerrui/views.py:3307
+#: okerrui/views.py:3323
 msgid "{} already subscribed"
 msgstr "{} уже подписан"
 
-#: okerrui/views.py:3322
+#: okerrui/views.py:3338
 msgid ""
 "You are subscribed! You will get message to {} when blog will be updated"
 msgstr ""
 "Теперь вы будете получать сообщения на адрес {} когда этот блог будет "
 "обновлен"
 
-#: okerrui/views.py:3517
+#: okerrui/views.py:3529
+msgid "Already have failover for this hostname"
+msgstr "Уже есть схема failover для такого имени хоста"
+
+#: okerrui/views.py:3541
 msgid "No current value for DNS record"
 msgstr "Нет текущено значения для DNS записи"
 
-#: okerrui/views.py:3542
+#: okerrui/views.py:3566
 msgid "Invalid IP address"
 msgstr "Неправильный IP адрес"
 
-#: okerrui/views.py:3546
+#: okerrui/views.py:3570
 msgid "Already has this indicator in this record"
 msgstr "Уже используется такой индикатор"
 
-#: okerrui/views.py:3550
+#: okerrui/views.py:3574
 msgid "Already has this priority in this record"
 msgstr "Уже используется такой приоритет"
 
-#: okerrui/views.py:5322 okerrui/views.py:5341
+#: okerrui/views.py:5352 okerrui/views.py:5371
 msgid "Bound profile to {}"
 msgstr "Профиль привязан к {}"
 
-#: okerrui/views.py:5351
+#: okerrui/views.py:5381
 msgid "Not found user bound to this {} account. Link it in profile."
 msgstr ""
 "Не найден пользователь привязанный к этому аккаунту {}.\n"
@@ -531,7 +535,8 @@ msgid "Add"
 msgstr "Добавить"
 
 #: templates/admin/index.html:39 templates/myauth/profile.html:228
-#: templates/okerrui/indicator.html:392 templates/okerrui/project.html:196
+#: templates/okerrui/indicator-debug.html:536
+#: templates/okerrui/indicator.html:536 templates/okerrui/project.html:196
 #: templates/okerrui/statuspage.html:137
 msgid "Change"
 msgstr "Изменить"
@@ -569,13 +574,16 @@ msgid "pending"
 msgstr "ожидание"
 
 #: templates/dummy.html:4 templates/okerrui/dyndns.html:76
-#: templates/okerrui/indicator.html:67 templates/okerrui/indicator.html:337
+#: templates/okerrui/indicator-debug.html:211
+#: templates/okerrui/indicator-debug.html:481
+#: templates/okerrui/indicator.html:211 templates/okerrui/indicator.html:481
 #: templates/okerrui/project.html:295
 #: templates/okerrui/projectindicators-list.html:191
 msgid "Name"
 msgstr "Имя"
 
-#: templates/dummy.html:5 templates/okerrui/indicator.html:151
+#: templates/dummy.html:5 templates/okerrui/indicator-debug.html:295
+#: templates/okerrui/indicator.html:295
 msgid "Check Method"
 msgstr "Метод проверки"
 
@@ -583,24 +591,26 @@ msgstr "Метод проверки"
 msgid "status"
 msgstr "Cтатус"
 
-#: templates/dummy.html:7 templates/okerrui/indicator.html:86
+#: templates/dummy.html:7 templates/okerrui/indicator-debug.html:230
+#: templates/okerrui/indicator.html:230
 #: templates/okerrui/projectindicators-list.html:192
 #: templates/okerrui/projectindicators-list.html:196
 #: templates/okerrui/statuspage.html:121
 msgid "Details"
 msgstr "Детали"
 
-#: templates/dummy.html:8 templates/okerrui/indicator.html:91
-#: templates/okerrui/status.html:24
+#: templates/dummy.html:8 templates/okerrui/indicator-debug.html:235
+#: templates/okerrui/indicator.html:235 templates/okerrui/status.html:24
 msgid "Changed"
 msgstr "Изменeно"
 
-#: templates/dummy.html:9 templates/okerrui/indicator.html:96
-#: templates/okerrui/status.html:22
+#: templates/dummy.html:9 templates/okerrui/indicator-debug.html:240
+#: templates/okerrui/indicator.html:240 templates/okerrui/status.html:22
 msgid "Updated"
 msgstr "Обновлено"
 
-#: templates/dummy.html:10 templates/okerrui/indicator.html:119
+#: templates/dummy.html:10 templates/okerrui/indicator-debug.html:263
+#: templates/okerrui/indicator.html:263
 msgid "Disabled"
 msgstr "Отключено"
 
@@ -608,15 +618,18 @@ msgstr "Отключено"
 msgid "Problem:"
 msgstr "Проблема"
 
-#: templates/dummy.html:12 templates/okerrui/indicator.html:140
+#: templates/dummy.html:12 templates/okerrui/indicator-debug.html:284
+#: templates/okerrui/indicator.html:284
 msgid "Silent"
 msgstr "Тихий"
 
-#: templates/dummy.html:13 templates/okerrui/indicator.html:101
+#: templates/dummy.html:13 templates/okerrui/indicator-debug.html:245
+#: templates/okerrui/indicator.html:245
 msgid "Expected"
 msgstr "Ожидается"
 
-#: templates/dummy.html:14 templates/okerrui/indicator.html:110
+#: templates/dummy.html:14 templates/okerrui/indicator-debug.html:254
+#: templates/okerrui/indicator.html:254
 msgid "Scheduled"
 msgstr "Запланировано"
 
@@ -693,7 +706,8 @@ msgstr "Не связано"
 msgid "Created"
 msgstr "Создан"
 
-#: templates/myauth/profile.html:46 templates/okerrui/indicator.html:351
+#: templates/myauth/profile.html:46 templates/okerrui/indicator-debug.html:495
+#: templates/okerrui/indicator.html:495
 #: templates/okerrui/training/training.html:5
 #: templates/okerrui/training/training.html:10
 msgid "Training"
@@ -903,9 +917,9 @@ msgstr "Полный"
 msgid "Simple"
 msgstr "Простой"
 
-#: templates/okerrui/base.html:82
-msgid "Wiki"
-msgstr "Wiki"
+#: templates/okerrui/base.html:82 templates/okerrui/base.html:132
+msgid "Documentation"
+msgstr "Документация"
 
 #: templates/okerrui/base.html:84 templates/okerrui/base.html:133
 msgid "Support"
@@ -914,10 +928,6 @@ msgstr "Техподдержка"
 #: templates/okerrui/base.html:131
 msgid "End-user license agreement"
 msgstr "Пользовательское соглашение"
-
-#: templates/okerrui/base.html:132
-msgid "Documentation"
-msgstr "Документация"
 
 #: templates/okerrui/base.html:134
 msgid "Logout"
@@ -941,8 +951,9 @@ msgid "Delete this config"
 msgstr "Удалить эту конфигурацию"
 
 #: templates/okerrui/confedit.html:47 templates/okerrui/dyndns.html:122
-#: templates/okerrui/dyndns.html:237 templates/okerrui/index.html:1232
-#: templates/okerrui/indicator.html:298 templates/okerrui/policy.html:105
+#: templates/okerrui/dyndns.html:237 templates/okerrui/index-debug.html:1236
+#: templates/okerrui/index.html:1236 templates/okerrui/indicator-debug.html:442
+#: templates/okerrui/indicator.html:442 templates/okerrui/policy.html:105
 #: templates/okerrui/policy.html:126 templates/okerrui/project.html:197
 #: templates/okerrui/project.html:349 templates/okerrui/project.html:362
 #: templates/okerrui/project.html:486 templates/okerrui/scriptedit.html:36
@@ -965,7 +976,8 @@ msgid "Force set DNS"
 msgstr "Установить в DNS"
 
 #: templates/okerrui/dyndns.html:77 templates/okerrui/dyndns.html:205
-#: templates/okerrui/indicator.html:81
+#: templates/okerrui/indicator-debug.html:225
+#: templates/okerrui/indicator.html:225
 msgid "Status"
 msgstr "Cтатус"
 
@@ -973,8 +985,9 @@ msgstr "Cтатус"
 msgid "Priority"
 msgstr "Приоритет"
 
-#: templates/okerrui/dyndns.html:79 templates/okerrui/indicator.html:169
-#: templates/okerrui/policy.html:17 templates/okerrui/policy.html:23
+#: templates/okerrui/dyndns.html:79 templates/okerrui/indicator-debug.html:313
+#: templates/okerrui/indicator.html:313 templates/okerrui/policy.html:17
+#: templates/okerrui/policy.html:23
 #: templates/okerrui/projectindicators-list.html:195
 #: templates/okerrui/wiznoflap.html:31
 msgid "Policy"
@@ -988,11 +1001,13 @@ msgstr "Значение"
 msgid "Commands"
 msgstr "Команды"
 
-#: templates/okerrui/dyndns.html:115 templates/okerrui/indicator.html:294
+#: templates/okerrui/dyndns.html:115 templates/okerrui/indicator-debug.html:438
+#: templates/okerrui/indicator.html:438
 msgid "OK"
 msgstr "OK"
 
-#: templates/okerrui/dyndns.html:116 templates/okerrui/indicator.html:295
+#: templates/okerrui/dyndns.html:116 templates/okerrui/indicator-debug.html:439
+#: templates/okerrui/indicator.html:439
 msgid "ERR"
 msgstr "ERR"
 
@@ -1016,7 +1031,8 @@ msgstr "DNS Сервера"
 msgid "Public DNS servers"
 msgstr "Публичные DNS сервера"
 
-#: templates/okerrui/dyndns.html:221 templates/okerrui/indicator.html:636
+#: templates/okerrui/dyndns.html:221 templates/okerrui/indicator-debug.html:746
+#: templates/okerrui/indicator.html:746
 msgid "Log records"
 msgstr "Журнал"
 
@@ -1028,43 +1044,43 @@ msgstr "Переименовать"
 msgid "Accept"
 msgstr "Принять"
 
-#: templates/okerrui/index.html:23
+#: templates/okerrui/index-debug.html:23 templates/okerrui/index.html:23
 msgid "Summary sent. Subject: "
 msgstr "Сводка отправлена. Тема: "
 
-#: templates/okerrui/index.html:1198
+#: templates/okerrui/index-debug.html:1202 templates/okerrui/index.html:1202
 msgid "retest ASAP"
 msgstr "Перепроверить сразу"
 
-#: templates/okerrui/index.html:1205
+#: templates/okerrui/index-debug.html:1209 templates/okerrui/index.html:1209
 msgid "Maintenance (on/off)"
 msgstr "Режим настройки (Вкл/Выкл)"
 
-#: templates/okerrui/index.html:1215
+#: templates/okerrui/index-debug.html:1219 templates/okerrui/index.html:1219
 msgid "Enable (on/off)"
 msgstr "Включен (Вкл/Выкл)"
 
-#: templates/okerrui/index.html:1223
+#: templates/okerrui/index-debug.html:1227 templates/okerrui/index.html:1227
 msgid "Silent (on/off)"
 msgstr "Тихий (вкл/выкл)"
 
-#: templates/okerrui/index.html:1417
+#: templates/okerrui/index-debug.html:1421 templates/okerrui/index.html:1421
 msgid "new:indicator:name"
 msgstr "Имя нового индикатора"
 
-#: templates/okerrui/index.html:1418
+#: templates/okerrui/index-debug.html:1422 templates/okerrui/index.html:1422
 msgid "Create indicator"
 msgstr "Создать индикатор"
 
-#: templates/okerrui/index.html:1424
+#: templates/okerrui/index-debug.html:1428 templates/okerrui/index.html:1428
 msgid "Summary description ..."
 msgstr "Тема сводки ..."
 
-#: templates/okerrui/index.html:1425
+#: templates/okerrui/index-debug.html:1429 templates/okerrui/index.html:1429
 msgid "send summary"
 msgstr "Выслать сводку"
 
-#: templates/okerrui/index.html:1434
+#: templates/okerrui/index-debug.html:1438 templates/okerrui/index.html:1438
 #, python-format
 msgid ""
 "\n"
@@ -1073,164 +1089,206 @@ msgid ""
 "        "
 msgstr ""
 
-#: templates/okerrui/indicator.html:27 templates/okerrui/indicator.html:114
+#: templates/okerrui/indicator-debug.html:66
+#: templates/okerrui/indicator-debug.html:568
+#: templates/okerrui/indicator.html:66 templates/okerrui/indicator.html:568
+msgid "Graph"
+msgstr "График"
+
+#: templates/okerrui/indicator-debug.html:171
+#: templates/okerrui/indicator-debug.html:258
+#: templates/okerrui/indicator.html:171 templates/okerrui/indicator.html:258
 msgid "Maintenance mode"
 msgstr "Режим настройки"
 
-#: templates/okerrui/indicator.html:30
+#: templates/okerrui/indicator-debug.html:174
+#: templates/okerrui/indicator.html:174
 msgid "No alerts are sent when indicator is in maintenance mode like now."
 msgstr "Пока индикатор в режиме настройки, оповещения не рассылаются"
 
-#: templates/okerrui/indicator.html:31
+#: templates/okerrui/indicator-debug.html:175
+#: templates/okerrui/indicator.html:175
 msgid ""
 "Do not forget to stop maintenance after you will finish with configuration."
 msgstr "Не забудьте отключить режим настройки, когда закончите."
 
-#: templates/okerrui/indicator.html:41
+#: templates/okerrui/indicator-debug.html:185
+#: templates/okerrui/indicator.html:185
 msgid "Limited project"
 msgstr "Лимитированный проект"
 
-#: templates/okerrui/indicator.html:44
+#: templates/okerrui/indicator-debug.html:188
+#: templates/okerrui/indicator.html:188
 msgid "Project is limited. No changes will be applied."
 msgstr "Проект лимитирован. Изменения не будут применены."
 
-#: templates/okerrui/indicator.html:54 templates/okerrui/statuspage.html:102
+#: templates/okerrui/indicator-debug.html:198
+#: templates/okerrui/indicator.html:198 templates/okerrui/statuspage.html:102
 msgid "Indicator"
 msgstr "Индикатор"
 
-#: templates/okerrui/indicator.html:71 templates/okerrui/invitations.html:27
+#: templates/okerrui/indicator-debug.html:215
+#: templates/okerrui/indicator.html:215 templates/okerrui/invitations.html:27
 #: templates/okerrui/project.html:39 templates/okerrui/project.html:221
 #: templates/okerrui/wiznoflap.html:26
 msgid "Project"
 msgstr "Проект"
 
-#: templates/okerrui/indicator.html:92 templates/okerrui/indicator.html:97
+#: templates/okerrui/indicator-debug.html:236
+#: templates/okerrui/indicator-debug.html:241
+#: templates/okerrui/indicator.html:236 templates/okerrui/indicator.html:241
 #: templates/okerrui/status.html:22 templates/okerrui/status.html:24
 msgid "ago"
 msgstr "назад"
 
-#: templates/okerrui/indicator.html:129
+#: templates/okerrui/indicator-debug.html:273
+#: templates/okerrui/indicator.html:273
 msgid "Problem"
 msgstr "Проблема"
 
-#: templates/okerrui/indicator.html:188
+#: templates/okerrui/indicator-debug.html:332
+#: templates/okerrui/indicator.html:332
 msgid "Location suffix"
 msgstr "Географический суффикс"
 
-#: templates/okerrui/indicator.html:213
+#: templates/okerrui/indicator-debug.html:357
+#: templates/okerrui/indicator.html:357
 msgid "Request keypath"
 msgstr "Путь ключа (в запросе)"
 
-#: templates/okerrui/indicator.html:222
+#: templates/okerrui/indicator-debug.html:366
+#: templates/okerrui/indicator.html:366
 msgid "Real keypath"
 msgstr "Путь ключа (реальный)"
 
-#: templates/okerrui/indicator.html:233
+#: templates/okerrui/indicator-debug.html:377
+#: templates/okerrui/indicator.html:377
 msgid "Data structure"
 msgstr "Структура данных"
 
-#: templates/okerrui/indicator.html:235
+#: templates/okerrui/indicator-debug.html:379
+#: templates/okerrui/indicator.html:379
 msgid "View"
 msgstr "Посмотреть"
 
-#: templates/okerrui/indicator.html:243 templates/okerrui/statuspage.html:62
+#: templates/okerrui/indicator-debug.html:387
+#: templates/okerrui/indicator.html:387 templates/okerrui/statuspage.html:62
 msgid "Description"
 msgstr "Описание"
 
-#: templates/okerrui/indicator.html:269 templates/okerrui/policy.html:104
+#: templates/okerrui/indicator-debug.html:413
+#: templates/okerrui/indicator.html:413 templates/okerrui/policy.html:104
 #: templates/okerrui/statuspage.html:73
 msgid "Apply"
 msgstr "Применить"
 
-#: templates/okerrui/indicator.html:271
+#: templates/okerrui/indicator-debug.html:415
+#: templates/okerrui/indicator.html:415
 msgid "Apply and retest ASAP"
 msgstr "Сохранить и перепроверить"
 
-#: templates/okerrui/indicator.html:289
+#: templates/okerrui/indicator-debug.html:433
+#: templates/okerrui/indicator.html:433
 #: templates/okerrui/projectindicators-list.html:245
 msgid "Stop maintenance"
 msgstr "Выйти из режима настройки"
 
-#: templates/okerrui/indicator.html:291
+#: templates/okerrui/indicator-debug.html:435
+#: templates/okerrui/indicator.html:435
 #: templates/okerrui/projectindicators-list.html:242
 msgid "Set maintenance"
 msgstr "Режим настройки"
 
-#: templates/okerrui/indicator.html:298 templates/okerrui/policy.html:105
+#: templates/okerrui/indicator-debug.html:442
+#: templates/okerrui/indicator.html:442 templates/okerrui/policy.html:105
 #: templates/okerrui/project.html:197 templates/okerrui/project.html:493
 msgid "Are you sure?"
 msgstr "Вы уверены?"
 
-#: templates/okerrui/indicator.html:308
+#: templates/okerrui/indicator-debug.html:452
+#: templates/okerrui/indicator.html:452
 msgid "Tags"
 msgstr "Метки"
 
-#: templates/okerrui/indicator.html:324
+#: templates/okerrui/indicator-debug.html:468
+#: templates/okerrui/indicator.html:468
 msgid "Add tag"
 msgstr "Добавить метку"
 
-#: templates/okerrui/indicator.html:332
+#: templates/okerrui/indicator-debug.html:476
+#: templates/okerrui/indicator.html:476
 msgid "Copy indicator"
 msgstr "Скопировать индикатор"
 
-#: templates/okerrui/indicator.html:338
+#: templates/okerrui/indicator-debug.html:482
+#: templates/okerrui/indicator.html:482
 msgid "Copy"
 msgstr "Скопировать"
 
-#: templates/okerrui/indicator.html:359
+#: templates/okerrui/indicator-debug.html:503
+#: templates/okerrui/indicator.html:503
 #: templates/okerrui/training/training.html:47
 msgid "Check"
 msgstr "Проверить"
 
-#: templates/okerrui/indicator.html:369
+#: templates/okerrui/indicator-debug.html:513
+#: templates/okerrui/indicator.html:513
 msgid "User-specific settings"
 msgstr "Пользовательские настройки"
 
-#: templates/okerrui/indicator.html:402 templates/okerrui/project.html:394
+#: templates/okerrui/indicator-debug.html:547
+#: templates/okerrui/indicator.html:547 templates/okerrui/project.html:394
 msgid "Status pages"
 msgstr "Страницы состояний"
 
-#: templates/okerrui/indicator.html:413
+#: templates/okerrui/indicator-debug.html:558
+#: templates/okerrui/indicator.html:558
 msgid "Dynamic DNS"
 msgstr "Динамический DNS"
 
-#: templates/okerrui/indicator.html:423
-msgid "Graph"
-msgstr "График"
-
-#: templates/okerrui/indicator.html:476
+#: templates/okerrui/indicator-debug.html:590
+#: templates/okerrui/indicator.html:590
 msgid "Uptime"
 msgstr "Аптайм"
 
-#: templates/okerrui/indicator.html:480
+#: templates/okerrui/indicator-debug.html:594
+#: templates/okerrui/indicator.html:594
 msgid "Last 1 hour"
 msgstr "Последний час"
 
-#: templates/okerrui/indicator.html:491
+#: templates/okerrui/indicator-debug.html:605
+#: templates/okerrui/indicator.html:605
 msgid "Last 24 hours"
 msgstr "Последние 24 часа"
 
-#: templates/okerrui/indicator.html:502
+#: templates/okerrui/indicator-debug.html:616
+#: templates/okerrui/indicator.html:616
 msgid "Month"
 msgstr "Месяц"
 
-#: templates/okerrui/indicator.html:515
+#: templates/okerrui/indicator-debug.html:629
+#: templates/okerrui/indicator.html:629
 msgid "Uptime log"
 msgstr "Лог аптайма"
 
-#: templates/okerrui/indicator.html:527
+#: templates/okerrui/indicator-debug.html:641
+#: templates/okerrui/indicator.html:641
 msgid "Upper Level"
 msgstr "Верхний уровень"
 
-#: templates/okerrui/indicator.html:536
+#: templates/okerrui/indicator-debug.html:650
+#: templates/okerrui/indicator.html:650
 msgid "Lower Level"
 msgstr "Нижний уровень"
 
-#: templates/okerrui/indicator.html:646 templates/okerrui/indicator.html:653
+#: templates/okerrui/indicator-debug.html:756
+#: templates/okerrui/indicator-debug.html:763
+#: templates/okerrui/indicator.html:756 templates/okerrui/indicator.html:763
 msgid "unlock"
 msgstr "разблокировать"
 
-#: templates/okerrui/indicator.html:648
+#: templates/okerrui/indicator-debug.html:758
+#: templates/okerrui/indicator.html:758
 msgid "lock"
 msgstr "заблокировать"
 
@@ -1906,6 +1964,9 @@ msgstr "Вы можете"
 #: templates/statuspage-update.html:15
 msgid "Unsubscribe"
 msgstr "Отписаться"
+
+#~ msgid "Wiki"
+#~ msgstr "Wiki"
 
 #~ msgid "Maintenance"
 #~ msgstr "Настройка"
