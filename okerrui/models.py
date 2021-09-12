@@ -1932,6 +1932,7 @@ class CheckMethod(models.Model):
     def action_logic(self, i):
         expr = i.getarg('expr', 'True')
         dump = i.getarg('dump', '')
+        safenodes = ['Constant', 'Expression']
         context = i.pdatastruct()
 
         # fill details by dump
@@ -1941,7 +1942,7 @@ class CheckMethod(models.Model):
             if not ctxvar:
                 # empty line
                 continue
-            success, result = evalidate.safeeval(ctxvar, context, safenodes=['Constant'])
+            success, result = evalidate.safeeval(ctxvar, context, safenodes=safenodes)
             if success:
                 details += "{}={} ".format(ctxvar, result)
             else:
@@ -1949,7 +1950,7 @@ class CheckMethod(models.Model):
                 i.problem = True
                 return ("ERR", result)
 
-        success, result = evalidate.safeeval(expr, context, safenodes=['Constant'])
+        success, result = evalidate.safeeval(expr, context, safenodes=safenodes)
         if success:
             if result:
                 return ('OK', details)
