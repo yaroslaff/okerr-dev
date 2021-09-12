@@ -25,7 +25,6 @@ import resource
 import gc
 # import objgraph
 
-import evalidate
 import cron
 from myutils import shorttime, lockpidfile,send_email, md_escape
 import myutils
