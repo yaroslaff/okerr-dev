@@ -1932,7 +1932,7 @@ class CheckMethod(models.Model):
     def action_logic(self, i):
         expr = i.getarg('expr', 'True')
         dump = i.getarg('dump', '')
-        safenodes = ['Constant', 'Expression', 'Subscript', 'Name']
+        safenodes = ['Constant', 'Expression', 'Subscript', 'Name', 'Load']
         context = i.pdatastruct()
 
         # fill details by dump
