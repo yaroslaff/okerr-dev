@@ -10,7 +10,7 @@ djangorestframework
 django-markup
 mysqlclient
 PyOpenSSL
-evalidate
+evalidate>=0.7.8
 python-whois
 uwsgi
 requests-oauthlib

@@ -1945,7 +1945,7 @@ class CheckMethod(models.Model):
             if not ctxvar:
                 # empty line
                 continue
-            success, result = evalidate.safeeval(ctxvar, context, safenodes=safenodes)
+            success, result = evalidate.safeeval(ctxvar, context, safenodes=None)
             if success:
                 details += "{}={} ".format(ctxvar, result)
             else:
@@ -1953,7 +1953,7 @@ class CheckMethod(models.Model):
                 i.problem = True
                 return ("ERR", result)
 
-        success, result = evalidate.safeeval(expr, context, safenodes=safenodes)
+        success, result = evalidate.safeeval(expr, context, safenodes=None)
         if success:
             if result:
                 return ('OK', details)
