@@ -192,6 +192,11 @@ def send_mail_alerts():
             # p.mail_alerts() is:
             #   self.user.alertrecord_set.filter(proto='mail', release_time__lte=now)
             alerts = p.mail_alerts()
+            
+            if len(alerts) == 0:
+                log.error("send_mail_alerts(): GOT ERROR, 0 alerts")
+                log.error(f"arec ({type(arec)}): {arec}")
+
             log.info(f"Send alert #{alertid} ({len(alerts)} alerts) to {user.email}")
 
             d = { 'siteurl': siteurl,'user': user, 'profile':p , 
