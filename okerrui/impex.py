@@ -1,3 +1,4 @@
+from builtins import hasattr
 import os
 import sys
 import time
@@ -320,7 +321,10 @@ class Impex():
     def cron(cls):
 
         modelcrontime = 1800 # 30min
-        modelcrontime_big = 86400 # 2        
+
+        
+        modelcrontime_big = int(settings.IMPORT_PROFILE_PERIOD) if hasattr(settings.IMPORT_PROFILE_PERIOD) else 86400 # 2        
+        
         if cls.lastcron and int(time.time()) < cls.lastcron+modelcrontime:
             # print "skip cronjob ({} < {} + {}, will run in {} seconds)".\
             #    format(int(time.time()),cls.lastcron,modelcrontime,cls.lastcron+modelcrontime-int(time.time()))
@@ -330,6 +334,7 @@ class Impex():
         cls.syncmap()
 
         if int(time.time()) > cls.lastcron_big+modelcrontime_big:
+            log.info("ZZZ impex big cron")
             if hasattr(settings,'IMPORT_PROFILE') and settings.IMPORT_PROFILE:
                 User = get_user_model()
                 filename = os.path.join(settings.BASE_DIR, settings.IMPORT_PATH, settings.IMPORT_PROFILE)
