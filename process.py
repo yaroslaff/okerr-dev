@@ -614,6 +614,7 @@ stop = False
                 
 django.setup()
 log = logging.getLogger('okerr')                
+log.info(f"op: {op}")
 
 r = myutils.get_redis()
 r.set('process_started', str(int(time.time())))
