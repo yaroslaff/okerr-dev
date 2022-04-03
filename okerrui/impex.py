@@ -323,7 +323,7 @@ class Impex():
         modelcrontime = 1800 # 30min
 
         
-        modelcrontime_big = int(settings.IMPORT_PROFILE_PERIOD) if hasattr(settings.IMPORT_PROFILE_PERIOD) else 86400 # 2        
+        modelcrontime_big = int(settings.IMPORT_PROFILE_PERIOD) if hasattr(settings, 'IMPORT_PROFILE_PERIOD') else 86400 # 2        
         
         if cls.lastcron and int(time.time()) < cls.lastcron+modelcrontime:
             # print "skip cronjob ({} < {} + {}, will run in {} seconds)".\
