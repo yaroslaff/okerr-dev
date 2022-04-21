@@ -192,6 +192,8 @@ def send_mail_alerts():
             # p.mail_alerts() is:
             #   self.user.alertrecord_set.filter(proto='mail', release_time__lte=now)
             alerts = p.mail_alerts()
+            for alert in alerts:
+                log.info(f"Send alert #{alert.id}: {alert}")
             
             if len(alerts) == 0:
                 log.error("send_mail_alerts(): GOT ERROR, 0 alerts")
@@ -209,8 +211,15 @@ def send_mail_alerts():
             # text_content = plaintext.render(d)
             html_content = htmly.render(d)        
             # now delete all alerts for this user
+            for ar in AlertRecord.objects.filter(user=user, proto='mail'):
+                log.info(f"will delete #{ar.id}: {ar}")
+                
             ndeleted = AlertRecord.objects.filter(user=user, proto='mail').delete()        
             log.info(f"Deleted {ndeleted[0]} mail alerts for user {user.email}")
+
+            if ndeleted[0] != len(alerts):
+                log.info(f"SELF-CHECK ALERT ERROR: Deleted {ndeleted[0]} alerts out of {len(alerts)}")
+
 
             #log.info('send alerts to {}'.format(to))
             send_email(to, subject=subject, html=html_content, what='alert')
