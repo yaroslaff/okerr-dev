@@ -3926,6 +3926,11 @@ def api_set(request,pid,iid):
     except Indicator.DoesNotExist:
         return HttpResponseNotFound("No such indicator\n")
 
+    if 'name' in request.POST:
+        if Indicator.validname(request.POST.get('name')):
+            i.name = request.POST['name']
+            changed['name'] = i.name
+            i.touch()
 
     if 'policy'in request.POST:
         pname = request.POST['policy']
