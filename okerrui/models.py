@@ -1951,7 +1951,7 @@ class CheckMethod(models.Model):
             except evalidate.EvalException as e:
                 log.debug('evalidate dump safeeval {} failed: {}'.format(repr(ctxvar), e))
                 i.problem = True
-                return ("ERR", result)
+                return ("ERR", str(e))
 
         try:
             result = evalidate.safeeval(expr, context, safenodes=None)
@@ -1962,7 +1962,7 @@ class CheckMethod(models.Model):
         except evalidate.EvalException as e:
             log.debug('evalidate expr safeeval failed: {}'.format(e))
             i.problem = True
-            return ("ERR", result)
+            return ("ERR", str(e))
 
     def mycmconf(self):
         return self.getCheckMethods()[self.codename]
