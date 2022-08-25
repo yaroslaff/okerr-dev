@@ -1945,22 +1945,22 @@ class CheckMethod(models.Model):
             if not ctxvar:
                 # empty line
                 continue
-            success, result = evalidate.safeeval(ctxvar, context, safenodes=None)
-            if success:
+            try:
+                result = evalidate.safeeval(ctxvar, context, safenodes=None)
                 details += "{}={} ".format(ctxvar, result)
-            else:
-                log.debug('evalidate dump safeeval {} failed: {}'.format(repr(ctxvar), result))
+            except evalidate.EvalException as e:
+                log.debug('evalidate dump safeeval {} failed: {}'.format(repr(ctxvar), e))
                 i.problem = True
                 return ("ERR", result)
 
-        success, result = evalidate.safeeval(expr, context, safenodes=None)
-        if success:
+        try:
+            result = evalidate.safeeval(expr, context, safenodes=None)
             if result:
                 return ('OK', details)
             else:
                 return ('ERR', details)
-        else:
-            log.debug('evalidate expr safeeval failed: {}'.format(result))
+        except evalidate.EvalException as e:
+            log.debug('evalidate expr safeeval failed: {}'.format(e))
             i.problem = True
             return ("ERR", result)
 
