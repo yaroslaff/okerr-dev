@@ -90,7 +90,12 @@ def reg_command(message):
     global commands_cnt
     tgname = message.from_user.username
     log.info('@{}: {}'.format(tgname, message.text))
-    lastcmdi.update('OK', details='pid: {} @{}: {}'.format(os.getpid() ,tgname, message.text))
+    try:
+        lastcmdi.update('OK', details='pid: {} @{}: {}'.format(os.getpid() ,tgname, message.text))
+    
+    except OkerrExc as e:
+        log.error(e)
+
     commands_cnt += 1
     db_up()
     
