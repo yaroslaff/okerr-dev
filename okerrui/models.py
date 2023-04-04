@@ -1389,7 +1389,10 @@ class Policy(TransModel):
             raise (ValueError(_("Incorrect alert reduction. Example:\n0s or\n0s 00:30-02:00 5m 14:00-14:30 10s")))
 
     def validate_patience(self, pstr):
-        timesuffix2sec(pstr)
+        patience = timesuffix2sec(pstr)
+        if patience < 300:
+            raise(_('Patience must be 5 minutes=300 seconds or more (not {patience})'))
+
 
     def validate_period(self, pstr):
         p = timesuffix2sec(pstr)

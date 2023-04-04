@@ -1349,8 +1349,8 @@ def policy(request, textid, pname):
 
     if request.POST and not project.tadmin(request.user):
         log.info('ERRPOLICY post to policy without tadmin {} {}.{}'.\
-            format(request.user.username,textid,pname))
-        return redirect('okerr:policy',textid,pnams)
+            format(request.user.username,textid, pname))
+        return redirect('okerr:policy',textid, pname)
 
 
     # delete, but not default
