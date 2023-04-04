@@ -1391,7 +1391,7 @@ class Policy(TransModel):
     def validate_patience(self, pstr):
         patience = timesuffix2sec(pstr)
         if patience < 300:
-            raise ValueError(_('Patience must be 5 minutes=300 seconds or more (not {patience})'))
+            raise ValueError(_('Patience must be 5 minutes=300 seconds or more (not {})').format(patience))
 
 
     def validate_period(self, pstr):
