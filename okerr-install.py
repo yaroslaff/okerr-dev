@@ -423,8 +423,9 @@ def test_deb_packages(args):
         'dialog',
         'gcc',
         # 'libmysqlclient-dev',
-        'libmariadbclient-dev',  # debian 9
+        # 'libmariadbclient-dev',  # debian 9
         # 'libmariadb-dev-compat', # debian 10
+        'libmariadb-dev', # debian 11?
         'libadns1-dev',
         'libffi-dev',
         'libssl-dev',
