@@ -659,6 +659,10 @@ if args.local:
     args.overwrite = True
     args.password = args.password or 'okerr_default_password'
 
+if not args.host:
+    print("No host addresses given, use --host FQDN1 FQDN2 ...")
+    sys.exit(1)
+
 tokens = {
     '%OKERR%': mydir,
     '%VENV%': args.venv,
