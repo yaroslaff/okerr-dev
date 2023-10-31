@@ -1,6 +1,6 @@
 wheel
 Django==3.1.14
-adns @ git+https://github.com/trolldbois/python3-adns/
+# adns @ git+https://github.com/trolldbois/python3-adns/
 netaddr
 requests
 redis

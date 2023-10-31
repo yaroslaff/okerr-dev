@@ -9,4 +9,5 @@ nohup.out
 .bash*
 workspace.code-workspace
 .vscode
+.venv
 

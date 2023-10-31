@@ -1142,6 +1142,31 @@ class ProjectInvite(models.Model):
         inv.tsave()
         return inv
 
+    def send(self):
+        if not self.email:
+            print("will not send email for public invite")
+            return
+
+        # send invite TODO !!!
+        plaintext = get_template('invite-email.txt')
+        htmly     = get_template('invite-email.html')
+
+        subject = 'okerr invitation from {} to join {}'.format(self.project.owner, self.project)
+        print("Subj:", subject)
+        print("From:", settings.FROM)
+
+        d = { 'user': self.project.owner, 
+                     'project': self.project.name, 
+                     'regurl': settings.SITEURL+'signup',
+                     'loginurl':settings.SITEURL+'login' }
+
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+
+        msg = EmailMultiAlternatives(subject, text_content, settings.FROM, [self.email])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
     @staticmethod
     def usecode(user, code):
         pi = ProjectInvite.objects.filter(secret=code).first()
