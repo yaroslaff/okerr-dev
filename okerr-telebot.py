@@ -129,13 +129,14 @@ def set_chat_id(email, tgname, chat_id):
 
         log.info(f"got profile: {profile}")
 
+        """
         # verify profile
         if profile.telegram_name.lower() != tgname.lower() and profile.telegram_name != str(chat_id):
             if tgname:
                 return 'Set telegram name {} in profile'.format(tgname)
             else:
                 return 'Set telegram name {} in profile'.format(chat_id)
-        
+        """
         rs = RemoteServer(ci = profile.ci)
         if tgname:
             jr = rs.api_admin_tglink(email, tgname, chat_id)
