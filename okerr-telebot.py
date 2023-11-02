@@ -123,9 +123,7 @@ def set_chat_id(email, tgname, chat_id):
         else:
             if tgname:
                 # case-insensitive search for telegram_name
-                print(f"search for telegram name {tgname!r}")
                 profile = Profile.objects.get(telegram_name__iexact = tgname)
-                print(f"search returned profile={profile}")
             else:
                 profile = Profile.objects.get(telegram_name = str(chat_id))
 
