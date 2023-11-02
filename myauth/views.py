@@ -366,7 +366,10 @@ def profile(request):
                 notify(request, 'bad delete confirmation phrase')
 
         if request.POST.get('telegram_name', '') != profile.telegram_name:
-            profile.telegram_name = request.POST.get('telegram_name')
+            profile.telegram_name = request.POST.get('telegram_name').lower()
+            if profile.telegram_name.startswith('@'):
+                profile.telegram_name = profile.telegram_name[1:]
+
             profile.telegram_chat_id = None
             if profile.telegram_name:
                 notify(request, _('Configured telegram username. Now send /on command to telegram bot @OkerrBot'))
