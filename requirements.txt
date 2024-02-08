@@ -1,5 +1,5 @@
 wheel
-Django==3.1.14
+Django==3.2.24
 # adns @ git+https://github.com/trolldbois/python3-adns/
 netaddr
 requests
