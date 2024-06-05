@@ -563,7 +563,10 @@ class Project(TransModel):
 
         for pi in self.projectinvite_set.all():
             print("  invite:", pi)
-        print();
+        print()
+
+        for apikey in self.projectaccesskey_set.all():
+            print("API KEY:", apikey.key)
 
     # project.log
     def log(self, message, typecode='project'):

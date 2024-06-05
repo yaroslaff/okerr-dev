@@ -307,7 +307,7 @@ def sredir(request, name, path):
 
 
 def seen_motd(request):
-    motd = requests.get('http://okerr.com/motd/motd.txt')
+    motd = requests.get('https://okerr.com/motd/motd.txt')
     motdsha1 = hashlib.sha1(motd.text.encode('utf-8')).hexdigest()
 
     seensha1 = request.user.profile.last_motd
