@@ -2,11 +2,15 @@ body {
     font-size:14px;color:#222222;
     background-color:#fafafa; margin:0px;
     font-family: 'Ubuntu', serif; font-weight: 400; 
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     }
 
 .divcontent {
     padding-left: 10px;
     padding-right: 10px;
+    flex: 1;
 }
 
 .humantable {
@@ -87,9 +91,14 @@ p.title {
     border-bottom: 1px solid #dd2222;
     }
 
-p.footer {
-    font-size:12px;color:#676767; text-align:left;
-    background-color:#dedede; padding-left: 20px; padding-top: 20px; padding-bottom: 20px; }
+.footer {
+    font-size:12px;
+    color:#676767; 
+    text-align:left;
+    background-color:#dedede; 
+    padding-left: 1em; 
+    padding-top: 1em; 
+    padding-bottom: 1em; }
 
 .sysinfo {
     font-size: 12px;

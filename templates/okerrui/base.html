@@ -109,30 +109,30 @@
     </div>
 
     {# footer #}
-    <p class=footer>
-    (c) WWW Security, 2014-2020.
-    <a href="https://twitter.com/OkerrRus"><img src="{% static 'Twitter_Logo_Blue.png' %}">@OkerrRus</a>
-    <br>
+    <div class=footer>
+      (c) WWW Security, 2014-2024.
+      <a href="https://twitter.com/OkerrRus"><img src="{% static 'Twitter_Logo_Blue.png' %}">@OkerrRus</a>
+      <br>
 
-    {% if request.LANGUAGE_CODE == 'ru' %}
-    Использовались технологии <a href="https://www.djangoproject.com/">Django</a>,
-    <a href="https://pypi.python.org/pypi/evalidate/">evalidate</a> и
-    <a href='http://www.chartjs.org/'>Chart.js</a>, а так же наборы иконок
-    <a href="http://led24.de/iconset/">LED</a> и
-    <a href="http://www.famfamfam.com/lab/icons/silk/">Silk</a>.
-    {% else %}
-    Used <a href="https://www.djangoproject.com/">Django</a>,
-    <a href="https://pypi.python.org/pypi/evalidate/">evalidate</a> and
-    <a href='http://www.chartjs.org/'>Chart.js</a> technologies and
-    <a href="http://led24.de/iconset/">LED</a> and
-    <a href="http://www.famfamfam.com/lab/icons/silk/">Silk</a> icon sets.
-    {% endif %}
-    <br>
-    <a href="{% url 'okerr:eula' %}">{% trans 'End-user license agreement' %}</a> |
-    <a href="https://okerr.readthedocs.io/{{request.LANGUAGE_CODE}}/latest/index.html">{% trans 'Documentation' %}</a> |
-    <a href="https://okerr.freshdesk.com/">{% trans 'Support' %}</a> (<a href="mailto:support@okerr.com">support@okerr.com</a>) |
-    <a href="{% url 'myauth:logout' %}">{% trans 'Logout' %}</a>
-   </p>
+      {% if request.LANGUAGE_CODE == 'ru' %}
+      Использовались технологии <a href="https://www.djangoproject.com/">Django</a>,
+      <a href="https://pypi.python.org/pypi/evalidate/">evalidate</a> и
+      <a href='http://www.chartjs.org/'>Chart.js</a>, а так же наборы иконок
+      <a href="http://led24.de/iconset/">LED</a> и
+      <a href="http://www.famfamfam.com/lab/icons/silk/">Silk</a>.
+      {% else %}
+      Used <a href="https://www.djangoproject.com/">Django</a>,
+      <a href="https://pypi.python.org/pypi/evalidate/">evalidate</a> and
+      <a href='http://www.chartjs.org/'>Chart.js</a> technologies and
+      <a href="http://led24.de/iconset/">LED</a> and
+      <a href="http://www.famfamfam.com/lab/icons/silk/">Silk</a> icon sets.
+      {% endif %}
+      <br>
+      <a href="{% url 'okerr:eula' %}">{% trans 'End-user license agreement' %}</a> |
+      <a href="https://okerr.readthedocs.io/{{request.LANGUAGE_CODE}}/latest/index.html">{% trans 'Documentation' %}</a> |
+      <a href="https://okerr.freshdesk.com/">{% trans 'Support' %}</a> (<a href="mailto:support@okerr.com">support@okerr.com</a>) |
+      <a href="{% url 'myauth:logout' %}">{% trans 'Logout' %}</a>
+    </div>
     <script>
     function getXmlHttp(){
       var xmlhttp;
