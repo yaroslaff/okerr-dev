@@ -506,7 +506,25 @@ td.min {
     color: #999;
 }
 
+.horizontal {
+    width: 100%;
+    display: flex;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
 
+.left, .right {
+    flex: 1;
+    padding: 20px;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
 
 .container {
     display: table;

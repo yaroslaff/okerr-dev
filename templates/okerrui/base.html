@@ -11,81 +11,78 @@
         <link rel="shortcut icon" type="image/png" href="{% block favicon %}https://static.okerr.com/favicon.ico{% endblock %}"/>
 </head>
 <body>
-    <p>
-    <table class=header border="0">
-        <tr>
-            <td>
-                <a href="/"><img src="{% static 'okerrlogo.png' %}"></a><br>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'okerr:index' %}">{% trans "Indicators" %}</a>
-                        <a href={% url 'okerr:projectlist' %}>{% trans "Projects" %}</a>
-                        {% if user.profile.get_jarg_full_interface %}
-                            <a href={% url 'okerr:invitations' %}>{% trans "Invitations" %}</a>
-                        {% endif %}
-                    {% else %}
-                         <a href="{% url 'myauth:login' %}">{% trans "Login" %}</a>
-                         <a href="{% url 'myauth:signup' %}">{% trans "Register" %}</a>
-                    {% endif %}
-            </td>
-            <td align=right class="sysinfo">
-            <form action="{% url 'set_language' %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-            <input name="language" type="hidden" value="ru" />
-            <input type="image" src="{% static 'rus.png' %}" alt="rus" title="Russian">
-            </form>
-            <form action="{% url 'set_language' %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-            <input name="language" type="hidden" value="en" />
-            <input type="image" src="{% static 'uk.png' %}" alt="eng" title="English">
-            </form>
+  <div class="horizontal">
+    <div class="left">
+      <a href="/"><img src="{% static 'okerrlogo.png' %}"></a><br>
+          {% if user.is_authenticated %}
+              <a href="{% url 'okerr:index' %}">{% trans "Indicators" %}</a>
+              <a href={% url 'okerr:projectlist' %}>{% trans "Projects" %}</a>
+              {% if user.profile.get_jarg_full_interface %}
+                  <a href={% url 'okerr:invitations' %}>{% trans "Invitations" %}</a>
+              {% endif %}
+          {% else %}
+                <a href="{% url 'myauth:login' %}">{% trans "Login" %}</a>
+                <a href="{% url 'myauth:signup' %}">{% trans "Register" %}</a>
+          {% endif %}
+    </div>
+    <div class="right">
+      <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+      <input name="language" type="hidden" value="ru" />
+      <input type="image" src="{% static 'rus.png' %}" alt="rus" title="Russian">
+      </form>
+      <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+      <input name="language" type="hidden" value="en" />
+      <input type="image" src="{% static 'uk.png' %}" alt="eng" title="English">
+      </form>
 
-            {% if user.is_authenticated %}
-                <a href={% url 'myauth:profile' %}><img src="{% static 'user.png' %}" title="profile">{{ user.email }}</a>
-                &nbsp;
-                <a href={% url 'myauth:logout' %}><img src="{% static 'logout.png' %}" title="logout"></a>
-            {% endif %}
-            <br>
-            {% trans "Server time" %}: {% now "d M Y H:i:s (e)" %}
-            {% getbacklog as backlog %}
-            {% getlastloopage as loopage %}
-            <br>
-            backlog:
-            {% if backlog < 30 %}
-                <span class="ok">
-            {% else %}
-                <span class="err">
-            {% endif %}
-            {{ backlog }} seconds
-            </span>
-            lastloop:
-            {% if loopage < 30 %}
-                <span class="ok">
-            {% else %}
-                <span class="err">
-            {% endif %}
-            {{ loopage }} seconds
-            </span>
-            <br>
-            {% if user.is_authenticated %}
-                {% trans 'Interface' %}:
-                <a href="{% url 'okerr:toggle_interface_level' request.path %}">
-                {% if user.profile.get_jarg_full_interface %}
-                        {% trans 'Full' %}
-                {% else %}
-                        {% trans 'Simple' %}
-                {% endif %}
-                    </a>
-            {% endif %}
-            &nbsp;
-            <a href="https://okerr.readthedocs.io/{{LANGUAGE_CODE}}/latest/"><img src="{% static 'help.png' %}"> {% trans 'Documentation' %}</a>
-            &nbsp;
-            <a href="https://okerr.freshdesk.com/"><img src="{% static 'lifebuoy.png' %}"> {% trans 'Support' %}</a>
-            </td>
-        </tr>
-    </table>
-    </p>
+      {% if user.is_authenticated %}
+          <a href={% url 'myauth:profile' %}><img src="{% static 'user.png' %}" title="profile">{{ user.email }}</a>
+          &nbsp;
+          <a href={% url 'myauth:logout' %}><img src="{% static 'logout.png' %}" title="logout"></a>
+      {% endif %}
+      <br>
+      {% trans "Server time" %}: {% now "d M Y H:i:s (e)" %}
+      {% getbacklog as backlog %}
+      {% getlastloopage as loopage %}
+      <br>
+      backlog:
+      {% if backlog < 30 %}
+          <span class="ok">
+      {% else %}
+          <span class="err">
+      {% endif %}
+      {{ backlog }} seconds
+      </span>
+      lastloop:
+      {% if loopage < 30 %}
+          <span class="ok">
+      {% else %}
+          <span class="err">
+      {% endif %}
+      {{ loopage }} seconds
+      </span>
+      <br>
+      {% if user.is_authenticated %}
+          {% trans 'Interface' %}:
+          <a href="{% url 'okerr:toggle_interface_level' request.path %}">
+          {% if user.profile.get_jarg_full_interface %}
+                  {% trans 'Full' %}
+          {% else %}
+                  {% trans 'Simple' %}
+          {% endif %}
+              </a>
+      {% endif %}
+      &nbsp;
+      <a href="https://okerr.readthedocs.io/{{LANGUAGE_CODE}}/latest/"><img src="{% static 'help.png' %}"> {% trans 'Documentation' %}</a>
+      &nbsp;
+      <a href="https://okerr.freshdesk.com/"><img src="{% static 'lifebuoy.png' %}"> {% trans 'Support' %}</a>
+    </div>
+  </div>
+
 
     <div id="alert-area" class="alert-area"></div>
 
@@ -105,8 +102,8 @@
     {% endif %}
 
     <div class="divcontent">
-    {% block content %}{% endblock %}
-    </div>
+      {% block content %}{% endblock %}
+    </div> <!-- divcontent -->
 
     {# footer #}
     <div class=footer>
