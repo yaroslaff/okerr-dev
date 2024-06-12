@@ -507,7 +507,7 @@ td.min {
 }
 
 .horizontal {
-    background: #676767;
+    background-color: #dedede;
     width: 100%;
     display: flex;
 }
