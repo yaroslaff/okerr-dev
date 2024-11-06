@@ -19,7 +19,7 @@ from django.conf import settings
 from django.template.loader import get_template
 from django.template import Context
 from django.core.mail import EmailMultiAlternatives, mail_admins
-from django.utils.translation import ugettext_lazy as _, pgettext
+from django.utils.translation import gettext_lazy as _, pgettext
 from django.contrib.auth import get_user_model
 from oauth2_provider.views.generic import ProtectedResourceView
 from django.http import Http404

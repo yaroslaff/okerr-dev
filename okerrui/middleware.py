@@ -1,5 +1,7 @@
 from django import http
-from django.utils.http import urlquote
+# obsolete:
+# from django.utils.http import urlquote
+# from urllib.parse import quote
 from django import urls
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin

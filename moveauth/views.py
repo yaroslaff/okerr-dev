@@ -18,7 +18,7 @@ from django.conf import settings
 from django.template.loader import get_template
 from django.template import Context
 from django.core.mail import EmailMultiAlternatives
-from django.utils.translation import ugettext_lazy as _, pgettext
+from django.utils.translation import gettext_lazy as _, pgettext
 from django.contrib.auth import get_user_model, authenticate, login, logout
 
 from okerrui.views import security_check

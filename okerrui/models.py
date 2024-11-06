@@ -11,7 +11,7 @@ from django.template.loader import get_template
 from django.template import Context
 from django.core.mail import EmailMultiAlternatives
 from django.core.cache import caches
-from django.utils.translation import ugettext_lazy as _, pgettext
+from django.utils.translation import gettext_lazy as _, pgettext
 
 from netaddr import IPNetwork, IPAddress, AddrFormatError
 
@@ -2166,10 +2166,12 @@ class Indicator(TransModel):
 
     class Meta:
         ordering = ['name']
-        index_together = [
-            ["project", "name"],
+        indexes = [
+            models.Index(fields=['project', 'name']),
         ]
-        unique_together = ('name', 'project')
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'project'], name='unique_name_project'),
+        ]
 
     def get_fullname(self):
         return '{}@{}'.format(self.name, self.project.get_textid())

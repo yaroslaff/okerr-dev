@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.utils.translation import ugettext_lazy as _, pgettext
+from django.utils.translation import gettext_lazy as _, pgettext
 from django.utils.translation import to_locale, get_language
 from django.contrib.auth.decorators import login_required
 from django.urls import resolve, reverse
