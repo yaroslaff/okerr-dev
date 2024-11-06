@@ -418,6 +418,7 @@ def test_apache(args):
 def test_deb_packages(args):
     packages = [
         'git',
+        'pkg-config',
         'python3-dev',
         'python3-venv',
         'dialog',

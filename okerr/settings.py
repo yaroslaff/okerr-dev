@@ -36,6 +36,8 @@ SITE_POSTCONF_FILES = sorted(os.path.join(MAIN_CONF_DIR, BASENAME) for BASENAME 
 
 SITE_JSON_DIRS = ['/etc/okerr/json/']
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # take from environment
 
 # Quick-start development settings - unsuitable for production
