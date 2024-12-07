@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 
 import datetime
 from django.db import migrations, models
-from django.utils.timezone import utc
+# from django.utils.timezone import utc
+from django.utils.timezone import make_aware
 
 
 class Migration(migrations.Migration):
@@ -33,7 +34,7 @@ class Migration(migrations.Migration):
             name='TransactionServer',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('lastupdate', models.DateTimeField(default=datetime.datetime(1970, 1, 1, 0, 0, tzinfo=utc))),
+                ('lastupdate', models.DateTimeField(default=make_aware(datetime.datetime(1970, 1, 1, 0, 0)))),
                 ('machine', models.CharField(default='', max_length=100)),
                 ('url', models.CharField(default='', max_length=100)),
                 ('netprocess', models.BooleanField(default=True)),

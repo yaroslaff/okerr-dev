@@ -183,9 +183,13 @@ class Migration(migrations.Migration):
             ],
             options={
                 'ordering': ['name'],
-                'index_together': {('project', 'name')},
-                'unique_together': {('name', 'project')},
-            },
+                'indexes': [
+                    models.Index(fields=['project', 'name'], name='project_name_idx'),
+                ],
+                'constraints': [
+                    models.UniqueConstraint(fields=['name', 'project'], name='unique_name_project'),
+                ],
+            }
         ),
         migrations.CreateModel(
             name='BonusCode',
