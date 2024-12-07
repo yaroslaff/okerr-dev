@@ -21,7 +21,7 @@ urlpatterns = [
     re_path(r'^sredir/(?P<name>[^/]+)/(?P<path>.*)', views.sredir, name='sredir'),
 
     path(r'afterlogin', views.afterlogin, name='afterlogin'),
-    path(r'^$', views.index, name='index'),
+    path(r'', views.index, name='index'),
     re_path(r'^sendsummary/(?P<textid>.+)', views.sendsummary, name='sendsummary'),
 #    url(r'^setvpid/(?P<vpid>\d+)$', views.setvpid, name='setvpid'),
 #    url(r'^setnovpid$', views.setvpid, name='setnovpid'),
