@@ -25,3 +25,4 @@ markdown
 bleach
 bleach_whitelist
 okerrsensor @ git+https://github.com/yaroslaff/sensor/
+pytz
