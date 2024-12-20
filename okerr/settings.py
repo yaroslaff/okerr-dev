@@ -213,7 +213,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = 'https://static.okerr.com/'
 # STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/virtual/static.okerr.com/'
 
@@ -298,7 +297,7 @@ LOCALE_PATHS = (
     )
 
 STATICFILES_DIRS = (
-#    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "okerrui", "static"),
 )
 
 
@@ -415,6 +414,7 @@ DATABASES = {
 LANGUAGES = [
   ('ru', _('Russian')),
   ('en', _('English')),
+  ('uk', _('Ukrainian')),
 ]
 
 
@@ -501,3 +501,9 @@ assert(len(HOSTNAME) > 3)
 
 # Basic sanity check: hostname must be in cluster
 assert(any( MACHINES[mi]['name'] == HOSTNAME for mi in MACHINES.keys() ))
+
+if DEBUG:
+    STATIC_URL = '/static/'
+    print("static URL:", STATIC_URL)
+else:
+    STATIC_URL = 'https://static.okerr.com/'

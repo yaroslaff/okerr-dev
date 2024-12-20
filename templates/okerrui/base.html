@@ -26,18 +26,27 @@
           {% endif %}
     </div>
     <div class="right">
+
       <form action="{% url 'set_language' %}" method="post" style="display:inline;">
       {% csrf_token %}
       <input name="next" type="hidden" value="{{ request.get_full_path }}" />
       <input name="language" type="hidden" value="ru" />
-      <input type="image" src="{% static 'rus.png' %}" alt="rus" title="Russian">
+      <input type="image" width="20" src="{% static 'langflags/ru.svg' %}" alt="rus" title="Russian">
       </form>
+      
+      <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+        <input name="language" type="hidden" value="uk" />
+        <input type="image" width="20" src="{% static 'langflags/ua.svg' %}" alt="uk" title="Ukrainian">
+      </form>
+
       <form action="{% url 'set_language' %}" method="post" style="display:inline;">
       {% csrf_token %}
       <input name="next" type="hidden" value="{{ request.get_full_path }}" />
       <input name="language" type="hidden" value="en" />
-      <input type="image" src="{% static 'uk.png' %}" alt="eng" title="English">
-      </form>
+      <input type="image" width="20" src="{% static 'langflags/gb.svg' %}" alt="eng" title="English">
+
 
       {% if user.is_authenticated %}
           <a href={% url 'myauth:profile' %}><img src="{% static 'user.png' %}" title="profile">{{ user.email }}</a>
