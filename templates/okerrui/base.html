@@ -28,10 +28,10 @@
     <div class="right">
 
       <form action="{% url 'set_language' %}" method="post" style="display:inline;">
-      {% csrf_token %}
-      <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-      <input name="language" type="hidden" value="ru" />
-      <input type="image" width="20" src="{% static 'langflags/ru.svg' %}" alt="rus" title="Russian">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+        <input name="language" type="hidden" value="ru" />
+        <input type="image" width="20" src="{% static 'langflags/ru.svg' %}" alt="rus" title="Russian">
       </form>
       
       <form action="{% url 'set_language' %}" method="post" style="display:inline;">
@@ -42,11 +42,11 @@
       </form>
 
       <form action="{% url 'set_language' %}" method="post" style="display:inline;">
-      {% csrf_token %}
-      <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-      <input name="language" type="hidden" value="en" />
-      <input type="image" width="20" src="{% static 'langflags/gb.svg' %}" alt="eng" title="English">
-
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+        <input name="language" type="hidden" value="en" />
+        <input type="image" width="20" src="{% static 'langflags/gb.svg' %}" alt="eng" title="English">
+      </form>
 
       {% if user.is_authenticated %}
           <a href={% url 'myauth:profile' %}><img src="{% static 'user.png' %}" title="profile">{{ user.email }}</a>
