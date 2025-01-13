@@ -1093,7 +1093,9 @@ def project(request, pid):
             # email set, total=1
             total=1
 
-        ProjectInvite.create(project,expires,email,total)
+        inv = ProjectInvite.create(project,expires,email,total)
+        if email:
+            inv.send()
         return redirect(request.path)
 
 
