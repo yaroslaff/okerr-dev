@@ -1532,10 +1532,6 @@ msgstr "Управлять индикаторами"
 msgid "Action"
 msgstr "Действия"
 
-#: templates/okerrui/project.html:213
-msgid "Invitiations"
-msgstr "Приглашения"
-
 #: templates/okerrui/project.html:247
 msgid "No active invitations"
 msgstr "Нет активных приглашений"
