@@ -10,4 +10,5 @@ nohup.out
 workspace.code-workspace
 .vscode
 .venv
+.env
 

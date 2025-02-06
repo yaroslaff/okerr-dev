@@ -8,6 +8,7 @@ dnspython
 django-oauth-toolkit
 djangorestframework
 django-markup
+django-environ
 mysqlclient
 PyOpenSSL
 evalidate>=1.0.0

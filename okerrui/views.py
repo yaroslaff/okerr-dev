@@ -251,6 +251,9 @@ def security_check(request, quiet=False):
     remoteip = get_remoteip(request)
     reverse = None
 
+    if request.headers.get('X-OKERR-API-TOKEN', None) == settings.API_TOKEN:
+        return True
+
     func = sys._getframe(1).f_code.co_name
 
     if remoteip in settings.TRUSTED_IPS:

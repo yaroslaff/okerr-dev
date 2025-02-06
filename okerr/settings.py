@@ -26,7 +26,18 @@ from django.utils.translation import gettext_lazy as _
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import sys
+import environ
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+API_TOKEN=env('API_TOKEN')
+
 
 MAIN_CONF_DIR='/etc/okerr'
 SITE_PRECONF_FILES = sorted(os.path.join(MAIN_CONF_DIR, BASENAME) for BASENAME in ['okerr.conf'] )
@@ -504,6 +515,5 @@ assert(any( MACHINES[mi]['name'] == HOSTNAME for mi in MACHINES.keys() ))
 
 if DEBUG:
     STATIC_URL = '/static/'
-    print("static URL:", STATIC_URL)
 else:
     STATIC_URL = 'https://static.okerr.com/'

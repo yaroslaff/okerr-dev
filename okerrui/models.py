@@ -3947,7 +3947,8 @@ class Indicator(TransModel):
             # print "try to find object with name '%s'" % idname
             i = project.get_indicator(idname)
 
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist as e:
+            log.warning(f"ZZZ did not found indicator {idname} in {project.name}")
 
             # policy always specified, but can be Default or wrong
             try:
@@ -4015,7 +4016,14 @@ class Indicator(TransModel):
                 created = True
 
                 i.reschedule()
-                i.save()
+                
+                try:
+                    i.save()
+                except IntegrityError:
+                    # indicator already exists
+                    i = project.get_indicator(idname)
+                    project.log(f'ZZZ indicator.update cannot create: indicator {i.name} already exists in {project.name}')
+
                 Indicator.update_tproc_sleep()
 
                 # set_rid(i)
