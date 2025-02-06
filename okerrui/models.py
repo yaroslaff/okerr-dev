@@ -6319,8 +6319,8 @@ class DynDNSRecord(models.Model):
         except (requests.exceptions.RequestException, DDNSExc) as e:
             self.last_try = timezone.now()
             self.status = str(e)
-            log.info("Failed to set {} = {}: {}".format(self.fqdn(), self.curvalue, str(e)))
-            self.log("Failed to set {} = {}: {}".format(self.fqdn(), self.curvalue, str(e)))
+            log.info(f"Failed to set {self.fqdn()} = {self.curvalue}: {str(e)}")
+            self.log(f"Failed to set {self.fqdn()} = {self.curvalue}: {str(e)}")
 
             try:
                 delay_sec = delay_sch[self.nfails]
