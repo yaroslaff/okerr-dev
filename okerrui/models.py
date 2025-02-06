@@ -6290,7 +6290,7 @@ class DynDNSRecord(models.Model):
 
     # dyndnsrecord.log
     def log(self, message):
-        self.project.log(self.title() + ' ' + message, typecode='dyndns')
+        self.project.log(f'{self.title()} {message}', typecode='dyndns')
 
     def logrecords(self):
         return self.project.logrecord_set.filter(typecode=LogRecord.get_typecode('dyndns'),
@@ -6319,8 +6319,9 @@ class DynDNSRecord(models.Model):
         except (requests.exceptions.RequestException, DDNSExc) as e:
             self.last_try = timezone.now()
             self.status = str(e)
-            log.info(f"Failed to set {self.fqdn()} = {self.curvalue}: {str(e)}")
-            self.log(f"Failed to set {self.fqdn()} = {self.curvalue}: {str(e)}")
+            log.info(f"Failed to set {self.fqdn()} = {self.curvalue}: {str(e)} {self.get_domain()=} {self.get_hostname()=}")
+
+            self.log(f"Failed to set {self.fqdn()} = {self.curvalue}: {str(e)} {self.get_domain()=} {self.get_hostname()=}")
 
             try:
                 delay_sec = delay_sch[self.nfails]
