@@ -4331,7 +4331,7 @@ class Profile(TransModel):
                 d['left'] = dhms(m.expires - timezone.now())
             else:
                 d['expires'] = shortdate(m.expires)
-                d['left'] = dhms(m.expires - timezone.now())
+                d['left'] = None
             g.append(d)
         return g
 
