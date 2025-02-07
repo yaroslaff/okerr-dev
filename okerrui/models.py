@@ -6199,7 +6199,10 @@ class DynDNSRecord(models.Model):
             else:
                 return hostname
         else:
-            return domain
+            if domain:
+                return domain
+            else:
+                print(f"ZZZ DynDNS RECORD (no host/domain) {self.project=} {self.name=} {self.method=}")
 
     def left(self):
         return "{}.{}".format(self.hostname, self.project.get_textid())
