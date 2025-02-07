@@ -6202,7 +6202,7 @@ class DynDNSRecord(models.Model):
             if domain:
                 return domain
             else:
-                print(f"ZZZ DynDNS RECORD (no host/domain) {self.project=} {self.name=} {self.method=}")
+                return f"ZZZ DynDNS RECORD (no host/domain) {self.project=} {self.name=} {self.method=}"
 
     def left(self):
         return "{}.{}".format(self.hostname, self.project.get_textid())
@@ -6296,8 +6296,14 @@ class DynDNSRecord(models.Model):
         self.project.log(f'{self.title()} {message}', typecode='dyndns')
 
     def logrecords(self):
-        return self.project.logrecord_set.filter(typecode=LogRecord.get_typecode('dyndns'),
+        try:
+            return self.project.logrecord_set.filter(typecode=LogRecord.get_typecode('dyndns'),
                                                  message__startswith=self.title())
+        except ValueError as e:
+            log.error("ZZZZZ logrecords exception: {}".format(e))
+            log.error(f"typecode: {LogRecord.get_typecode('dyndns')}")
+            log.error(f"prefix: {self.title()}")
+            return list()
 
     # called from cron. no need to call directly
     def push_value(self):
