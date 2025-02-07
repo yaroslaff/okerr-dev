@@ -6202,7 +6202,7 @@ class DynDNSRecord(models.Model):
             if domain:
                 return domain
             else:
-                return f"ZZZ DynDNS RECORD (no host/domain) {self.project=} {self.name=} {self.method=}"
+                return f"nohostname.nodomain"
 
     def left(self):
         return "{}.{}".format(self.hostname, self.project.get_textid())
