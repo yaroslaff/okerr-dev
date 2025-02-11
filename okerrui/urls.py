@@ -176,6 +176,7 @@ urlpatterns = [
 #    re_path(r'^api/summary', views.api_summary, name='api_summary'),
     re_path(r'^api/setci$', views.api_setci, name='api_setci'),
     re_path(r'^api/groups', views.api_groups, name='api_groups'),
+    re_path(r'^api/sensors', views.api_sensors, name='api_sensors'),
     re_path(r'^api/test', views.api_test, name='api_test'),
 
 

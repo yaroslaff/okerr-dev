@@ -5171,6 +5171,18 @@ def api_groups(request):
     return HttpResponse(json.dumps(gconf, indent=4, sort_keys=True), content_type='text/plain')
 
 
+def api_sensors(request):
+    redis = get_redis(settings.OKERR_REDIS_DB)
+
+    sensors = dict()
+
+    for key in redis.keys('okerr:sensor:machineinfo:*'):
+        sensor = redis.hgetall(key)
+        sensors[sensor.name] = sensor
+
+    return HttpResponse(json.dumps(sensors, indent=4), content_type='application/json')
+
+
 def api_test(request):
     return HttpResponse('Hello world!', content_type='text/plain')    
 
