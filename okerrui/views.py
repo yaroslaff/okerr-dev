@@ -5178,7 +5178,7 @@ def api_sensors(request):
 
     for key in redis.keys('okerr:sensor:machineinfo:*'):
         sensor = redis.hgetall(key)
-        sensors[sensor.name] = sensor
+        sensors[sensor['name']] = sensor
 
     return HttpResponse(json.dumps(sensors, indent=4), content_type='application/json')
 
