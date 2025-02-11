@@ -183,7 +183,7 @@ def process_hello(data):
     print("machine:")
     print(json.dumps(machine, indent=4))
 
-    redis_conn.hset(machine_key, mapping=data)
+    redis_conn.hset(machine_key, mapping=machine)
     redis_conn.expire(machine_key, 20)
 
 
