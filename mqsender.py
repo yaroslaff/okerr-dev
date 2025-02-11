@@ -180,7 +180,8 @@ def process_hello(data):
     print("data:")
     print(json.dumps(data, indent=4))
 
-    data['qlist'] = str(data['qlist'])    
+    machine = data['_machine']
+    machine['qlist'] = str(machine['qlist'])    
     redis_conn.hset(machine_key, mapping=data)
     redis_conn.expire(machine_key, 20)
 
