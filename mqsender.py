@@ -173,6 +173,13 @@ def process_hello(data):
         redis_conn.set(key, name)
         redis_conn.expire(key, 20)
 
+    
+    machine_key = 'okerr:sensor:machineinfo:{}'.format(name)
+    redis_conn.hset(machine_key, mapping=data)
+    redis_conn.expire(machine_key, 20)
+
+
+
 def get_other_machine_queue(name):
     # return q name for other machine or None
     for key in redis_conn.keys('okerr:sensor:queue:*'):
