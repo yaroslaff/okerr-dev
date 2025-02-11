@@ -177,11 +177,12 @@ def process_hello(data):
     machine_key = 'okerr:sensor:machineinfo:{}'.format(name)
     # convert nested list
 
-    print("data:")
-    print(json.dumps(data, indent=4))
 
     machine = data['_machine']
     machine['qlist'] = str(machine['qlist'])    
+    print("machine:")
+    print(json.dumps(machine, indent=4))
+
     redis_conn.hset(machine_key, mapping=data)
     redis_conn.expire(machine_key, 20)
 
