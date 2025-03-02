@@ -2,6 +2,10 @@
 {% load i18n %}
 {% block content %}
 
+<script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" 
+  defer>
+</script>
     
     <form action="{% url 'myauth:signup' %}" method="post">
     {% csrf_token %}
@@ -15,12 +19,13 @@
     <tr><td colspan=2>
         <input type=checkbox name=iaccept>{% trans 'I accept End-User License Agreement'%}
     </td></tr>
-
-
     <tr>
         <td>Email:</td>
         <td><input type=text name="email" value={{email}}></td>
     </tr>
+    <tr><td colspan=2>
+        <div class="cf-turnstile" data-sitekey="{{TURNSTILE_KEY}}"></div>
+    </td></tr>
     <tr>
         <td colspan=2 align=center>
             <input type=submit name=login value="{% trans 'Signup' %}">   

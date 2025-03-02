@@ -396,9 +396,30 @@ def signup(request):
         
     User = get_user_model()
     msg = []
-    context = {'msg': msg}
+    context = {'msg': msg, 'TURNSTILE_KEY': settings.TURNSTILE_KEY}
+
+
     if request.POST.get('email', None):
         email = request.POST.get('email')
+
+        turnstile_response = request.POST.get('cf-turnstile-response')
+        
+        # Verify the Turnstile response
+        verification_response = requests.post(
+            'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+            data={
+                'secret': settings.TURNSTILE_SECRET,
+                'response': turnstile_response
+            }
+        )
+        
+        verification_result = verification_response.json()
+        if not verification_result.get('success'):
+            # CAPTCHA verification failed
+            log.warning(f"CAPTCHA verification failed")
+            notify(request,_('CAPTCHA verification failed. Please try again.'))
+            # flash('CAPTCHA verification failed. Please try again.', 'error')
+            return redirect(request.path)
 
         # fake registration part
 

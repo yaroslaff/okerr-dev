@@ -37,6 +37,8 @@ env = environ.Env(
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 API_TOKEN=env('API_TOKEN')
+TURNSTILE_SECRET=env('TURNSTILE_SECRET')
+TURNSTILE_KEY=env('TURNSTILE_KEY')
 
 
 MAIN_CONF_DIR='/etc/okerr'
