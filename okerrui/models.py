@@ -2923,7 +2923,8 @@ class Indicator(TransModel):
 
         # try if it's over user limits
         minperiod = self.project.minperiod()
-        period = max(period, minperiod)
+        method_minperiod = 86400 if self.cm.codename == "whois" else 0 # 1 day
+        period = max(period, minperiod, method_minperiod)
 
         if self.cm.passive():
             # for passive, add patience also
