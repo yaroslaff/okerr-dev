@@ -33,9 +33,8 @@ import myutils
 from datetime import datetime, timedelta
 import calendar
 
-import telegram
-import telegram.ext
-from telegram.error import TelegramError
+import telebot
+from telebot.apihelper import ApiTelegramException
 
 import redis
 
@@ -120,7 +119,7 @@ def send_tg_alerts():
     if settings.TGBOT_TOKEN is None:
         return
 
-    bot = telegram.Bot(settings.TGBOT_TOKEN)
+    bot = telebot.TeleBot(settings.TGBOT_TOKEN)
 
     for ar in AlertRecord.objects.filter(proto='telegram', release_time__lte=timezone.now()):
         textid = ar.indicator.project.get_textid()
@@ -151,10 +150,10 @@ def send_tg_alerts():
 
         try:
             bot.send_message(
-                chat_id=profile.telegram_chat_id, 
-                parse_mode = telegram.ParseMode.MARKDOWN,
+                chat_id=profile.telegram_chat_id,
+                parse_mode="Markdown",
                 text=mdtext)
-        except TelegramError as e:
+        except (ApiTelegramException, requests.exceptions.RequestException) as e:
             log.info('Exception: {} msg: {}'.format(e, mdtext))
                        
         log.info(u'sent tg alert to @{} ({}): {}'.format(profile.telegram_name, ar.user.username, texttext))

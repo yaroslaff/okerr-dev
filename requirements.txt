@@ -1,5 +1,5 @@
 wheel
-Django>=5.1.3
+Django>=5.2,<5.3
 # adns @ git+https://github.com/trolldbois/python3-adns/
 netaddr
 requests
@@ -17,7 +17,6 @@ uwsgi
 requests-oauthlib
 validate-email
 configargparse
-python-telegram-bot
 pytelegrambotapi
 okerrupdate
 redis
@@ -27,3 +26,5 @@ bleach
 bleach_whitelist
 okerrsensor @ git+https://github.com/yaroslaff/sensor/
 pytz
+pika
+python-dotenv
