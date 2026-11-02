@@ -11,7 +11,7 @@ django-markup
 django-environ
 mysqlclient
 PyOpenSSL
-evalidate>=1.0.0
+evalidate>=2.1.7
 python-whois
 uwsgi
 requests-oauthlib

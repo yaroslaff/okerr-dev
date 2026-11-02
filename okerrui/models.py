@@ -1973,21 +1973,29 @@ class CheckMethod(models.Model):
 
         # fill details by dump
         details = ''
+
+        """
         for ctxvar in dump.split(','):
             ctxvar = ctxvar.strip()
             if not ctxvar:
                 # empty line
                 continue
             try:
+
                 result = evalidate.safeeval(ctxvar, context, safenodes=None)
                 details += "{}={} ".format(ctxvar, result)
             except evalidate.EvalException as e:
                 log.debug('evalidate dump safeeval {} failed: {}'.format(repr(ctxvar), e))
                 i.problem = True
                 return ("ERR", str(e))
+        """
+
+        model = evalidate.base_eval_model.clone()
+
 
         try:
-            result = evalidate.safeeval(expr, context, safenodes=None)
+            model_expr = model.expr(expr)
+            result = model_expr.eval(context)
             if result:
                 return ('OK', details)
             else:
