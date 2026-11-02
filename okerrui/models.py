@@ -2262,7 +2262,7 @@ class Indicator(TransModel):
 
         source = "{}".format(name)
 
-        self.register_result(r['status'], r['details'], source=source, throttled=throttled)
+        self.register_result(r['status'], r['details'] or '', source=source, throttled=throttled)
 
         if r['problem']:
             self.log('{} set problem flag'.format(name),
@@ -3036,7 +3036,7 @@ class Indicator(TransModel):
     def fix(self, verbose=False):
         # fix record, e.g. details
         maxlen = Indicator._meta.get_field('details').max_length
-        if len(self.details) > maxlen:
+        if self.details and len(self.details) > maxlen:
             self.details = self.details[:maxlen - 2] + '..'
 
     def unlock(self):
